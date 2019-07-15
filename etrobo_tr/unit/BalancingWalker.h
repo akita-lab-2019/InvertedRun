@@ -12,6 +12,8 @@
 #include "GyroSensor.h"
 #include "Motor.h"
 #include "BalancerCpp.h"
+#include "./../measurement/Measurer.h"
+#include "stdlib.h"
 
 class BalancingWalker
 {
@@ -24,7 +26,8 @@ public:
     BalancingWalker(const ev3api::GyroSensor &gyroSensor,
                     ev3api::Motor &leftWheel,
                     ev3api::Motor &rightWheel,
-                    Balancer *balancer);
+                    Balancer *balancer,
+                    Measurer *measurer);
 
     void init();
     void run();
@@ -37,6 +40,7 @@ private:
     ev3api::Motor &mLeftWheel;
     ev3api::Motor &mRightWheel;
     Balancer *mBalancer;
+    Measurer *m_measurer;
     int mForward;
     int mTurn;
 };

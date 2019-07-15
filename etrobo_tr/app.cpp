@@ -8,6 +8,7 @@
 
 #include "app.h"
 #include "LineTracer.h"
+#include "./measurement/Measurer.h"
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -30,6 +31,7 @@ static LineMonitor *gLineMonitor;
 static Balancer *gBalancer;
 static BalancingWalker *gBalancingWalker;
 static LineTracer *gLineTracer;
+static Measurer *gMeasurer;
 
 /**
  * EV3システム生成
@@ -38,10 +40,13 @@ static void user_system_create()
 {
     // オブジェクトの作成
     gBalancer = new Balancer();
+    gMeasurer = new Measurer(gLeftWheel,
+                             gRightWheel);
     gBalancingWalker = new BalancingWalker(gGyroSensor,
                                            gLeftWheel,
                                            gRightWheel,
-                                           gBalancer);
+                                           gBalancer,
+                                           gMeasurer);
     gLineMonitor = new LineMonitor(gColorSensor);
     gLineTracer = new LineTracer(gLineMonitor, gBalancingWalker);
 
@@ -102,7 +107,8 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        gLineTracer->run(); // 倒立走行
+        gMeasurer->measure(); // 計測
+        gLineTracer->run();   // 倒立走行
     }
 
     ext_tsk();

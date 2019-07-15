@@ -23,11 +23,13 @@ const int BalancingWalker::HIGH = 70;   // 高速
 BalancingWalker::BalancingWalker(const ev3api::GyroSensor &gyroSensor,
                                  ev3api::Motor &leftWheel,
                                  ev3api::Motor &rightWheel,
-                                 Balancer *balancer)
+                                 Balancer *balancer,
+                                 Measurer *measurer)
     : mGyroSensor(gyroSensor),
       mLeftWheel(leftWheel),
       mRightWheel(rightWheel),
       mBalancer(balancer),
+      m_measurer(measurer),
       mForward(LOW),
       mTurn(LOW)
 {
@@ -42,7 +44,17 @@ void BalancingWalker::run()
     int rightWheelEnc = mRightWheel.getCount();      // 右モータ回転角度
     int leftWheelEnc = mLeftWheel.getCount();        // 左モータ回転角度
 
-    mBalancer->setCommand(mForward, mTurn);
+    float robot_dis = m_measurer->getRobotDistance();
+    float robot_rad = m_measurer->getRobotAngle();
+
+    if (robot_rad < 3.14)
+    {
+        mBalancer->setCommand(0, -20);
+    }
+    else
+    {
+        mBalancer->setCommand(0, 0);
+    }
 
     int battery = ev3_battery_voltage_mV();
     mBalancer->update(angle, rightWheelEnc, leftWheelEnc, battery);
@@ -50,6 +62,13 @@ void BalancingWalker::run()
     // 左右モータに回転を指示する
     mLeftWheel.setPWM(mBalancer->getPwmLeft());
     mRightWheel.setPWM(mBalancer->getPwmRight());
+
+    char message[30];
+    sprintf(message, "arg :%f [m]", robot_rad * 180 / 3.14);
+    ev3_lcd_draw_string(message, 0, 10);
+
+    mLeftWheel.setBrake(false);
+    mRightWheel.setBrake(false);
 }
 
 /**

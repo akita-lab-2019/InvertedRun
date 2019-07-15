@@ -37,7 +37,8 @@ void LineTracer::run()
     // 走行体の向きを計算する
     int direction = calcDirection(isOnLine);
 
-    mBalancingWalker->setCommand(BalancingWalker::LOW, direction);
+    // mBalancingWalker->setCommand(BalancingWalker::LOW, direction);
+    mBalancingWalker->setCommand(0, 0);
 
     // 倒立走行を行う
     mBalancingWalker->run();
