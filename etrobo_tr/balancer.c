@@ -27,26 +27,26 @@
  **/
 /**
  ******************************************************************************
- **	ÉtÉ@ÉCÉãñº : balancer.c
+ **	„Éï„Ç°„Ç§„É´Âêç : balancer.c
  **
- **	äTóv       : 2ó÷å^ì|óßêUéqÉçÉ{ÉbÉgÅuNXTway-GSÅvÉoÉâÉìÉXêßå‰ÉvÉçÉOÉâÉÄ
- **              NXTway-GSÇÃÉoÉâÉìÉXêßå‰Ç…ÇÕÅAÉTÅ[É{êßå‰(èÛë‘ + êœï™ÉtÉBÅ[ÉhÉoÉbÉN)
- **              Ç∆Ç¢Ç§åªë„êßå‰ÇìKópÇµÇƒÇ¢Ç‹Ç∑ÅBêßå‰ëŒè€ÇÃìØíËÇ®ÇÊÇ—êßå‰äÌÇÃäJî≠
- **              Ç…ÇÕThe MathWorksé–ÇÃMATLAB&SimulinkÇ∆Ç¢Ç§êªïiÇégópÇµÇΩÅA
- **              MBD(ÉÇÉfÉãÉxÅ[ÉXÉfÉUÉCÉì/äJî≠)äJî≠éËñ@ÇópÇ¢ÇƒÇ¢Ç‹Ç∑ÅBÇ±ÇÃCÉvÉçÉOÉâÉÄÇÕ
- **              SimulinkÉÇÉfÉãÇ©ÇÁReal-Time Workshop Embedded CoderÉRÅ[Éhê∂ê¨ïWèÄã@î\Ç
- **              égópÇµÇƒé©ìÆê∂ê¨Ç≥ÇÍÇΩÇ‡ÇÃÇ≈Ç∑ÅBÉoÉâÉìÉXêßå‰äÌÇÃêßå‰ÉpÉâÉÅÅ[É^Ç…Ç¬Ç¢ÇƒÇÕ
- **              ÉÜÅ[ÉUÅ[ÉnÉìÉhÉRÅ[Éhë§Ç≈íËã`Ç∑ÇÈïKóvÇ™Ç†ÇËÇ‹Ç∑ÅBíËã`ó·Ç∆ÇµÇƒÅA
- **              nxtOSEK\samples\nxtway_gs\balancer_param.cÇéQè∆ÇµÇƒÇ≠ÇæÇ≥Ç¢ÅB
- **              ÉoÉâÉìÉXêßå‰ÉAÉãÉSÉäÉYÉÄÇÃè⁄ç◊èÓïÒÇ…Ç¬Ç´Ç‹ÇµÇƒÇÕ
- **                ì˙ñ{åÍ: http://www.cybernet.co.jp/matlab/library/library/detail.php?id=TA060
- **                âpåÍ  : http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=19147&objectType=file
- **              ÇéQè∆ÇµÇƒÇ≠ÇæÇ≥Ç¢ÅB
+ **	Ê¶ÇË¶Å       : 2Ëº™ÂûãÂÄíÁ´ãÊåØÂ≠ê„É≠„Éú„ÉÉ„Éà„ÄåNXTway-GS„Äç„Éê„É©„É≥„ÇπÂà∂Âæ°„Éó„É≠„Ç∞„É©„É†
+ **              NXTway-GS„ÅÆ„Éê„É©„É≥„ÇπÂà∂Âæ°„Å´„ÅØ„ÄÅ„Çµ„Éº„ÉúÂà∂Âæ°(Áä∂ÊÖã + Á©çÂàÜ„Éï„Ç£„Éº„Éâ„Éê„ÉÉ„ÇØ)
+ **              „Å®„ÅÑ„ÅÜÁèæ‰ª£Âà∂Âæ°„ÇíÈÅ©Áî®„Åó„Å¶„ÅÑ„Åæ„Åô„ÄÇÂà∂Âæ°ÂØæË±°„ÅÆÂêåÂÆö„Åä„Çà„Å≥Âà∂Âæ°Âô®„ÅÆÈñãÁô∫
+ **              „Å´„ÅØThe MathWorksÁ§æ„ÅÆMATLAB&Simulink„Å®„ÅÑ„ÅÜË£ΩÂìÅ„Çí‰ΩøÁî®„Åó„Åü„ÄÅ
+ **              MBD(„É¢„Éá„É´„Éô„Éº„Çπ„Éá„Ç∂„Ç§„É≥/ÈñãÁô∫)ÈñãÁô∫ÊâãÊ≥ï„ÇíÁî®„ÅÑ„Å¶„ÅÑ„Åæ„Åô„ÄÇ„Åì„ÅÆC„Éó„É≠„Ç∞„É©„É†„ÅØ
+ **              Simulink„É¢„Éá„É´„Åã„ÇâReal-Time Workshop Embedded Coder„Ç≥„Éº„ÉâÁîüÊàêÊ®ôÊ∫ñÊ©üËÉΩ„Çí
+ **              ‰ΩøÁî®„Åó„Å¶Ëá™ÂãïÁîüÊàê„Åï„Çå„Åü„ÇÇ„ÅÆ„Åß„Åô„ÄÇ„Éê„É©„É≥„ÇπÂà∂Âæ°Âô®„ÅÆÂà∂Âæ°„Éë„É©„É°„Éº„Çø„Å´„Å§„ÅÑ„Å¶„ÅØ
+ **              „É¶„Éº„Ç∂„Éº„Éè„É≥„Éâ„Ç≥„Éº„ÉâÂÅ¥„ÅßÂÆöÁæ©„Åô„ÇãÂøÖË¶Å„Åå„ÅÇ„Çä„Åæ„Åô„ÄÇÂÆöÁæ©‰æã„Å®„Åó„Å¶„ÄÅ
+ **              nxtOSEK\samples\nxtway_gs\balancer_param.c„ÇíÂèÇÁÖß„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ
+ **              „Éê„É©„É≥„ÇπÂà∂Âæ°„Ç¢„É´„Ç¥„É™„Ç∫„É†„ÅÆË©≥Á¥∞ÊÉÖÂ†±„Å´„Å§„Åç„Åæ„Åó„Å¶„ÅØ
+ **                Êó•Êú¨Ë™û: http://www.cybernet.co.jp/matlab/library/library/detail.php?id=TA060
+ **                Ëã±Ë™û  : http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=19147&objectType=file
+ **              „ÇíÂèÇÁÖß„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ
  **
- ** ÉÇÉfÉãä÷òAèÓïÒ:
- **   ÉÇÉfÉãñº   : balancer.mdl
- **   ÉoÅ[ÉWÉáÉì : 1.893
- **   óöó       :  -
+ ** „É¢„Éá„É´Èñ¢ÈÄ£ÊÉÖÂ†±:
+ **   „É¢„Éá„É´Âêç   : balancer.mdl
+ **   „Éê„Éº„Ç∏„Éß„É≥ : 1.893
+ **   Â±•Ê≠¥       :  -
  **                 -
  **
  ** Copyright (c) 2009-2016 MathWorks, Inc.
@@ -59,16 +59,16 @@
 /*============================================================================
  * Local macro definitions
  *===========================================================================*/
-#define rt_SATURATE(sig,ll,ul)         (((sig) >= (ul)) ? (ul) : (((sig) <= (ll)) ? (ll) : (sig)) )
+#define rt_SATURATE(sig, ll, ul) (((sig) >= (ul)) ? (ul) : (((sig) <= (ll)) ? (ll) : (sig)))
 
 /*============================================================================
  * Data definitions
  *===========================================================================*/
-static float ud_err_theta;          /* ç∂âEé‘ó÷ÇÃïΩãœâÒì]äpìx(É∆)ñ⁄ïWåÎç∑èÛë‘íl */
-static float ud_psi;                /* é‘ëÃÉsÉbÉ`äpìx(É’)èÛë‘íl */
-static float ud_theta_lpf;          /* ç∂âEé‘ó÷ÇÃïΩãœâÒì]äpìx(É∆)èÛë‘íl */
-static float ud_theta_ref;          /* ç∂âEé‘ó÷ÇÃñ⁄ïWïΩãœâÒì]äpìx(É∆)èÛë‘íl */
-static float ud_thetadot_cmd_lpf;   /* ç∂âEé‘ó÷ÇÃñ⁄ïWïΩãœâÒì]äpë¨ìx(dÉ∆/dt)èÛë‘íl */
+static float ud_err_theta;        /* Â∑¶Âè≥ËªäËº™„ÅÆÂπ≥ÂùáÂõûËª¢ËßíÂ∫¶(Œ∏)ÁõÆÊ®ôË™§Â∑ÆÁä∂ÊÖãÂÄ§ */
+static float ud_psi;              /* Ëªä‰Ωì„Éî„ÉÉ„ÉÅËßíÂ∫¶(œà)Áä∂ÊÖãÂÄ§ */
+static float ud_theta_lpf;        /* Â∑¶Âè≥ËªäËº™„ÅÆÂπ≥ÂùáÂõûËª¢ËßíÂ∫¶(Œ∏)Áä∂ÊÖãÂÄ§ */
+static float ud_theta_ref;        /* Â∑¶Âè≥ËªäËº™„ÅÆÁõÆÊ®ôÂπ≥ÂùáÂõûËª¢ËßíÂ∫¶(Œ∏)Áä∂ÊÖãÂÄ§ */
+static float ud_thetadot_cmd_lpf; /* Â∑¶Âè≥ËªäËº™„ÅÆÁõÆÊ®ôÂπ≥ÂùáÂõûËª¢ËßíÈÄüÂ∫¶(dŒ∏/dt)Áä∂ÊÖãÂÄ§ */
 
 /*============================================================================
  * Functions
@@ -122,72 +122,69 @@ static float ud_thetadot_cmd_lpf;   /* ç∂âEé‘ó÷ÇÃñ⁄ïWïΩãœâÒì]äpë¨ìx(dÉ∆/dt)èÛë‘í
 //*****************************************************************************
 
 //*****************************************************************************
-// ä÷êîñº  : balance_control
-// à¯êî    :
-//   (float)args_cmd_forward : ëOêi/å„êiñΩóﬂÅB100(ëOêiç≈ëÂíl)Å`-100(å„êiç≈ëÂíl)
-//   (float)args_cmd_turn    : ê˘âÒñΩóﬂÅB100(âEê˘âÒç≈ëÂíl)Å`-100(ç∂ê˘âÒç≈ëÂíl)
-//   (float)args_gyro        : ÉWÉÉÉCÉçÉZÉìÉTíl
-//   (float)args_gyro_offset : ÉWÉÉÉCÉçÉZÉìÉTÉIÉtÉZÉbÉgíl
-//   (float)args_theta_m_l   : ç∂ÉÇÅ[É^ÉGÉìÉRÅ[É_íl
-//   (float)args_theta_m_r   : âEÉÇÅ[É^ÉGÉìÉRÅ[É_íl
-//   (float)args_battery     : ÉoÉbÉeÉäìdà≥íl(mV)
-// ñﬂÇËíl  :
-//   (char*)ret_pwm_l        : ç∂ÉÇÅ[É^PWMèoóÕíl
-//   (char*)ret_pwm_r        : âEÉÇÅ[É^PWMèoóÕíl
-// äTóv    :  NXTway-GSÉoÉâÉìÉXêßå‰ä÷êîÅB
-//            Ç±ÇÃä÷êîÇÕ4msecé¸ä˙Ç≈ãNìÆÇ≥ÇÍÇÈÇ±Ç∆ÇëOíÒÇ…ê›åvÇ≥ÇÍÇƒÇ¢Ç‹Ç∑ÅB
-//            Ç»Ç®ÅAÉWÉÉÉCÉçÉZÉìÉTÉIÉtÉZÉbÉgílÇÕÉZÉìÉTå¬ëÃÇ®ÇÊÇ—í ìdÇ…ÇÊÇÈÉhÉäÉtÉg
-//            Çî∫Ç¢Ç‹Ç∑ÇÃÇ≈ÅAìKãXï‚ê≥Ç∑ÇÈïKóvÇ™Ç†ÇËÇ‹Ç∑ÅBÇ‹ÇΩÅAç∂âEÇÃé‘ó÷ãÏìÆ
-//            ÉÇÅ[É^ÇÕå¬ëÃç∑Ç…ÇÊÇËÅAìØÇ∂PWMèoóÕÇó^Ç¶ÇƒÇ‡âÒì]êîÇ™àŸÇ»ÇÈèÍçáÇ™
-//            Ç†ÇËÇ‹Ç∑ÅBÇªÇÃèÍçáÇÕï ìrï‚ê≥ã@î\Çí«â¡Ç∑ÇÈïKóvÇ™Ç†ÇËÇ‹Ç∑ÅB
-// égópó·  :
-//        /* ç≈çÇë¨íºêiñΩóﬂ */
+// Èñ¢Êï∞Âêç  : balance_control
+// ÂºïÊï∞    :
+//   (float)args_cmd_forward : ÂâçÈÄ≤/ÂæåÈÄ≤ÂëΩ‰ª§„ÄÇ100(ÂâçÈÄ≤ÊúÄÂ§ßÂÄ§)ÔΩû-100(ÂæåÈÄ≤ÊúÄÂ§ßÂÄ§)
+//   (float)args_cmd_turn    : ÊóãÂõûÂëΩ‰ª§„ÄÇ100(Âè≥ÊóãÂõûÊúÄÂ§ßÂÄ§)ÔΩû-100(Â∑¶ÊóãÂõûÊúÄÂ§ßÂÄ§)
+//   (float)args_gyro        : „Ç∏„É£„Ç§„É≠„Çª„É≥„ÇµÂÄ§
+//   (float)args_gyro_offset : „Ç∏„É£„Ç§„É≠„Çª„É≥„Çµ„Ç™„Éï„Çª„ÉÉ„ÉàÂÄ§
+//   (float)args_theta_m_l   : Â∑¶„É¢„Éº„Çø„Ç®„É≥„Ç≥„Éº„ÉÄÂÄ§
+//   (float)args_theta_m_r   : Âè≥„É¢„Éº„Çø„Ç®„É≥„Ç≥„Éº„ÉÄÂÄ§
+//   (float)args_battery     : „Éê„ÉÉ„ÉÜ„É™ÈõªÂúßÂÄ§(mV)
+// Êàª„ÇäÂÄ§  :
+//   (char*)ret_pwm_l        : Â∑¶„É¢„Éº„ÇøPWMÂá∫ÂäõÂÄ§
+//   (char*)ret_pwm_r        : Âè≥„É¢„Éº„ÇøPWMÂá∫ÂäõÂÄ§
+// Ê¶ÇË¶Å    :  NXTway-GS„Éê„É©„É≥„ÇπÂà∂Âæ°Èñ¢Êï∞„ÄÇ
+//            „Åì„ÅÆÈñ¢Êï∞„ÅØ4msecÂë®Êúü„ÅßËµ∑Âãï„Åï„Çå„Çã„Åì„Å®„ÇíÂâçÊèê„Å´Ë®≠Ë®à„Åï„Çå„Å¶„ÅÑ„Åæ„Åô„ÄÇ
+//            „Å™„Åä„ÄÅ„Ç∏„É£„Ç§„É≠„Çª„É≥„Çµ„Ç™„Éï„Çª„ÉÉ„ÉàÂÄ§„ÅØ„Çª„É≥„ÇµÂÄã‰Ωì„Åä„Çà„Å≥ÈÄöÈõª„Å´„Çà„Çã„Éâ„É™„Éï„Éà
+//            „Çí‰º¥„ÅÑ„Åæ„Åô„ÅÆ„Åß„ÄÅÈÅ©ÂÆúË£úÊ≠£„Åô„ÇãÂøÖË¶Å„Åå„ÅÇ„Çä„Åæ„Åô„ÄÇ„Åæ„Åü„ÄÅÂ∑¶Âè≥„ÅÆËªäËº™ÈßÜÂãï
+//            „É¢„Éº„Çø„ÅØÂÄã‰ΩìÂ∑Æ„Å´„Çà„Çä„ÄÅÂêå„ÅòPWMÂá∫Âäõ„Çí‰∏é„Åà„Å¶„ÇÇÂõûËª¢Êï∞„ÅåÁï∞„Å™„ÇãÂ†¥Âêà„Åå
+//            „ÅÇ„Çä„Åæ„Åô„ÄÇ„Åù„ÅÆÂ†¥Âêà„ÅØÂà•ÈÄîË£úÊ≠£Ê©üËÉΩ„ÇíËøΩÂä†„Åô„ÇãÂøÖË¶Å„Åå„ÅÇ„Çä„Åæ„Åô„ÄÇ
+// ‰ΩøÁî®‰æã  :
+//        /* ÊúÄÈ´òÈÄüÁõ¥ÈÄ≤ÂëΩ‰ª§ */
 //        balance_control(
-//          (float)100,                                  /* ëOêiç≈çÇë¨ñΩóﬂ */
-//          (float)0,                                    /* ñ≥ê˘âÒñΩóﬂ */
-//          (float)ecrobot_get_gyro_sensor(NXT_PORT_S4), /* ÉWÉÉÉCÉçÉZÉìÉTíl */
-//          (float)605,                                  /* é‘ëÃí‚é~éûÇÃÉWÉÉÉCÉçÉZÉìÉTíl */
-//          (float)nxt_motor_get_count(NXT_PORT_C),      /* ç∂ÉÇÅ[É^ÉGÉìÉRÅ[É_íl */
-//          (float)nxt_motor_get_count(NXT_PORT_B),      /* âEÉÇÅ[É^ÉGÉìÉRÅ[É_íl */
-//          (float)ecrobot_get_battery_voltage(),        /* ÉoÉbÉeÉäìdà≥íl(mV) */
-//          &pwm_l,                                    /* ç∂ÉÇÅ[É^PWMèoóÕíl */
-//          &pwm_r);                                   /* âEÉÇÅ[É^PWMèoóÕíl */
+//          (float)100,                                  /* ÂâçÈÄ≤ÊúÄÈ´òÈÄüÂëΩ‰ª§ */
+//          (float)0,                                    /* ÁÑ°ÊóãÂõûÂëΩ‰ª§ */
+//          (float)ecrobot_get_gyro_sensor(NXT_PORT_S4), /* „Ç∏„É£„Ç§„É≠„Çª„É≥„ÇµÂÄ§ */
+//          (float)605,                                  /* Ëªä‰ΩìÂÅúÊ≠¢ÊôÇ„ÅÆ„Ç∏„É£„Ç§„É≠„Çª„É≥„ÇµÂÄ§ */
+//          (float)nxt_motor_get_count(NXT_PORT_C),      /* Â∑¶„É¢„Éº„Çø„Ç®„É≥„Ç≥„Éº„ÉÄÂÄ§ */
+//          (float)nxt_motor_get_count(NXT_PORT_B),      /* Âè≥„É¢„Éº„Çø„Ç®„É≥„Ç≥„Éº„ÉÄÂÄ§ */
+//          (float)ecrobot_get_battery_voltage(),        /* „Éê„ÉÉ„ÉÜ„É™ÈõªÂúßÂÄ§(mV) */
+//          &pwm_l,                                    /* Â∑¶„É¢„Éº„ÇøPWMÂá∫ÂäõÂÄ§ */
+//          &pwm_r);                                   /* Âè≥„É¢„Éº„ÇøPWMÂá∫ÂäõÂÄ§ */
 //*****************************************************************************
 //*****************************************************************************
-// ä÷êîñº  : balance_init
-// à¯êî    : ñ≥Çµ
-// ñﬂÇËíl  : ñ≥Çµ
-// äTóv    : NXTway-GSÉoÉâÉìÉXêßå‰èâä˙âªä÷êîÅBì‡ïîèÛë‘ó ïœêîÇèâä˙âªÇµÇ‹Ç∑ÅB
-//           Ç±ÇÃä÷êîÇ…ÇÊÇËÉoÉâÉìÉXêßå‰ã@î\Çèâä˙âªÇ∑ÇÈèÍçáÇÕÅAïπÇπÇƒç∂âEÇÃ
-//           é‘ó÷ãÏìÆÉÇÅ[É^Å[ÇÃÉGÉìÉRÅ[É_ílÇ0Ç…ÉäÉZÉbÉgÇµÇƒÇ≠ÇæÇ≥Ç¢ÅB
-// égópó·  :
-//		nxt_motor_set_speed(NXT_PORT_C, 0, 1); /* ç∂ÉÇÅ[É^í‚é~ */
-//		nxt_motor_set_speed(NXT_PORT_B, 0, 1); /* âEÉÇÅ[É^í‚é~ */
-//		balance_init();						   /* NXTway-GSÉoÉâÉìÉXêßå‰èâä˙âª */
-//      /* ÉÇÅ[É^ÉGÉìÉRÅ[É_ílÇ0ÉäÉZÉbÉgÇ∑ÇÈëOÇ…ÉÇÅ[É^Ç™í‚é~ÇµÇƒÇ¢ÇÈÇ±Ç∆ */
-//		nxt_motor_set_count(NXT_PORT_C, 0);    /* ç∂ÉÇÅ[É^ÉGÉìÉRÅ[É_0ÉäÉZÉbÉg */
-//		nxt_motor_set_count(NXT_PORT_B, 0);    /* âEÉÇÅ[É^ÉGÉìÉRÅ[É_0ÉäÉZÉbÉg */
+// Èñ¢Êï∞Âêç  : balance_init
+// ÂºïÊï∞    : ÁÑ°„Åó
+// Êàª„ÇäÂÄ§  : ÁÑ°„Åó
+// Ê¶ÇË¶Å    : NXTway-GS„Éê„É©„É≥„ÇπÂà∂Âæ°ÂàùÊúüÂåñÈñ¢Êï∞„ÄÇÂÜÖÈÉ®Áä∂ÊÖãÈáèÂ§âÊï∞„ÇíÂàùÊúüÂåñ„Åó„Åæ„Åô„ÄÇ
+//           „Åì„ÅÆÈñ¢Êï∞„Å´„Çà„Çä„Éê„É©„É≥„ÇπÂà∂Âæ°Ê©üËÉΩ„ÇíÂàùÊúüÂåñ„Åô„ÇãÂ†¥Âêà„ÅØ„ÄÅ‰Ωµ„Åõ„Å¶Â∑¶Âè≥„ÅÆ
+//           ËªäËº™ÈßÜÂãï„É¢„Éº„Çø„Éº„ÅÆ„Ç®„É≥„Ç≥„Éº„ÉÄÂÄ§„Çí0„Å´„É™„Çª„ÉÉ„Éà„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ
+// ‰ΩøÁî®‰æã  :
+//		nxt_motor_set_speed(NXT_PORT_C, 0, 1); /* Â∑¶„É¢„Éº„ÇøÂÅúÊ≠¢ */
+//		nxt_motor_set_speed(NXT_PORT_B, 0, 1); /* Âè≥„É¢„Éº„ÇøÂÅúÊ≠¢ */
+//		balance_init();						   /* NXTway-GS„Éê„É©„É≥„ÇπÂà∂Âæ°ÂàùÊúüÂåñ */
+//      /* „É¢„Éº„Çø„Ç®„É≥„Ç≥„Éº„ÉÄÂÄ§„Çí0„É™„Çª„ÉÉ„Éà„Åô„ÇãÂâç„Å´„É¢„Éº„Çø„ÅåÂÅúÊ≠¢„Åó„Å¶„ÅÑ„Çã„Åì„Å® */
+//		nxt_motor_set_count(NXT_PORT_C, 0);    /* Â∑¶„É¢„Éº„Çø„Ç®„É≥„Ç≥„Éº„ÉÄ0„É™„Çª„ÉÉ„Éà */
+//		nxt_motor_set_count(NXT_PORT_B, 0);    /* Âè≥„É¢„Éº„Çø„Ç®„É≥„Ç≥„Éº„ÉÄ0„É™„Çª„ÉÉ„Éà */
 //*****************************************************************************
 
 /* Model step function */
-void balance_control(float args_cmd_forward, float args_cmd_turn, float
-                     args_gyro, float args_gyro_offset, float
-                     args_theta_m_l, float args_theta_m_r, float
-                     args_battery, signed char *ret_pwm_l, signed char *ret_pwm_r)
+void balance_control(float args_cmd_forward, float args_cmd_turn, float args_gyro, float args_gyro_offset, float args_theta_m_l, float args_theta_m_r, float args_battery, signed char *ret_pwm_l, signed char *ret_pwm_r)
 {
-  {
-    float tmp_theta;
-    float tmp_theta_lpf;
-    float tmp_pwm_r_limiter;
-    float tmp_psidot;
-    float tmp_pwm_turn;
-    float tmp_pwm_l_limiter;
-    float tmp_thetadot_cmd_lpf;
-    float tmp[4];
-    float tmp_theta_0[4];
-    long tmp_0;
+    {
+        float tmp_theta;
+        float tmp_theta_lpf;
+        float tmp_pwm_r_limiter;
+        float tmp_psidot;
+        float tmp_pwm_turn;
+        float tmp_pwm_l_limiter;
+        float tmp_thetadot_cmd_lpf;
+        float tmp[4];
+        float tmp_theta_0[4];
+        long tmp_0;
 
-    /* Sum: '<S8>/Sum' incorporates:
+        /* Sum: '<S8>/Sum' incorporates:
      *  Constant: '<S3>/Constant6'
      *  Constant: '<S8>/Constant'
      *  Constant: '<S8>/Constant1'
@@ -199,10 +196,9 @@ void balance_control(float args_cmd_forward, float args_cmd_turn, float
      *  Sum: '<S8>/Sum1'
      *  UnitDelay: '<S8>/Unit Delay'
      */
-    tmp_thetadot_cmd_lpf = (((args_cmd_forward / CMD_MAX) * K_THETADOT) * (1.0F
-      - A_R)) + (A_R * ud_thetadot_cmd_lpf);
+        tmp_thetadot_cmd_lpf = (((args_cmd_forward / CMD_MAX) * K_THETADOT) * (1.0F - A_R)) + (A_R * ud_thetadot_cmd_lpf);
 
-    /* Gain: '<S4>/Gain' incorporates:
+        /* Gain: '<S4>/Gain' incorporates:
      *  Gain: '<S4>/deg2rad'
      *  Gain: '<S4>/deg2rad1'
      *  Inport: '<Root>/theta_m_l'
@@ -212,10 +208,9 @@ void balance_control(float args_cmd_forward, float args_cmd_turn, float
      *  Sum: '<S4>/Sum6'
      *  UnitDelay: '<S10>/Unit Delay'
      */
-    tmp_theta = (((DEG2RAD * args_theta_m_l) + ud_psi) + ((DEG2RAD *
-      args_theta_m_r) + ud_psi)) * 0.5F;
+        tmp_theta = (((DEG2RAD * args_theta_m_l) + ud_psi) + ((DEG2RAD * args_theta_m_r) + ud_psi)) * 0.5F;
 
-    /* Sum: '<S11>/Sum' incorporates:
+        /* Sum: '<S11>/Sum' incorporates:
      *  Constant: '<S11>/Constant'
      *  Constant: '<S11>/Constant1'
      *  Gain: '<S11>/Gain2'
@@ -223,16 +218,16 @@ void balance_control(float args_cmd_forward, float args_cmd_turn, float
      *  Sum: '<S11>/Sum1'
      *  UnitDelay: '<S11>/Unit Delay'
      */
-    tmp_theta_lpf = ((1.0F - A_D) * tmp_theta) + (A_D * ud_theta_lpf);
+        tmp_theta_lpf = ((1.0F - A_D) * tmp_theta) + (A_D * ud_theta_lpf);
 
-    /* Gain: '<S4>/deg2rad2' incorporates:
+        /* Gain: '<S4>/deg2rad2' incorporates:
      *  Inport: '<Root>/gyro'
      *  Inport: '<Root>/gyro_offset'
      *  Sum: '<S4>/Sum2'
      */
-    tmp_psidot = (args_gyro - args_gyro_offset) * DEG2RAD;
+        tmp_psidot = (args_gyro - args_gyro_offset) * DEG2RAD;
 
-    /* Gain: '<S2>/Gain' incorporates:
+        /* Gain: '<S2>/Gain' incorporates:
      *  Constant: '<S3>/Constant2'
      *  Constant: '<S3>/Constant3'
      *  Constant: '<S6>/Constant'
@@ -252,107 +247,108 @@ void balance_control(float args_cmd_forward, float args_cmd_turn, float
      *  UnitDelay: '<S5>/Unit Delay'
      *  UnitDelay: '<S7>/Unit Delay'
      */
-    tmp[0] = ud_theta_ref;
-    tmp[1] = 0.0F;
-    tmp[2] = tmp_thetadot_cmd_lpf;
-    tmp[3] = 0.0F;
-    tmp_theta_0[0] = tmp_theta;
-    tmp_theta_0[1] = ud_psi;
-    tmp_theta_0[2] = (tmp_theta_lpf - ud_theta_lpf) / EXEC_PERIOD;
-    tmp_theta_0[3] = tmp_psidot;
-    tmp_pwm_r_limiter = 0.0F;
-    for (tmp_0 = 0; tmp_0 < 4; tmp_0++) {
-      tmp_pwm_r_limiter += (tmp[tmp_0] - tmp_theta_0[tmp_0]) * K_F[(tmp_0)];
-    }
+        tmp[0] = ud_theta_ref;
+        tmp[1] = 0.0F;
+        tmp[2] = tmp_thetadot_cmd_lpf;
+        tmp[3] = 0.0F;
+        tmp_theta_0[0] = tmp_theta;
+        tmp_theta_0[1] = ud_psi;
+        tmp_theta_0[2] = (tmp_theta_lpf - ud_theta_lpf) / EXEC_PERIOD;
+        tmp_theta_0[3] = tmp_psidot;
+        tmp_pwm_r_limiter = 0.0F;
+        for (tmp_0 = 0; tmp_0 < 4; tmp_0++)
+        {
+            tmp_pwm_r_limiter += (tmp[tmp_0] - tmp_theta_0[tmp_0]) * K_F[(tmp_0)];
+        }
 
-    tmp_pwm_r_limiter = (((K_I * ud_err_theta) + tmp_pwm_r_limiter) /
-                         ((BATTERY_GAIN * args_battery) - BATTERY_OFFSET)) *
-      100.0F;
+        tmp_pwm_r_limiter = (((K_I * ud_err_theta) + tmp_pwm_r_limiter) /
+                             ((BATTERY_GAIN * args_battery) - BATTERY_OFFSET)) *
+                            100.0F;
 
-    /* Gain: '<S3>/Gain2' incorporates:
+        /* Gain: '<S3>/Gain2' incorporates:
      *  Constant: '<S3>/Constant1'
      *  Inport: '<Root>/cmd_turn'
      *  Product: '<S3>/Divide1'
      */
-    tmp_pwm_turn = (args_cmd_turn / CMD_MAX) * K_PHIDOT;
+        tmp_pwm_turn = (args_cmd_turn / CMD_MAX) * K_PHIDOT;
 
-    /* Sum: '<S2>/Sum' */
-    tmp_pwm_l_limiter = tmp_pwm_r_limiter + tmp_pwm_turn;
+        /* Sum: '<S2>/Sum' */
+        tmp_pwm_l_limiter = tmp_pwm_r_limiter + tmp_pwm_turn;
 
-    /* Saturate: '<S2>/pwm_l_limiter' */
-    tmp_pwm_l_limiter = rt_SATURATE(tmp_pwm_l_limiter, -100.0F, 100.0F);
+        /* Saturate: '<S2>/pwm_l_limiter' */
+        tmp_pwm_l_limiter = rt_SATURATE(tmp_pwm_l_limiter, -100.0F, 100.0F);
 
-    /* Outport: '<Root>/pwm_l' incorporates:
+        /* Outport: '<Root>/pwm_l' incorporates:
      *  DataTypeConversion: '<S1>/Data Type Conversion'
      */
-    (*ret_pwm_l) = (signed char)tmp_pwm_l_limiter;
+        (*ret_pwm_l) = (signed char)tmp_pwm_l_limiter;
 
-    /* Sum: '<S2>/Sum1' */
-    tmp_pwm_r_limiter -= tmp_pwm_turn;
+        /* Sum: '<S2>/Sum1' */
+        tmp_pwm_r_limiter -= tmp_pwm_turn;
 
-    /* Saturate: '<S2>/pwm_r_limiter' */
-    tmp_pwm_r_limiter = rt_SATURATE(tmp_pwm_r_limiter, -100.0F, 100.0F);
+        /* Saturate: '<S2>/pwm_r_limiter' */
+        tmp_pwm_r_limiter = rt_SATURATE(tmp_pwm_r_limiter, -100.0F, 100.0F);
 
-    /* Outport: '<Root>/pwm_r' incorporates:
+        /* Outport: '<Root>/pwm_r' incorporates:
      *  DataTypeConversion: '<S1>/Data Type Conversion6'
      */
-    (*ret_pwm_r) = (signed char)tmp_pwm_r_limiter;
+        (*ret_pwm_r) = (signed char)tmp_pwm_r_limiter;
 
-    /* Sum: '<S7>/Sum' incorporates:
+        /* Sum: '<S7>/Sum' incorporates:
      *  Gain: '<S7>/Gain'
      *  UnitDelay: '<S7>/Unit Delay'
      */
-    tmp_pwm_l_limiter = (EXEC_PERIOD * tmp_thetadot_cmd_lpf) + ud_theta_ref;
+        tmp_pwm_l_limiter = (EXEC_PERIOD * tmp_thetadot_cmd_lpf) + ud_theta_ref;
 
-    /* Sum: '<S10>/Sum' incorporates:
+        /* Sum: '<S10>/Sum' incorporates:
      *  Gain: '<S10>/Gain'
      *  UnitDelay: '<S10>/Unit Delay'
      */
-    tmp_pwm_turn = (EXEC_PERIOD * tmp_psidot) + ud_psi;
+        tmp_pwm_turn = (EXEC_PERIOD * tmp_psidot) + ud_psi;
 
-    /* Sum: '<S5>/Sum' incorporates:
+        /* Sum: '<S5>/Sum' incorporates:
      *  Gain: '<S5>/Gain'
      *  Sum: '<S1>/Sum1'
      *  UnitDelay: '<S5>/Unit Delay'
      *  UnitDelay: '<S7>/Unit Delay'
      */
-    tmp_pwm_r_limiter = ((ud_theta_ref - tmp_theta) * EXEC_PERIOD) +
-      ud_err_theta;
+        tmp_pwm_r_limiter = ((ud_theta_ref - tmp_theta) * EXEC_PERIOD) +
+                            ud_err_theta;
 
-    /* user code (Update function Body) */
-    /* System '<Root>' */
-    /* éüâÒââéZópèÛë‘ó ï€ë∂èàóù */
+        /* user code (Update function Body) */
+        /* System '<Root>' */
+        /* Ê¨°ÂõûÊºîÁÆóÁî®Áä∂ÊÖãÈáè‰øùÂ≠òÂá¶ÁêÜ */
 
-    /* Update for UnitDelay: '<S5>/Unit Delay' */
-    ud_err_theta = tmp_pwm_r_limiter;
+        /* Update for UnitDelay: '<S5>/Unit Delay' */
+        ud_err_theta = tmp_pwm_r_limiter;
 
-    /* Update for UnitDelay: '<S7>/Unit Delay' */
-    ud_theta_ref = tmp_pwm_l_limiter;
+        /* Update for UnitDelay: '<S7>/Unit Delay' */
+        ud_theta_ref = tmp_pwm_l_limiter;
 
-    /* Update for UnitDelay: '<S8>/Unit Delay' */
-    ud_thetadot_cmd_lpf = tmp_thetadot_cmd_lpf;
+        /* Update for UnitDelay: '<S8>/Unit Delay' */
+        ud_thetadot_cmd_lpf = tmp_thetadot_cmd_lpf;
 
-    /* Update for UnitDelay: '<S10>/Unit Delay' */
-    ud_psi = tmp_pwm_turn;
+        /* Update for UnitDelay: '<S10>/Unit Delay' */
+        ud_psi = tmp_pwm_turn;
 
-    /* Update for UnitDelay: '<S11>/Unit Delay' */
-    ud_theta_lpf = tmp_theta_lpf;
-  }
+        /* Update for UnitDelay: '<S11>/Unit Delay' */
+        ud_theta_lpf = tmp_theta_lpf;
+    }
 }
 
 /* Model initialize function */
 void balance_init(void)
 {
-  /* Registration code */
+    /* Registration code */
 
-  /* states (dwork) */
+    /* states (dwork) */
 
-  /* custom states */
-  ud_err_theta = 0.0F;
-  ud_theta_ref = 0.0F;
-  ud_thetadot_cmd_lpf = 0.0F;
-  ud_psi = 0.0F;
-  ud_theta_lpf = 0.0F;
+    /* custom states */
+    ud_err_theta = 0.0F;
+    ud_theta_ref = 0.0F;
+    ud_thetadot_cmd_lpf = 0.0F;
+    ud_psi = 0.0F;
+    ud_theta_lpf = 0.0F;
 }
 
 /*======================== TOOL VERSION INFORMATION ==========================*

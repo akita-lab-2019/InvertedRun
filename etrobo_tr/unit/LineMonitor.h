@@ -12,9 +12,10 @@
 #include "ColorSensor.h"
 
 // 定義
-class LineMonitor {
+class LineMonitor
+{
 public:
-    explicit LineMonitor(const ev3api::ColorSensor& colorSensor);
+    explicit LineMonitor(const ev3api::ColorSensor &colorSensor);
 
     bool isOnLine() const;
     void setThreshold(int8_t threshold);
@@ -22,8 +23,8 @@ public:
 private:
     static const int8_t INITIAL_THRESHOLD;
 
-    const ev3api::ColorSensor& mColorSensor;
+    const ev3api::ColorSensor &mColorSensor;
     int8_t mThreshold;
 };
 
-#endif  // EV3_UNIT_LINEMONITOR_H_
+#endif // EV3_UNIT_LINEMONITOR_H_

@@ -12,19 +12,20 @@
 #include "LineMonitor.h"
 #include "BalancingWalker.h"
 
-class LineTracer {
+class LineTracer
+{
 public:
-    LineTracer(const LineMonitor* lineMonitor,
-               BalancingWalker* balancingWalker);
+    LineTracer(const LineMonitor *lineMonitor,
+               BalancingWalker *balancingWalker);
 
     void run();
 
 private:
-    const LineMonitor* mLineMonitor;
-    BalancingWalker* mBalancingWalker;
+    const LineMonitor *mLineMonitor;
+    BalancingWalker *mBalancingWalker;
     bool mIsInitialized;
 
     int calcDirection(bool isOnLine);
 };
 
-#endif  // EV3_APP_LINETRACER_H_
+#endif // EV3_APP_LINETRACER_H_

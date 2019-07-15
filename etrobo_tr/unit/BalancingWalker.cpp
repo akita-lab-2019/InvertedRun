@@ -9,9 +9,9 @@
 #include "BalancingWalker.h"
 
 // 定数宣言
-const int BalancingWalker::LOW    = 30;    // 低速
-const int BalancingWalker::NORMAL = 50;    // 通常
-const int BalancingWalker::HIGH   = 70;    // 高速
+const int BalancingWalker::LOW = 30;    // 低速
+const int BalancingWalker::NORMAL = 50; // 通常
+const int BalancingWalker::HIGH = 70;   // 高速
 
 /**
  * コンストラクタ
@@ -20,25 +20,27 @@ const int BalancingWalker::HIGH   = 70;    // 高速
  * @param rightWheel 右モータ
  * @param balancer   バランサ
  */
-BalancingWalker::BalancingWalker(const ev3api::GyroSensor& gyroSensor,
-                                 ev3api::Motor& leftWheel,
-                                 ev3api::Motor& rightWheel,
-                                 Balancer* balancer)
+BalancingWalker::BalancingWalker(const ev3api::GyroSensor &gyroSensor,
+                                 ev3api::Motor &leftWheel,
+                                 ev3api::Motor &rightWheel,
+                                 Balancer *balancer)
     : mGyroSensor(gyroSensor),
       mLeftWheel(leftWheel),
       mRightWheel(rightWheel),
       mBalancer(balancer),
       mForward(LOW),
-      mTurn(LOW) {
+      mTurn(LOW)
+{
 }
 
 /**
  * バランス走行する
  */
-void BalancingWalker::run() {
-    int16_t angle = mGyroSensor.getAnglerVelocity();  // ジャイロセンサ値
-    int rightWheelEnc = mRightWheel.getCount();       // 右モータ回転角度
-    int leftWheelEnc  = mLeftWheel.getCount();        // 左モータ回転角度
+void BalancingWalker::run()
+{
+    int16_t angle = mGyroSensor.getAnglerVelocity(); // ジャイロセンサ値
+    int rightWheelEnc = mRightWheel.getCount();      // 右モータ回転角度
+    int leftWheelEnc = mLeftWheel.getCount();        // 左モータ回転角度
 
     mBalancer->setCommand(mForward, mTurn);
 
@@ -53,8 +55,9 @@ void BalancingWalker::run() {
 /**
  * バランス走行に必要なものをリセットする
  */
-void BalancingWalker::init() {
-    int offset = mGyroSensor.getAnglerVelocity();  // ジャイロセンサ値
+void BalancingWalker::init()
+{
+    int offset = mGyroSensor.getAnglerVelocity(); // ジャイロセンサ値
 
     // モータエンコーダをリセットする
     mLeftWheel.reset();
@@ -69,7 +72,8 @@ void BalancingWalker::init() {
  * @param forward 前進値
  * @param turn    旋回値
  */
-void BalancingWalker::setCommand(int forward, int turn) {
+void BalancingWalker::setCommand(int forward, int turn)
+{
     mForward = forward;
-    mTurn    = turn;
+    mTurn = turn;
 }

@@ -11,7 +11,8 @@
 
 #include "ev3api.h"
 
-class Balancer {
+class Balancer
+{
 public:
     Balancer();
 
@@ -31,4 +32,4 @@ private:
     int8_t mLeftPwm;
 };
 
-#endif  // EV3_UNIT_BALANCERCPP_H_
+#endif // EV3_UNIT_BALANCERCPP_H_
