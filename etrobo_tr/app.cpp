@@ -27,12 +27,10 @@ TouchSensor g_touch_sesor(PORT_1);
 // オブジェクトの定義
 static LineMonitor *g_line_monitor;
 static Balancer *g_balancer;
-static BalancingWalker *g_balancing_walker;
 static LineTracer *g_line_tracer;
 static Measurer *g_measurer;
 
 static int bt_cmd = 0;
-static FILE *bt = NULL;
 
 // EV3システム生成
 static void user_system_create()
@@ -42,14 +40,14 @@ static void user_system_create()
     g_measurer = new Measurer(g_wheel_L,
                               g_wheel_R);
 
-    g_balancing_walker = new BalancingWalker(g_gyro_sensor,
-                                             g_wheel_L,
-                                             g_wheel_R,
-                                             g_balancer,
-                                             g_measurer);
-
     g_line_monitor = new LineMonitor(g_color_sensor);
-    g_line_tracer = new LineTracer(g_line_monitor, g_balancing_walker);
+
+    g_line_tracer = new LineTracer(g_gyro_sensor,
+                                   g_wheel_L,
+                                   g_wheel_R,
+                                   g_balancer,
+                                   g_line_monitor,
+                                   g_measurer);
 
     // 初期化完了通知
     ev3_led_set_color(LED_ORANGE);
@@ -63,7 +61,6 @@ static void user_system_destroy()
 
     delete g_line_tracer;
     delete g_line_monitor;
-    delete g_balancing_walker;
     delete g_balancer;
 }
 
@@ -79,8 +76,6 @@ void main_task(intptr_t unused)
     user_system_create();
 
     // BlueTooth周りの初期化
-    bt = ev3_serial_open_file(EV3_SERIAL_BT);
-    assert(bt != NULL);
     act_tsk(BT_TASK);
 
     // 初期化完了通知
