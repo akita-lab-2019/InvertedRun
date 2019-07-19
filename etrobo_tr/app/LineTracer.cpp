@@ -35,10 +35,11 @@ void LineTracer::run()
     bool isOnLine = mLineMonitor->isOnLine();
 
     // 走行体の向きを計算する
-    int direction = calcDirection(isOnLine);
+    // int direction = calcDirection(isOnLine);
+    float direction = 0.6 * mLineMonitor->getGap();
 
-    // mBalancingWalker->setCommand(BalancingWalker::LOW, direction);
-    mBalancingWalker->setCommand(0, 0);
+    mBalancingWalker->setCommand(60, (int)direction);
+    // mBalancingWalker->setCommand(0, 0);
 
     // 倒立走行を行う
     mBalancingWalker->run();
@@ -52,6 +53,7 @@ void LineTracer::run()
  */
 int LineTracer::calcDirection(bool isOnLine)
 {
+
     if (isOnLine)
     {
         // ライン上にある場合

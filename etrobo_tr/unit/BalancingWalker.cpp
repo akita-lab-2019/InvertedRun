@@ -30,7 +30,7 @@ BalancingWalker::BalancingWalker(const ev3api::GyroSensor &gyroSensor,
       mRightWheel(rightWheel),
       mBalancer(balancer),
       m_measurer(measurer),
-      mForward(LOW),
+      mForward(NORMAL),
       mTurn(LOW)
 {
 }
@@ -47,14 +47,16 @@ void BalancingWalker::run()
     float robot_dis = m_measurer->getRobotDistance();
     float robot_rad = m_measurer->getRobotAngle();
 
-    if (robot_rad < 3.14)
-    {
-        mBalancer->setCommand(0, -20);
-    }
-    else
-    {
-        mBalancer->setCommand(0, 0);
-    }
+    // if (robot_rad < 3.14)
+    // {
+    //     mBalancer->setCommand(0, -20);
+    // }
+    // else
+    // {
+    //     mBalancer->setCommand(0, 0);
+    // }
+
+    mBalancer->setCommand(mForward, mTurn);
 
     int battery = ev3_battery_voltage_mV();
     mBalancer->update(angle, rightWheelEnc, leftWheelEnc, battery);

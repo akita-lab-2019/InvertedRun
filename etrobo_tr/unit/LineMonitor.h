@@ -16,7 +16,7 @@ class LineMonitor
 {
 public:
     explicit LineMonitor(const ev3api::ColorSensor &colorSensor);
-
+    float getGap() const;
     bool isOnLine() const;
     void setThreshold(int8_t threshold);
 
@@ -25,6 +25,9 @@ private:
 
     const ev3api::ColorSensor &mColorSensor;
     int8_t mThreshold;
+
+    const float LIGHT_WHITE = 55; /* 白色の光センサ値 */
+    const float LIGHT_BLACK = 0;  /* 黒色の光センサ値 */
 };
 
 #endif // EV3_UNIT_LINEMONITOR_H_

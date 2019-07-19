@@ -21,6 +21,11 @@ LineMonitor::LineMonitor(const ev3api::ColorSensor &colorSensor)
 {
 }
 
+float LineMonitor::getGap() const
+{
+    return (LineMonitor::LIGHT_WHITE - LineMonitor::LIGHT_BLACK) - mColorSensor.getBrightness();
+}
+
 /**
  * ライン上か否かを判定する
  * @retval true  ライン上

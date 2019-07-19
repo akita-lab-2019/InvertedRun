@@ -33,7 +33,10 @@ extern "C"
 
     extern void main_task(intptr_t exinf);
     extern void tracer_task(intptr_t exinf);
+    extern void bt_task(intptr_t exinf);
     extern void ev3_cyc_tracer(intptr_t exinf);
+
+    static void tail_control(signed int angle);
 
 #endif /* TOPPERS_MACRO_ONLY */
 
