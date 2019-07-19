@@ -47,15 +47,6 @@ void BalancingWalker::run()
     float robot_dis = m_measurer->getRobotDistance();
     float robot_rad = m_measurer->getRobotAngle();
 
-    // if (robot_rad < 3.14)
-    // {
-    //     mBalancer->setCommand(0, -20);
-    // }
-    // else
-    // {
-    //     mBalancer->setCommand(0, 0);
-    // }
-
     mBalancer->setCommand(mForward, mTurn);
 
     int battery = ev3_battery_voltage_mV();
@@ -64,10 +55,6 @@ void BalancingWalker::run()
     // 左右モータに回転を指示する
     mLeftWheel.setPWM(mBalancer->getPwmLeft());
     mRightWheel.setPWM(mBalancer->getPwmRight());
-
-    char message[30];
-    sprintf(message, "arg :%f [m]", robot_rad * 180 / 3.14);
-    ev3_lcd_draw_string(message, 0, 10);
 
     mLeftWheel.setBrake(false);
     mRightWheel.setBrake(false);

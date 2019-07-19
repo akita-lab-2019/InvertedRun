@@ -1,18 +1,8 @@
-/******************************************************************************
- *  app.cpp (for LEGO Mindstorms EV3)
- *  Created on: 2015/01/25
- *  Implementation of the Task main_task
- *  Author: Kazuhiro.Kawachi
- *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
- *****************************************************************************/
-
 #include "app.h"
 #include "LineTracer.h"
 #include <Clock.h>
 #include <TouchSensor.h>
 #include "./measurement/Measurer.h"
-
-void tail_control(signed int angle);
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -25,125 +15,114 @@ using ev3api::GyroSensor;
 using ev3api::Motor;
 using ev3api::TouchSensor;
 
-// Device objects
-// オブジェクトを静的に確保する
+// オブジェクトを静的に確保
 Clock g_clock;
-ColorSensor gColorSensor(PORT_3);
-GyroSensor gGyroSensor(PORT_4);
-Motor gLeftWheel(PORT_C);
-Motor gRightWheel(PORT_B);
+ColorSensor g_color_sensor(PORT_3);
+GyroSensor g_gyro_sensor(PORT_4);
+Motor g_wheel_L(PORT_C);
+Motor g_wheel_R(PORT_B);
 Motor g_tail_motor(PORT_A);
 TouchSensor g_touch_sesor(PORT_1);
 
 // オブジェクトの定義
-static LineMonitor *gLineMonitor;
-static Balancer *gBalancer;
-static BalancingWalker *gBalancingWalker;
-static LineTracer *gLineTracer;
-static Measurer *gMeasurer;
+static LineMonitor *g_line_monitor;
+static Balancer *g_balancer;
+static BalancingWalker *g_balancing_walker;
+static LineTracer *g_line_tracer;
+static Measurer *g_measurer;
 
-static int bt_cmd = 0;  /* Bluetoothコマンド 1:リモートスタート */
-static FILE *bt = NULL; /* Bluetoothファイルハンドル */
+static int bt_cmd = 0;
+static FILE *bt = NULL;
 
-/**
- * EV3システム生成
- */
+// EV3システム生成
 static void user_system_create()
 {
     // オブジェクトの作成
-    gBalancer = new Balancer();
-    gMeasurer = new Measurer(gLeftWheel,
-                             gRightWheel);
-    gBalancingWalker = new BalancingWalker(gGyroSensor,
-                                           gLeftWheel,
-                                           gRightWheel,
-                                           gBalancer,
-                                           gMeasurer);
-    gLineMonitor = new LineMonitor(gColorSensor);
-    gLineTracer = new LineTracer(gLineMonitor, gBalancingWalker);
+    g_balancer = new Balancer();
+    g_measurer = new Measurer(g_wheel_L,
+                              g_wheel_R);
+
+    g_balancing_walker = new BalancingWalker(g_gyro_sensor,
+                                             g_wheel_L,
+                                             g_wheel_R,
+                                             g_balancer,
+                                             g_measurer);
+
+    g_line_monitor = new LineMonitor(g_color_sensor);
+    g_line_tracer = new LineTracer(g_line_monitor, g_balancing_walker);
 
     // 初期化完了通知
     ev3_led_set_color(LED_ORANGE);
 }
 
-/**
- * EV3システム破棄
- */
+// EV3システム破棄
 static void user_system_destroy()
 {
-    gLeftWheel.reset();
-    gRightWheel.reset();
+    g_wheel_L.reset();
+    g_wheel_R.reset();
 
-    delete gLineTracer;
-    delete gLineMonitor;
-    delete gBalancingWalker;
-    delete gBalancer;
+    delete g_line_tracer;
+    delete g_line_monitor;
+    delete g_balancing_walker;
+    delete g_balancer;
 }
 
-/**
- * トレース実行タイミング
- */
+//トレース実行タイミング
 void ev3_cyc_tracer(intptr_t exinf)
 {
     act_tsk(TRACER_TASK);
 }
 
-/**
- * メインタスク
- */
 void main_task(intptr_t unused)
 {
-    user_system_create(); // センサやモータの初期化処理
+    // センサやモータの初期化
+    user_system_create();
 
-    /* Open Bluetooth file */
+    // BlueTooth周りの初期化
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     assert(bt != NULL);
-
-    /* Bluetooth通信タスクの起動 */
     act_tsk(BT_TASK);
 
-    ev3_led_set_color(LED_ORANGE); /* 初期化完了通知 */
+    // 初期化完了通知
+    ev3_led_set_color(LED_ORANGE);
 
-    /* スタート待機 */
+    // スタート待機
     while (1)
     {
-        tail_control(85); /* 完全停止用角度に制御 */
+        // 尻尾の角度を85degに維持
+        tail_control(85);
 
         if (bt_cmd == 1)
-        {
-            break; /* リモートスタート */
-        }
+            break;
 
         if (g_touch_sesor.isPressed())
-        {
-            break; /* タッチセンサが押された */
-        }
+            break;
 
-        tslp_tsk(10); /* 10msecウェイト */
+        tslp_tsk(10);
     }
 
     unsigned long loop_start_time = g_clock.now();
     while (g_clock.now() < loop_start_time + 30)
     {
-        tail_control(0); /* 完全停止用角度に制御 */
+        tail_control(0);
     }
 
     // 周期ハンドラ開始
     ev3_sta_cyc(EV3_CYC_TRACER);
 
-    slp_tsk(); // バックボタンが押されるまで待つ
+    // バックボタンが押されるまで待つ
+    slp_tsk();
 
     // 周期ハンドラ停止
     ev3_stp_cyc(EV3_CYC_TRACER);
 
-    user_system_destroy(); // 終了処理
+    // 終了処理
+    user_system_destroy();
 
     ext_tsk();
 }
 
-/**
- * ライントレースタスク
- */
+// ライントレースタスク
 void tracer_task(intptr_t exinf)
 {
     if (ev3_button_is_pressed(BACK_BUTTON))
@@ -152,21 +131,14 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        tail_control(45);     /* 完全停止用角度に制御 */
-        gMeasurer->measure(); // 計測
-        gLineTracer->run();   // 倒立走行
+        tail_control(0);       /* 完全停止用角度に制御 */
+        g_measurer->measure(); // 計測
+        g_line_tracer->run();  // 倒立走行
     }
 
     ext_tsk();
 }
 
-//*****************************************************************************
-// 関数名 : bt_task
-// 引数 : unused
-// 返り値 : なし
-// 概要 : Bluetooth通信によるリモートスタート。 Tera Termなどのターミナルソフトから、
-//       ASCIIコードで1を送信すると、リモートスタートする。
-//*****************************************************************************
 void bt_task(intptr_t unused)
 {
     while (1)
@@ -190,12 +162,6 @@ void bt_task(intptr_t unused)
     }
 }
 
-//*****************************************************************************
-// 関数名 : tail_control
-// 引数 : angle (モーター目標角度[度])
-// 返り値 : 無し
-// 概要 : 走行体完全停止用モーターの角度制御
-//*****************************************************************************
 void tail_control(signed int angle)
 {
     signed int pwm = (signed int)((angle - g_tail_motor.getCount()) * 2.5); /* 比例制御 */

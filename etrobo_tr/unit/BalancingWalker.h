@@ -34,8 +34,6 @@ public:
     void setCommand(int forward, int turn);
 
 private:
-    // 値を得るだけのものはconstで定義してデータを参照
-    // 出力したり，読み取り以外の操作がある場合はポインタ
     const ev3api::GyroSensor &mGyroSensor;
     ev3api::Motor &mLeftWheel;
     ev3api::Motor &mRightWheel;
