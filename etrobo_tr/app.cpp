@@ -1,4 +1,5 @@
 #include "app.h"
+#include "InvertedWalker.h"
 #include "LineTracer.h"
 #include "TailController.h"
 #include <Clock.h>
@@ -29,6 +30,7 @@ TouchSensor g_touch_sesor(PORT_1);
 static LineMonitor *g_line_monitor;
 static TailController *g_tail_controller;
 static Balancer *g_balancer;
+static InvertedWalker *g_inverted_walker;
 static LineTracer *g_line_tracer;
 static Measurer *g_measurer;
 
@@ -41,12 +43,11 @@ static void user_system_create()
     g_balancer = new Balancer();
     g_measurer = new Measurer(g_wheel_L, g_wheel_R);
     g_line_monitor = new LineMonitor(g_color_sensor);
-    g_line_tracer = new LineTracer(g_gyro_sensor,
-                                   g_wheel_L,
-                                   g_wheel_R,
-                                   g_balancer,
-                                   g_line_monitor,
-                                   g_measurer);
+    g_inverted_walker = new InvertedWalker(g_gyro_sensor,
+                                           g_wheel_L,
+                                           g_wheel_R,
+                                           g_balancer);
+    g_line_tracer = new LineTracer(g_line_monitor, g_inverted_walker);
     g_tail_controller = new TailController(g_tail_motor);
 
     // 初期化完了通知
@@ -79,7 +80,7 @@ void main_task(intptr_t unused)
     // スタート待機
     while (1)
     {
-        // 尻尾の角度を85degに維持
+        // 尻尾の角度を維持
         g_tail_controller->control(80, 50);
 
         if (bt_cmd == 1)
@@ -88,7 +89,7 @@ void main_task(intptr_t unused)
         if (g_touch_sesor.isPressed())
             break;
 
-        tslp_tsk(10);
+        g_clock.sleep(10);
     }
 
     // 尻尾が少し前に出るまで待機
@@ -97,10 +98,14 @@ void main_task(intptr_t unused)
         g_tail_controller->control(86, 3);
     }
 
+    // 一定時間その場で倒立をする
     unsigned long loop_start_time = g_clock.now();
-    while (g_clock.now() < loop_start_time + 5000)
+    while (g_clock.now() < loop_start_time + 2000)
     {
-        g_tail_controller->control(90, 5);
+        g_tail_controller->control(40, 20);
+        g_inverted_walker->setCommand(0, 0);
+        g_inverted_walker->run();
+        g_clock.sleep(4);
     }
 
     // 周期ハンドラ開始
