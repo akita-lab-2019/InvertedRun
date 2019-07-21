@@ -4,6 +4,7 @@ APPL_COBJS += balancer.o balancer_param.o
 
 APPL_CXXOBJS += \
 	LineMonitor.o \
+	TailController.o \
 	BalancerCpp.o \
 	Measurer.o \
 	LineTracer.o

@@ -37,8 +37,6 @@ extern "C"
     extern void bt_task(intptr_t exinf);
     extern void ev3_cyc_tracer(intptr_t exinf);
 
-    void tail_control(signed int angle);
-
 #endif /* TOPPERS_MACRO_ONLY */
 
 #ifdef __cplusplus

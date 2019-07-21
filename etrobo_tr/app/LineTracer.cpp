@@ -46,7 +46,8 @@ void LineTracer::run()
     float direction = 0.6 * m_line_monitor->getGap();
 
     // 速度指令を送る
-    m_balancer->setCommand(60, (int)direction);
+    // m_balancer->setCommand(60, (int)direction);
+    m_balancer->setCommand(0, 0);
 
     m_balancer->update(angle, wheel_cnt_R, wheel_cnt_L, battery);
 

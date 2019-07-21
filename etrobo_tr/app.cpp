@@ -1,5 +1,6 @@
 #include "app.h"
 #include "LineTracer.h"
+#include "TailController.h"
 #include <Clock.h>
 #include <TouchSensor.h>
 #include "./measurement/Measurer.h"
@@ -26,6 +27,7 @@ TouchSensor g_touch_sesor(PORT_1);
 
 // オブジェクトの定義
 static LineMonitor *g_line_monitor;
+static TailController *g_tail_controller;
 static Balancer *g_balancer;
 static LineTracer *g_line_tracer;
 static Measurer *g_measurer;
@@ -37,17 +39,15 @@ static void user_system_create()
 {
     // オブジェクトの作成
     g_balancer = new Balancer();
-    g_measurer = new Measurer(g_wheel_L,
-                              g_wheel_R);
-
+    g_measurer = new Measurer(g_wheel_L, g_wheel_R);
     g_line_monitor = new LineMonitor(g_color_sensor);
-
     g_line_tracer = new LineTracer(g_gyro_sensor,
                                    g_wheel_L,
                                    g_wheel_R,
                                    g_balancer,
                                    g_line_monitor,
                                    g_measurer);
+    g_tail_controller = new TailController(g_tail_motor);
 
     // 初期化完了通知
     ev3_led_set_color(LED_ORANGE);
@@ -72,20 +72,15 @@ void ev3_cyc_tracer(intptr_t exinf)
 
 void main_task(intptr_t unused)
 {
-    // センサやモータの初期化
+    // 初期化処理
     user_system_create();
-
-    // BlueTooth周りの初期化
     act_tsk(BT_TASK);
-
-    // 初期化完了通知
-    ev3_led_set_color(LED_ORANGE);
 
     // スタート待機
     while (1)
     {
         // 尻尾の角度を85degに維持
-        tail_control(85);
+        g_tail_controller->control(80, 50);
 
         if (bt_cmd == 1)
             break;
@@ -96,10 +91,16 @@ void main_task(intptr_t unused)
         tslp_tsk(10);
     }
 
-    unsigned long loop_start_time = g_clock.now();
-    while (g_clock.now() < loop_start_time + 30)
+    // 尻尾が少し前に出るまで待機
+    while (g_tail_motor.getCount() < 86)
     {
-        tail_control(0);
+        g_tail_controller->control(86, 3);
+    }
+
+    unsigned long loop_start_time = g_clock.now();
+    while (g_clock.now() < loop_start_time + 5000)
+    {
+        g_tail_controller->control(90, 5);
     }
 
     // 周期ハンドラ開始
@@ -126,9 +127,9 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        tail_control(0);       /* 完全停止用角度に制御 */
-        g_measurer->measure(); // 計測
-        g_line_tracer->run();  // 倒立走行
+        g_tail_controller->control(40, 20); /* 完全停止用角度に制御 */
+        g_measurer->measure();              // 計測
+        g_line_tracer->run();               // 倒立走行
     }
 
     ext_tsk();
@@ -154,28 +155,5 @@ void bt_task(intptr_t unused)
             break;
         }
         fputc(c, bt); /* エコーバック */
-    }
-}
-
-void tail_control(signed int angle)
-{
-    signed int pwm = (signed int)((angle - g_tail_motor.getCount()) * 2.5); /* 比例制御 */
-    /* PWM出力飽和処理 */
-    if (pwm > 60)
-    {
-        pwm = 60;
-    }
-    else if (pwm < -60)
-    {
-        pwm = -60;
-    }
-
-    if (pwm == 0)
-    {
-        g_tail_motor.stop();
-    }
-    else
-    {
-        g_tail_motor.setPWM(pwm);
     }
 }
