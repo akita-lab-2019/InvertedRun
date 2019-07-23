@@ -13,8 +13,7 @@ public:
 private:
     const ev3api::ColorSensor &m_color_sensor;
 
-    const float LIGHT_WHITE = 55; // 白色の光センサ値
-    const float LIGHT_BLACK = 0;  // 黒色の光センサ値
+    const float m_target = 40;
 };
 
 #endif // EV3_UNIT_LINEMONITOR_H_

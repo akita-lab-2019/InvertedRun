@@ -5,13 +5,15 @@
 #include "PID.h"
 #include <Clock.h>
 #include <TouchSensor.h>
-#include "./measurement/Odometer.h"
+#include <time.h>
+#include "Odometer.h"
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
 void *__dso_handle = 0;
 
-static FILE *bt = NULL; //ファイルポインタ
+static FILE *bt = NULL;
+static FILE *local_file = NULL;
 
 // using宣言
 using ev3api::Clock;
@@ -81,6 +83,9 @@ void ev3_cyc_tracer(intptr_t exinf)
 void main_task(intptr_t unused)
 {
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
+    local_file = fopen("log.csv", "a");
+    fprintf(local_file, "\r\n");
+    fclose(local_file);
 
     // 初期化処理
     user_system_create();
@@ -100,6 +105,7 @@ void main_task(intptr_t unused)
             break;
 
         g_clock.sleep(10);
+        g_clock.reset();
     }
 
     ev3_sta_cyc(BT_SEND);
@@ -156,12 +162,35 @@ void bt_task(intptr_t unused)
 
 void Send_value()
 {
-    fprintf(bt, "%f\t %f\t %f\t %f\t %f \r\n",
+    fprintf(bt, "%f\t%f\t%f\t%f\t%f \r\n",
             (float)ev3_battery_voltage_mV() / 1000,
             g_odometer->getRobotPoseX(),
             g_odometer->getRobotPoseY(),
             g_odometer->getRobotDistance(),
             g_odometer->getRobotAngle() * 180 / 3.14);
+
+    local_file = fopen("log.csv", "a");
+    fprintf(local_file, "%f, %f, %f, %f, %f \r\n",
+            (float)ev3_battery_voltage_mV() / 1000,
+            g_odometer->getRobotPoseX(),
+            g_odometer->getRobotPoseY(),
+            g_odometer->getRobotDistance(),
+            g_odometer->getRobotAngle() * 180 / 3.14);
+    fclose(local_file);
+
+    char str[10][32];
+    int i = 0;
+    sprintf(str[i++], "time:    %f[sec]", g_clock.now() / 1000.0);
+    sprintf(str[i++], "battery: %f[V]", ev3_battery_voltage_mV() / 1000.0);
+    sprintf(str[i++], "color_s: %d", g_color_sensor.getBrightness());
+    sprintf(str[i++], "pose_x:  %f[m]", g_odometer->getRobotPoseX());
+    sprintf(str[i++], "pose_y:  %f[m]", g_odometer->getRobotPoseY());
+    sprintf(str[i++], "angle:   %f[deg]", g_odometer->getRobotAngle() * 180 / 3.14);
+
+    for (int i = 0; i < 6; i++)
+    {
+        ev3_lcd_draw_string(str[i], 5, 5 + 10 * i);
+    }
 
     tslp_tsk(10);
 }
