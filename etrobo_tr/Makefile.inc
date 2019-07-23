@@ -6,8 +6,9 @@ APPL_CXXOBJS += \
 	LineMonitor.o \
 	TailController.o \
 	BalancerCpp.o \
-	Measurer.o \
+	Odometer.o \
 	InvertedWalker.o \
+	PID.o \
 	LineTracer.o
 
 SRCLANG := c++

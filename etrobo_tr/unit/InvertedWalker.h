@@ -5,7 +5,6 @@
 #include "GyroSensor.h"
 #include "Motor.h"
 #include "BalancerCpp.h"
-#include "./../measurement/Measurer.h"
 #include "stdlib.h"
 
 class InvertedWalker
@@ -30,7 +29,6 @@ private:
     ev3api::Motor &m_wheel_L;
     ev3api::Motor &m_wheel_R;
     Balancer *m_balancer;
-    Measurer *m_measurer;
     int m_forward;
     int m_turn;
 };

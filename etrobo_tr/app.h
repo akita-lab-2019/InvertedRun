@@ -1,11 +1,3 @@
-/******************************************************************************
- *  app.h (for LEGO Mindstorms EV3)
- *  Created on: 2015/01/25
- *  Definition of the Task main_task
- *  Author: Kazuhiro.Kawachi
- *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
- *****************************************************************************/
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -36,6 +28,7 @@ extern "C"
     extern void tracer_task(intptr_t exinf);
     extern void bt_task(intptr_t exinf);
     extern void ev3_cyc_tracer(intptr_t exinf);
+    extern void bt_send(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */
 

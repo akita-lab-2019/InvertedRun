@@ -10,5 +10,6 @@ LineMonitor::LineMonitor(const ev3api::ColorSensor &colorSensor) : m_color_senso
  */
 float LineMonitor::getGap() const
 {
-    return (LineMonitor::LIGHT_WHITE - LineMonitor::LIGHT_BLACK) - m_color_sensor.getBrightness();
+    // return (LineMonitor::LIGHT_WHITE - LineMonitor::LIGHT_BLACK) - m_color_sensor.getBrightness();
+    return 40 - m_color_sensor.getBrightness();
 }
