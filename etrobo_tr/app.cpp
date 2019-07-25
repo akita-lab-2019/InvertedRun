@@ -53,7 +53,7 @@ initSystem()
     g_parm_administrator = new ParmAdministrator();
     g_parm_administrator->readParm();
 
-    g_pid_tail = new PID(1, 0, 0);
+    g_pid_tail = new PID(2.5, 0, 0);
     g_pid_trace = new PID(g_parm_administrator->trace_pid[0],
                           g_parm_administrator->trace_pid[1],
                           g_parm_administrator->trace_pid[2]);
@@ -110,7 +110,7 @@ void main_task(intptr_t unused)
     while (1)
     {
         // 尻尾の角度を維持
-        g_tail_controller->control(83, 50);
+        g_tail_controller->control(85, 50);
 
         // BlueToothスタート
         if (g_bt_cmd == 1)
@@ -146,7 +146,7 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        g_tail_controller->control(0, 20); // 完全停止用角度に制御
+        g_tail_controller->control(0, 60); // 完全停止用角度に制御
         g_odometer->measure();             // 計測
         g_line_tracer->run();              // 倒立走行
     }
