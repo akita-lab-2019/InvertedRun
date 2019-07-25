@@ -31,7 +31,7 @@ void LineTracer::run()
     // float direction = 0.6 * m_line_monitor->getGap();
 
     // 速度指令をセット
-    m_inverted_walker->setCommand(60, direction);
+    m_inverted_walker->setCommand(80, direction);
     // m_inverted_walker->setCommand(0, 0);
 
     // 倒立走行を行う

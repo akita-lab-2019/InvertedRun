@@ -227,7 +227,7 @@ void record()
 {
     // SDカード内に保存
     log_file = fopen("log.csv", "a");
-    fprintf(log_file, "%f, %f, %f, %d, %f, %f, %f \r\n",
+    fprintf(log_file, "%f, %f, %d, %f, %f, %f, %f \r\n",
             g_clock.now() / 1000.0,
             (float)ev3_battery_voltage_mV() / 1000,
             g_color_sensor.getBrightness(),
