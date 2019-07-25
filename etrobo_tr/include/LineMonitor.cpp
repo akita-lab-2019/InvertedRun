@@ -1,7 +1,8 @@
 #include "LineMonitor.h"
 
-LineMonitor::LineMonitor(const ev3api::ColorSensor &colorSensor) : m_color_sensor(colorSensor)
+LineMonitor::LineMonitor(ev3api::ColorSensor &colorSensor, ParmAdministrator *parm) : m_color_sensor(colorSensor), m_target(parm->color_sensor_targrt)
 {
+    m_target = parm->color_sensor_targrt;
 }
 
 /**
