@@ -4,22 +4,24 @@
 
 #include "LineMonitor.h"
 #include "GyroSensor.h"
+#include "PID.h"
 #include "Motor.h"
 #include "InvertedWalker.h"
-#include "./../measurement/Measurer.h"
 #include "stdlib.h"
 
 class LineTracer
 {
 public:
     LineTracer(LineMonitor *line_monitor,
-               InvertedWalker *inverted_walker);
+               InvertedWalker *inverted_walker,
+               PID *pid);
 
     void run();
 
 private:
     LineMonitor *m_line_monitor;
     InvertedWalker *m_inverted_walker;
+    PID *m_pid;
     bool m_is_initialized;
 };
 

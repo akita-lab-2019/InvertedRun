@@ -4,8 +4,8 @@
  * コンストラクタ
  * @param tail_motor 尻尾モータ
  */
-TailController::TailController(ev3api::Motor &tail_motor)
-    : m_tail_motor(tail_motor)
+TailController::TailController(ev3api::Motor &tail_motor, PID *pid)
+    : m_tail_motor(tail_motor), m_pid(pid)
 {
 }
 
@@ -24,7 +24,8 @@ void TailController::init()
  */
 void TailController::control(int target_angle, int max_speed)
 {
-    signed int pwm = (signed int)(target_angle - m_tail_motor.getCount());
+    int pwm = m_pid->calculate(target_angle, m_tail_motor.getCount());
+    // signed int pwm = (signed int)(target_angle - m_tail_motor.getCount());
 
     pwm = (pwm > max_speed) ? max_speed : pwm;
     pwm = (pwm < -max_speed) ? -max_speed : pwm;
