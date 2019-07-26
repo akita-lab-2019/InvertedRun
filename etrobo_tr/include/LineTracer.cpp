@@ -30,11 +30,9 @@ void LineTracer::run()
 
     // 旋回量を計算する
     float direction = m_pid->calculate(0, m_line_monitor->getGap());
-    // float direction = 0.6 * m_line_monitor->getGap();
 
     // 速度指令をセット
-    // m_inverted_walker->setCommand(80, direction);
-    m_inverted_walker->setCommand((int)m_parm->forward_v, (int)m_parm->turn_v);
+    m_inverted_walker->setCommand(80, direction);
 
     // 倒立走行を行う
     m_inverted_walker->run();
