@@ -54,9 +54,9 @@ initSystem()
     g_parm_administrator->readParm();
 
     g_pid_tail = new PID(2.5, 0, 0);
-    g_pid_trace = new PID(g_parm_administrator->trace_pid[0],
-                          g_parm_administrator->trace_pid[1],
-                          g_parm_administrator->trace_pid[2]);
+    g_pid_trace = new PID(g_parm_administrator->trace_pid[0][0],
+                          g_parm_administrator->trace_pid[0][1],
+                          g_parm_administrator->trace_pid[0][2]);
     g_balancer = new Balancer();
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
     g_line_monitor = new LineMonitor(g_color_sensor, g_parm_administrator);
@@ -64,7 +64,7 @@ initSystem()
                                            g_wheel_L,
                                            g_wheel_R,
                                            g_balancer);
-    g_line_tracer = new LineTracer(g_line_monitor, g_inverted_walker, g_pid_trace, g_parm_administrator);
+    g_line_tracer = new LineTracer(g_line_monitor, g_inverted_walker, g_pid_trace, g_parm_administrator, g_odometer);
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
 
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
@@ -216,9 +216,9 @@ void init()
     log_file = fopen("log.csv", "a");
     fprintf(log_file, "\r\n-color_sensor_targrt:%f PID:%f;%f;%f-\r\n",
             g_parm_administrator->color_sensor_targrt,
-            g_parm_administrator->trace_pid[0],
-            g_parm_administrator->trace_pid[1],
-            g_parm_administrator->trace_pid[2]);
+            g_parm_administrator->trace_pid[0][0],
+            g_parm_administrator->trace_pid[0][1],
+            g_parm_administrator->trace_pid[0][2]);
     fprintf(log_file, "Time[s], Battery[V], ColorSensor, PoseX[m], PoseY[m], Distance[m], Angle[deg]\r\n");
     fclose(log_file);
 }

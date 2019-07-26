@@ -33,7 +33,10 @@ void ParmAdministrator::readParm()
     forward_v = m_parm_data[i++];
     turn_v = m_parm_data[i++];
     color_sensor_targrt = m_parm_data[i++];
-    trace_pid[0] = m_parm_data[i++];
-    trace_pid[1] = m_parm_data[i++];
-    trace_pid[2] = m_parm_data[i++];
+    trace_pid[0][0] = m_parm_data[i++];
+    trace_pid[0][1] = m_parm_data[i++];
+    trace_pid[0][2] = m_parm_data[i++];
+    trace_pid[1][0] = m_parm_data[i++];
+    trace_pid[1][1] = m_parm_data[i++];
+    trace_pid[1][2] = m_parm_data[i++];
 }

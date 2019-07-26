@@ -12,7 +12,7 @@ public:
     float forward_v;
     float turn_v;
     float color_sensor_targrt;
-    float trace_pid[3];
+    float trace_pid[2][3];
 
 private:
     float m_parm_data[20];
