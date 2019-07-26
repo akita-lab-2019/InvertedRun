@@ -54,6 +54,8 @@ initSystem()
     g_parm_administrator->readParm();
 
     g_pid_tail = new PID(2.5, 0, 0);
+    g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
+
     g_pid_trace = new PID(g_parm_administrator->trace_pid[0][0],
                           g_parm_administrator->trace_pid[0][1],
                           g_parm_administrator->trace_pid[0][2]);
@@ -64,8 +66,16 @@ initSystem()
                                            g_wheel_L,
                                            g_wheel_R,
                                            g_balancer);
-    g_line_tracer = new LineTracer(g_line_monitor, g_inverted_walker, g_pid_trace, g_parm_administrator, g_odometer);
-    g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
+
+    g_line_tracer = new LineTracer(g_clock,
+                                   g_line_monitor,
+                                   g_inverted_walker,
+                                   g_pid_trace,
+                                   g_parm_administrator,
+                                   g_odometer,
+                                   g_tail_controller,
+                                   g_wheel_L,
+                                   g_wheel_R);
 
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
 
@@ -138,17 +148,36 @@ void main_task(intptr_t unused)
 /**
  * ライントレースタスク
  */
+bool flag = 0;
 void tracer_task(intptr_t exinf)
 {
     if (ev3_button_is_pressed(BACK_BUTTON))
     {
         wup_tsk(MAIN_TASK); // バックボタン押下
     }
+    else if(g_bt_cmd == 2 || (g_touch_sesor.isPressed() && g_clock.now() > 500))
+    {
+        g_bt_cmd = 2;
+        if(flag == 0)
+        {
+            long start_time = g_clock.now();
+            while(g_clock.now() - start_time < 200)
+            {
+                g_tail_controller->control(65, 40);
+                g_wheel_L.setPWM(100);
+                g_wheel_R.setPWM(100);
+            }
+        }
+        flag = 1;
+        g_tail_controller->control(65, 40);
+        g_wheel_L.reset();
+        g_wheel_R.reset();
+    }
     else
     {
-        g_tail_controller->control(0, 60); // 完全停止用角度に制御
-        g_odometer->measure();             // 計測
-        g_line_tracer->run();              // 倒立走行
+        // g_tail_controller->control(0, 60); // 完全停止用角度に制御
+        g_odometer->measure(); // 計測
+        g_line_tracer->run();  // 倒立走行
     }
 
     ext_tsk();
@@ -205,6 +234,9 @@ void bt_recieve_task(intptr_t exinf)
     {
     case '1':
         g_bt_cmd = 1;
+        break;
+    case '2':
+        g_bt_cmd = 2;
         break;
     default:
         break;
