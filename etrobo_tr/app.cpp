@@ -160,7 +160,8 @@ void tracer_task(intptr_t exinf)
 void log_task(intptr_t exinf)
 {
     // Bluetoothで送信
-    fprintf(bt, "%f\t%f\t%f\t%f\t%f \r\n",
+    fprintf(bt, "%f\t%f\t%f\t%f\t%f\t%f \r\n",
+            g_clock.now() / 1000.0,
             (float)ev3_battery_voltage_mV() / 1000,
             g_odometer->getRobotPoseX(),
             g_odometer->getRobotPoseY(),

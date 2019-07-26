@@ -39,101 +39,48 @@ void LineTracer::run()
         ev3_led_set_color(LED_GREEN);
     }
 
-    switch (scenario_num)
+    int is_curve[11] = {
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0};
+
+    float segment_dis[11] = {
+        0.68,
+        1.30,
+        1.81,
+        3.40,
+        4.69,
+        4.87,
+        5.64,
+        6.51,
+        7.65,
+        9.03,
+        9.60};
+
+    if (scenario_num == 11)
     {
-    case 0:
-        sectionRun(80);
-        if (m_odometer->getRobotDistance() > 0.68)
+        sectionRun(0);
+    }
+    else
+    {
+        sectionRun(m_parm->forward_v[is_curve[scenario_num]]);
+        if (m_odometer->getRobotDistance() > segment_dis[scenario_num])
         {
+            ev3_speaker_play_tone(NOTE_C4 + scenario_num * 100, 500);
             scenario_num++;
-            m_pid->init(m_parm->trace_pid[1][0], m_parm->trace_pid[1][1], m_parm->trace_pid[1][2]);
+            m_pid->init(m_parm->trace_pid[is_curve[scenario_num]][0],
+                        m_parm->trace_pid[is_curve[scenario_num]][1],
+                        m_parm->trace_pid[is_curve[scenario_num]][2]);
         }
-        break;
-
-    case 1:
-        sectionRun(20);
-        if (m_odometer->getRobotDistance() > 1.30)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[0][0], m_parm->trace_pid[0][1], m_parm->trace_pid[0][2]);
-        }
-        break;
-
-    case 2:
-        sectionRun(80);
-        if (m_odometer->getRobotDistance() > 1.81)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[1][0], m_parm->trace_pid[1][1], m_parm->trace_pid[1][2]);
-        }
-        break;
-
-    case 3:
-        sectionRun(20);
-        if (m_odometer->getRobotDistance() > 3.40)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[1][0], m_parm->trace_pid[1][1], m_parm->trace_pid[1][2]);
-        }
-        break;
-
-    case 4:
-        sectionRun(20);
-        if (m_odometer->getRobotDistance() > 4.69)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[0][0], m_parm->trace_pid[0][1], m_parm->trace_pid[0][2]);
-        }
-        break;
-
-    case 5:
-        sectionRun(80);
-        if (m_odometer->getRobotDistance() > 4.87)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[1][0], m_parm->trace_pid[1][1], m_parm->trace_pid[1][2]);
-        }
-        break;
-
-    case 6:
-        sectionRun(20);
-        if (m_odometer->getRobotDistance() > 5.64)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[0][0], m_parm->trace_pid[0][1], m_parm->trace_pid[0][2]);
-        }
-        break;
-
-    case 7:
-        sectionRun(80);
-        if (m_odometer->getRobotDistance() > 6.51)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[1][0], m_parm->trace_pid[1][1], m_parm->trace_pid[1][2]);
-        }
-        break;
-
-    case 8:
-        sectionRun(20);
-        if (m_odometer->getRobotDistance() > 7.65)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[1][0], m_parm->trace_pid[1][1], m_parm->trace_pid[1][2]);
-        }
-        break;
-
-    case 9:
-        sectionRun(20);
-        if (m_odometer->getRobotDistance() > 9.03)
-        {
-            scenario_num++;
-            m_pid->init(m_parm->trace_pid[0][0], m_parm->trace_pid[0][1], m_parm->trace_pid[0][2]);
-        }
-        break;
-
-    default:
-        sectionRun(80);
-        break;
     }
 }
 
@@ -146,7 +93,7 @@ void LineTracer::sectionRun(int forward_v)
     float direction = m_pid->calculate(0, m_line_monitor->getGap());
 
     // 速度指令をセット
-    m_inverted_walker->setCommand(m_parm->forward_v, direction);
+    m_inverted_walker->setCommand(forward_v, direction);
 
     // 倒立走行を行う
     m_inverted_walker->run();
