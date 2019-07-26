@@ -64,7 +64,7 @@ initSystem()
                                            g_wheel_L,
                                            g_wheel_R,
                                            g_balancer);
-    g_line_tracer = new LineTracer(g_line_monitor, g_inverted_walker, g_pid_trace);
+    g_line_tracer = new LineTracer(g_line_monitor, g_inverted_walker, g_pid_trace, g_parm_administrator);
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
 
     bt = ev3_serial_open_file(EV3_SERIAL_BT);

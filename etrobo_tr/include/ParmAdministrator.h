@@ -9,6 +9,8 @@ class ParmAdministrator
 public:
     explicit ParmAdministrator();
     void readParm();
+    float forward_v;
+    float turn_v;
     float color_sensor_targrt;
     float trace_pid[3];
 

@@ -30,6 +30,8 @@ void ParmAdministrator::readParm()
 
     // 各変数に代入
     int i = 0;
+    forward_v = m_parm_data[i++];
+    turn_v = m_parm_data[i++];
     color_sensor_targrt = m_parm_data[i++];
     trace_pid[0] = m_parm_data[i++];
     trace_pid[1] = m_parm_data[i++];

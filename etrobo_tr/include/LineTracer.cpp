@@ -7,10 +7,12 @@
  */
 LineTracer::LineTracer(LineMonitor *line_monitor,
                        InvertedWalker *inverted_walker,
-                       PID *pid)
+                       PID *pid,
+                       ParmAdministrator *parm)
     : m_line_monitor(line_monitor),
       m_inverted_walker(inverted_walker),
       m_pid(pid),
+      m_parm(parm),
       m_is_initialized(false)
 {
 }
@@ -31,8 +33,8 @@ void LineTracer::run()
     // float direction = 0.6 * m_line_monitor->getGap();
 
     // 速度指令をセット
-    m_inverted_walker->setCommand(80, direction);
-    // m_inverted_walker->setCommand(0, 0);
+    // m_inverted_walker->setCommand(80, direction);
+    m_inverted_walker->setCommand((int)m_parm->forward_v, (int)m_parm->turn_v);
 
     // 倒立走行を行う
     m_inverted_walker->run();
