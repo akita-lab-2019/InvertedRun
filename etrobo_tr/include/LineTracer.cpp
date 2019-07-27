@@ -30,6 +30,7 @@ LineTracer::LineTracer(ev3api::Clock &clock,
 /**
  * ライントレースする
  */
+bool b_flag = 0;
 void LineTracer::run()
 {
     if (m_is_initialized == false)
@@ -81,6 +82,13 @@ void LineTracer::run()
     }
     else
     {
+        if (scenario_num == 0 && b_flag == 0)
+        {
+            b_flag = 1;
+            m_pid->init(m_parm->trace_pid[is_curve[scenario_num]][0],
+                        m_parm->trace_pid[is_curve[scenario_num]][1],
+                        m_parm->trace_pid[is_curve[scenario_num]][2]);
+        }
         sectionRun(m_parm->forward_v[is_curve[scenario_num]]);
         if (m_odometer->getRobotDistance() > segment_dis[scenario_num])
         {
@@ -92,14 +100,23 @@ void LineTracer::run()
         }
         m_tail_controller->control(0, 60);
 
-        if(scenario_num == 11)
+        if (scenario_num == 11)
+        {
+            if (m_odometer->getRobotDistance() > 9.8)
+            {
+                scenario_num++;
+            }
+            sectionRun(20);
+        }
+
+        if (scenario_num == 12)
         {
             long start_time = m_clock.now();
-            while(m_clock.now() - start_time < 200)
+            while (m_clock.now() - start_time < 200)
             {
                 m_tail_controller->control(65, 40);
-                m_wheel_L.setPWM(100);
-                m_wheel_R.setPWM(100);
+                m_wheel_L.setPWM(80);
+                m_wheel_R.setPWM(80);
             }
             m_tail_controller->control(65, 40);
             m_wheel_L.reset();

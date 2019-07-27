@@ -5,6 +5,7 @@
 #include "TailController.h"
 #include "PID.h"
 #include <Clock.h>
+#include <SonarSensor.h>
 #include <TouchSensor.h>
 #include "Odometer.h"
 
@@ -19,11 +20,13 @@ using ev3api::Clock;
 using ev3api::ColorSensor;
 using ev3api::GyroSensor;
 using ev3api::Motor;
+using ev3api::SonarSensor;
 using ev3api::TouchSensor;
 
 // オブジェクトを静的に確保
 Clock g_clock;
-TouchSensor g_touch_sesor(PORT_1);
+TouchSensor g_touch_sensor(PORT_1);
+SonarSensor g_sonar_sensor(PORT_2);
 ColorSensor g_color_sensor(PORT_3);
 GyroSensor g_gyro_sensor(PORT_4);
 Motor g_tail_motor(PORT_A);
@@ -42,6 +45,7 @@ static PID *g_pid_tail;
 static PID *g_pid_trace;
 
 static int g_bt_cmd = 0;
+int g_sonar_distance = 0;
 
 /**
  * システムの初期化処理
@@ -123,15 +127,25 @@ void main_task(intptr_t unused)
         g_tail_controller->control(85, 50);
 
         // BlueToothスタート
-        if (g_bt_cmd == 1)
+        if (g_bt_cmd == 1 || g_bt_cmd == 2)
             break;
 
         // タッチセンサスタート
-        if (g_touch_sesor.isPressed())
+        if (g_touch_sensor.isPressed())
             break;
 
         g_clock.sleep(10);
         g_clock.reset();
+    }
+
+    if (g_bt_cmd == 2)
+    {
+        g_parm_administrator->trace_pid[0][0] /= -1;
+        g_parm_administrator->trace_pid[0][1] /= -1;
+        g_parm_administrator->trace_pid[0][2] /= -1;
+        g_parm_administrator->trace_pid[1][0] /= -1;
+        g_parm_administrator->trace_pid[1][1] /= -1;
+        g_parm_administrator->trace_pid[1][2] /= -1;
     }
 
     // 周期ハンドラ開始
@@ -155,17 +169,17 @@ void tracer_task(intptr_t exinf)
     {
         wup_tsk(MAIN_TASK); // バックボタン押下
     }
-    else if(g_bt_cmd == 2 || (g_touch_sesor.isPressed() && g_clock.now() > 500))
+    else if (g_bt_cmd == 3 || (g_touch_sensor.isPressed() && g_clock.now() > 500))
     {
-        g_bt_cmd = 2;
-        if(flag == 0)
+        g_bt_cmd = 3;
+        if (flag == 0)
         {
             long start_time = g_clock.now();
-            while(g_clock.now() - start_time < 200)
+            while (g_clock.now() - start_time < 150)
             {
                 g_tail_controller->control(65, 40);
-                g_wheel_L.setPWM(100);
-                g_wheel_R.setPWM(100);
+                g_wheel_L.setPWM(80);
+                g_wheel_R.setPWM(80);
             }
         }
         flag = 1;
@@ -188,14 +202,20 @@ void tracer_task(intptr_t exinf)
  */
 void log_task(intptr_t exinf)
 {
+    g_sonar_distance = g_sonar_sensor.getDistance();
     // Bluetoothで送信
-    fprintf(bt, "%f\t%f\t%f\t%f\t%f\t%f \r\n",
+    // fprintf(bt, "\033[2J");
+    // fprintf(bt, "\033[%d;%dH", 1, 0);
+    // fprintf(bt, "time[sec]\tbatte[V]\tpose_x[m]\tpose_y[m]\tdista[m]\tangle[deg]\tsonar[cm]\tpich_p[deg]\tpitch_v[deg/sec]\r\n");
+    fprintf(bt, "%f\t%f\t%d\t%f\t%f\t%f\t%f\t%d \r\n",
             g_clock.now() / 1000.0,
             (float)ev3_battery_voltage_mV() / 1000,
+            g_color_sensor.getBrightness(),
             g_odometer->getRobotPoseX(),
             g_odometer->getRobotPoseY(),
             g_odometer->getRobotDistance(),
-            g_odometer->getRobotAngle() * 180 / 3.14);
+            g_odometer->getRobotAngle() * 180 / 3.14,
+            g_sonar_distance);
 
     // SDカード内に保存
     record();
@@ -214,7 +234,9 @@ void log_task(intptr_t exinf)
     sprintf(str[i++], "pose_x:  %f[m]", g_odometer->getRobotPoseX());
     sprintf(str[i++], "pose_y:  %f[m]", g_odometer->getRobotPoseY());
     sprintf(str[i++], "angle:   %f[deg]", g_odometer->getRobotAngle() * 180 / 3.14);
-    sprintf(str[i++], "%f", g_parm_administrator->color_sensor_targrt);
+    sprintf(str[i++], "sonar:   %d[cm]", g_sonar_distance);
+    // sprintf(str[i++], "pich_p:  %d[deg]", g_gyro_sensor.getAngle());
+    // sprintf(str[i++], "pich_v:  %d[deg/sec]", g_gyro_sensor.getAnglerVelocity());
 
     for (int i = 0; i < 7; i++)
     {
@@ -238,6 +260,9 @@ void bt_recieve_task(intptr_t exinf)
     case '2':
         g_bt_cmd = 2;
         break;
+    case '3':
+        g_bt_cmd = 3;
+        break;
     default:
         break;
     }
@@ -260,13 +285,14 @@ void record()
 {
     // SDカード内に保存
     log_file = fopen("log.csv", "a");
-    fprintf(log_file, "%f, %f, %d, %f, %f, %f, %f \r\n",
+    fprintf(log_file, "%f, %f, %d, %f, %f, %f, %f, %d\r\n",
             g_clock.now() / 1000.0,
             (float)ev3_battery_voltage_mV() / 1000,
             g_color_sensor.getBrightness(),
             g_odometer->getRobotPoseX(),
             g_odometer->getRobotPoseY(),
             g_odometer->getRobotDistance(),
-            g_odometer->getRobotAngle() * 180 / 3.14);
+            g_odometer->getRobotAngle() * 180 / 3.14,
+            g_sonar_distance);
     fclose(log_file);
 }
