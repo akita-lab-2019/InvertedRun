@@ -59,17 +59,7 @@ initSystem()
     g_parm_administrator = new ParmAdministrator();
     g_parm_administrator->readParm();
 
-    g_recorder = new Recorder(g_clock,
-                              g_color_sensor,
-                              g_line_monitor,
-                              g_inverted_walker,
-                              g_pid_trace,
-                              g_parm_administrator,
-                              g_odometer,
-                              g_wheel_L,
-                              g_wheel_R);
-    ;
-
+    g_recorder = new Recorder(g_parm_administrator);
     g_pid_tail = new PID(2.5, 0, 0);
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
 
@@ -215,45 +205,46 @@ void tracer_task(intptr_t exinf)
  */
 void log_task(intptr_t exinf)
 {
-    g_sonar_distance = g_sonar_sensor.getDistance();
+    // データを抽出して文字配列に格納
+    char data_str[32][32];
+    int i = 0;
+    sprintf(data_str[i++], "%f", g_clock.now() / 1000.0);
+    sprintf(data_str[i++], "%f", ev3_battery_voltage_mV() / 1000.0);
+    sprintf(data_str[i++], "%d", g_color_sensor.getBrightness());
+    sprintf(data_str[i++], "%f", g_odometer->getRobotPoseX());
+    sprintf(data_str[i++], "%f", g_odometer->getRobotPoseY());
+    sprintf(data_str[i++], "%f", g_odometer->getRobotAngle() * 180 / 3.14);
+    sprintf(data_str[i++], "%f", g_odometer->getRobotDistance());
+    sprintf(data_str[i++], "%d", g_sonar_sensor.getDistance());
+
     // Bluetoothで送信
-    // fprintf(bt, "\033[2J");
-    // fprintf(bt, "\033[%d;%dH", 1, 0);
-    // fprintf(bt, "time[sec]\tbatte[V]\tpose_x[m]\tpose_y[m]\tdista[m]\tangle[deg]\tsonar[cm]\tpich_p[deg]\tpitch_v[deg/sec]\r\n");
-    fprintf(bt, "%f\t%f\t%d\t%f\t%f\t%f\t%f\t%d \r\n",
-            g_clock.now() / 1000.0,
-            (float)ev3_battery_voltage_mV() / 1000,
-            g_color_sensor.getBrightness(),
-            g_odometer->getRobotPoseX(),
-            g_odometer->getRobotPoseY(),
-            g_odometer->getRobotDistance(),
-            g_odometer->getRobotAngle() * 180 / 3.14,
-            g_sonar_distance);
+    char file_str[32];
+    sprintf(file_str, "%s", data_str[0]);
+    for (int i = 1; i < 7; i++)
+    {
+        sprintf(file_str, "%s,\t%s", file_str, data_str[i]);
+    }
+    fprintf(bt, "%s\r\n", file_str);
 
     // SDカード内に保存
-    // g_recorder->record();
+    g_recorder->record(file_str);
 
     // LCD表示
-    char str[10][32];
-    for (int i = 0; i < 10; i++)
+    char lcd_str[32][32];
+    char lcd_caption_str[32][32] = {
+        "time:    ",
+        "battery: ",
+        "color_s: ",
+        "pose_x:  ",
+        "pose_y:  ",
+        "angle:   ",
+        "dis:     ",
+        "sonar:   ",
+    };
+    for (int i = 0; i < 8; i++)
     {
-        str[i][0] = '\0';
-    }
-
-    int i = 0;
-    sprintf(str[i++], "time:    %f[sec]", g_clock.now() / 1000.0);
-    sprintf(str[i++], "battery: %f[V]", ev3_battery_voltage_mV() / 1000.0);
-    sprintf(str[i++], "color_s: %d", g_color_sensor.getBrightness());
-    sprintf(str[i++], "pose_x:  %f[m]", g_odometer->getRobotPoseX());
-    sprintf(str[i++], "pose_y:  %f[m]", g_odometer->getRobotPoseY());
-    sprintf(str[i++], "angle:   %f[deg]", g_odometer->getRobotAngle() * 180 / 3.14);
-    sprintf(str[i++], "sonar:   %d[cm]", g_sonar_distance);
-    // sprintf(str[i++], "pich_p:  %d[deg]", g_gyro_sensor.getAngle());
-    // sprintf(str[i++], "pich_v:  %d[deg/sec]", g_gyro_sensor.getAnglerVelocity());
-
-    for (int i = 0; i < 7; i++)
-    {
-        ev3_lcd_draw_string(str[i], 5, 5 + 10 * i);
+        sprintf(lcd_str[i], "%s%s", lcd_caption_str[i], data_str[i]);
+        ev3_lcd_draw_string(lcd_str[i], 5, 5 + 10 * i);
     }
 
     tslp_tsk(10);

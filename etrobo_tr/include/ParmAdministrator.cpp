@@ -12,6 +12,7 @@ void ParmAdministrator::readParm()
     FILE *fp;
     char fname[] = "parm.txt";
     char str_data[256];
+
     fp = fopen(fname, "r");
 
     if (fp != NULL)
@@ -19,6 +20,7 @@ void ParmAdministrator::readParm()
         for (int i = 0; i < 20; i++)
         {
             fgets(str_data, 256, fp);
+            sprintf(all_data_str[i], "%s", str_data);
             for (int j = 0; j < 20; j++)
             {
                 str_data[j] = ' ';

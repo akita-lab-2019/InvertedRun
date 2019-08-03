@@ -16,31 +16,16 @@
 class Recorder
 {
 public:
-    Recorder(ev3api::Clock &clock,
-             ev3api::ColorSensor &color_sensor,
-             LineMonitor *line_monitor,
-             InvertedWalker *inverted_walker,
-             PID *pid,
-             ParmAdministrator *parm,
-             Odometer *odometer,
-             ev3api::Motor &wheel_L,
-             ev3api::Motor &wheel_R);
+    Recorder(ParmAdministrator *parm);
 
     void init();
-    int getFilename();
+    int getFileNum();
     void writeHeader();
-    void record();
+    void record(char *str);
 
 private:
-    ev3api::Clock &m_clock;
-    ev3api::ColorSensor &m_color_sensor;
-    LineMonitor *m_line_monitor;
-    InvertedWalker *m_inverted_walker;
-    PID *m_pid;
+    char m_logfile_name[15];
     ParmAdministrator *m_parm;
-    Odometer *m_odometer;
-    ev3api::Motor &m_wheel_L;
-    ev3api::Motor &m_wheel_R;
 };
 
 #endif // EV3_RECORDER_H_

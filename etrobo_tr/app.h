@@ -26,8 +26,6 @@ extern "C"
     extern void tracer_task(intptr_t exinf);
     extern void log_task(intptr_t exinf);
     extern void bt_recieve_task(intptr_t exinf);
-    void init();
-    void record();
 
 #endif /* TOPPERS_MACRO_ONLY */
 

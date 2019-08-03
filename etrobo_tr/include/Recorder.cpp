@@ -1,30 +1,10 @@
 #include "Recorder.h"
 
-static FILE *m_log_file = NULL;
-
 /**
  * コンストラクタ
- * @param lineMonitor    ライン判定
- * @param invertedWalker 倒立走行
+ * @param *parm パラメータ管理者
  */
-Recorder::Recorder(ev3api::Clock &clock,
-                   ev3api::ColorSensor &color_sensor,
-                   LineMonitor *line_monitor,
-                   InvertedWalker *inverted_walker,
-                   PID *pid,
-                   ParmAdministrator *parm,
-                   Odometer *odometer,
-                   ev3api::Motor &wheel_L,
-                   ev3api::Motor &wheel_R)
-    : m_clock(clock),
-      m_color_sensor(color_sensor),
-      m_line_monitor(line_monitor),
-      m_inverted_walker(inverted_walker),
-      m_pid(pid),
-      m_parm(parm),
-      m_odometer(odometer),
-      m_wheel_L(wheel_L),
-      m_wheel_R(wheel_R)
+Recorder::Recorder(ParmAdministrator *parm) : m_parm(parm)
 {
 }
 
@@ -33,22 +13,37 @@ Recorder::Recorder(ev3api::Clock &clock,
  */
 void Recorder::init()
 {
-    m_log_file = fopen("log.csv", "a");
-    fprintf(m_log_file, "\r\n-color_sensor_targrt:%f PID:%f;%f;%f-\r\n",
-            m_parm->color_sensor_targrt,
-            m_parm->trace_pid[0][0],
-            m_parm->trace_pid[0][1],
-            m_parm->trace_pid[0][2]);
-    fprintf(m_log_file, "Time[s], Battery[V], ColorSensor, PoseX[m], PoseY[m], Distance[m], Angle[deg]\r\n");
-    fclose(m_log_file);
+    // ファイル名を生成し代入
+    sprintf(m_logfile_name, "log/log_%04d.csv", getFileNum());
+
+    // ヘッダを書く
+    writeHeader();
 }
 
 /**
- * ファイル名を取得する
+ * ファイル番号を取得する
  */
-int Recorder::getFilename()
+int Recorder::getFileNum()
 {
-    return 0;
+    char str_data[5];
+    int file_num = 0;
+    FILE *fp = NULL;
+    fp = fopen("log/log_num.txt", "r");
+
+    // ファイルを開いて値を読み出す
+    if (fp != NULL)
+    {
+        fgets(str_data, 5, fp);
+        file_num = atoi(str_data);
+    }
+    fclose(fp);
+
+    // 次回用にファイル数をインクリメントして書き込んでおく
+    fp = fopen("log/log_num.txt", "w");
+    fprintf(fp, "%d", file_num + 1);
+    fclose(fp);
+
+    return file_num;
 }
 
 /**
@@ -56,22 +51,38 @@ int Recorder::getFilename()
  */
 void Recorder::writeHeader()
 {
+    // ログファイルをオープン
+    FILE *log_file = NULL;
+    log_file = fopen(m_logfile_name, "a");
+
+    // パラメータファイル
+    FILE *parm_file = NULL;
+    char parm_str[256];
+    parm_file = fopen("parm.txt", "r");
+
+    // パラメータファイル中身をログファイルにコピー
+    if (parm_file != NULL)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            fgets(parm_str, 256, parm_file);   // 取得
+            fprintf(log_file, "%s", parm_str); // 書き込み
+        }
+    }
+    fclose(parm_file);
+
+    // 凡例を記入
+    fprintf(log_file, "Time[s], Battery[V], ColorSensor, PoseX[m], PoseY[m], Distance[m], Angle[deg], Sonar[cm]\r\n");
+    fclose(log_file);
 }
 
 /**
  * SDカードに記録する
  */
-void Recorder::record()
+void Recorder::record(char *str)
 {
-    // SDカード内に保存
-    m_log_file = fopen("log.csv", "a");
-    fprintf(m_log_file, "%f, %f, %d, %f, %f, %f, %f\r\n",
-            m_clock.now() / 1000.0,
-            (float)ev3_battery_voltage_mV() / 1000,
-            m_color_sensor.getBrightness(),
-            m_odometer->getRobotPoseX(),
-            m_odometer->getRobotPoseY(),
-            m_odometer->getRobotDistance(),
-            m_odometer->getRobotAngle() * 180 / 3.14);
-    fclose(m_log_file);
+    FILE *log_file = NULL;
+    log_file = fopen(m_logfile_name, "a");
+    fprintf(log_file, "%s\r\n", str);
+    fclose(log_file);
 }
