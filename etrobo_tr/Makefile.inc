@@ -4,6 +4,7 @@ APPL_COBJS += balancer.o balancer_param.o
 
 APPL_CXXOBJS += \
 	ParmAdministrator.o \
+	Recorder.o \
 	LineMonitor.o \
 	TailController.o \
 	BalancerCpp.o \

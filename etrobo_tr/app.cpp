@@ -3,6 +3,7 @@
 #include "LineTracer.h"
 #include "ParmAdministrator.h"
 #include "TailController.h"
+#include "Recorder.h"
 #include "PID.h"
 #include <Clock.h>
 #include <SonarSensor.h>
@@ -35,6 +36,7 @@ Motor g_wheel_R(PORT_B);
 
 // オブジェクトの定義
 static ParmAdministrator *g_parm_administrator;
+static Recorder *g_recorder;
 static LineMonitor *g_line_monitor;
 static TailController *g_tail_controller;
 static Balancer *g_balancer;
@@ -56,6 +58,17 @@ initSystem()
     // オブジェクトの作成
     g_parm_administrator = new ParmAdministrator();
     g_parm_administrator->readParm();
+
+    g_recorder = new Recorder(g_clock,
+                              g_color_sensor,
+                              g_line_monitor,
+                              g_inverted_walker,
+                              g_pid_trace,
+                              g_parm_administrator,
+                              g_odometer,
+                              g_wheel_L,
+                              g_wheel_R);
+    ;
 
     g_pid_tail = new PID(2.5, 0, 0);
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
@@ -84,7 +97,7 @@ initSystem()
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
 
     // SDカードへの保存の初期化
-    init();
+    g_recorder->init();
 
     ev3_sta_cyc(LOG_TASK);
     ev3_sta_cyc(BT_RCV_TASK);
@@ -218,7 +231,7 @@ void log_task(intptr_t exinf)
             g_sonar_distance);
 
     // SDカード内に保存
-    record();
+    // g_recorder->record();
 
     // LCD表示
     char str[10][32];
@@ -266,33 +279,4 @@ void bt_recieve_task(intptr_t exinf)
     default:
         break;
     }
-}
-
-static FILE *log_file = NULL;
-void init()
-{
-    log_file = fopen("log.csv", "a");
-    fprintf(log_file, "\r\n-color_sensor_targrt:%f PID:%f;%f;%f-\r\n",
-            g_parm_administrator->color_sensor_targrt,
-            g_parm_administrator->trace_pid[0][0],
-            g_parm_administrator->trace_pid[0][1],
-            g_parm_administrator->trace_pid[0][2]);
-    fprintf(log_file, "Time[s], Battery[V], ColorSensor, PoseX[m], PoseY[m], Distance[m], Angle[deg]\r\n");
-    fclose(log_file);
-}
-
-void record()
-{
-    // SDカード内に保存
-    log_file = fopen("log.csv", "a");
-    fprintf(log_file, "%f, %f, %d, %f, %f, %f, %f, %d\r\n",
-            g_clock.now() / 1000.0,
-            (float)ev3_battery_voltage_mV() / 1000,
-            g_color_sensor.getBrightness(),
-            g_odometer->getRobotPoseX(),
-            g_odometer->getRobotPoseY(),
-            g_odometer->getRobotDistance(),
-            g_odometer->getRobotAngle() * 180 / 3.14,
-            g_sonar_distance);
-    fclose(log_file);
 }
