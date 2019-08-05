@@ -3,6 +3,7 @@ mkfile_path := $(dir $(lastword $(MAKEFILE_LIST)))
 APPL_COBJS += balancer.o balancer_param.o
 
 APPL_CXXOBJS += \
+	RobotInfo.o \
 	ParmAdministrator.o \
 	Recorder.o \
 	LineMonitor.o \
@@ -11,6 +12,7 @@ APPL_CXXOBJS += \
 	Odometer.o \
 	InvertedWalker.o \
 	PID.o \
+	LogManager.o \
 	LineTracer.o
 
 SRCLANG := c++
@@ -22,7 +24,9 @@ include $(EV3RT_SDK_LIB_DIR)/libcpp-ev3/Makefile
 
 endif
 
-APPL_DIR += $(mkfile_path)app $(mkfile_path)include
+APPL_DIR += $(mkfile_path)log $(mkfile_path)include $(mkfile_path)RobotInfo
 
 INCLUDES += \
+	-I$(mkfile_path)RobotInfo\
+	-I$(mkfile_path)log\
 	-I$(mkfile_path)include

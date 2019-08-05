@@ -13,11 +13,11 @@ const int InvertedWalker::HIGH = 70;   // 高速
  * @param rightWheel 右モータ
  * @param balancer   バランサ
  */
-InvertedWalker::InvertedWalker(ev3api::GyroSensor &gyro_sensor,
+InvertedWalker::InvertedWalker(RobotInfo *robot_info,
                                ev3api::Motor &wheel_L,
                                ev3api::Motor &wheel_R,
                                Balancer *balancer)
-    : m_gyro_sensor(gyro_sensor),
+    : m_robot_info(robot_info),
       m_wheel_L(wheel_L),
       m_wheel_R(wheel_R),
       m_balancer(balancer),
@@ -32,9 +32,9 @@ InvertedWalker::InvertedWalker(ev3api::GyroSensor &gyro_sensor,
 void InvertedWalker::run()
 {
     // 倒立走行に必要な各種データを取得
-    int angle = m_gyro_sensor.getAnglerVelocity(); // ジャイロセンサ値
-    int wheel_cnt_R = m_wheel_R.getCount();        // 右モータ回転角度
-    int wheel_cnt_L = m_wheel_L.getCount();        // 左モータ回転角度
+    int angle = m_robot_info->getPitchVel();                   // ジャイロセンサ値
+    int wheel_cnt_R = m_robot_info->getWheelPos(RobotInfo::L); // 右モータ回転角度
+    int wheel_cnt_L = m_robot_info->getWheelPos(RobotInfo::R); // 左モータ回転角度
     int battery = ev3_battery_voltage_mV();
 
     // 並進と旋回の指令値，各種データ与えてホイールの指令値を算出させる
@@ -60,7 +60,7 @@ void InvertedWalker::init()
     m_wheel_R.reset();
 
     // 倒立振子制御初期化
-    int offset = m_gyro_sensor.getAnglerVelocity();
+    int offset = m_robot_info->getPitchVel();
     m_balancer->init(offset);
 }
 

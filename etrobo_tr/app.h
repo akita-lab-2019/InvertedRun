@@ -23,6 +23,7 @@ extern "C"
 #ifndef TOPPERS_MACRO_ONLY
 
     extern void main_task(intptr_t exinf);
+    extern void info_task(intptr_t exinf);
     extern void tracer_task(intptr_t exinf);
     extern void log_task(intptr_t exinf);
     extern void bt_recieve_task(intptr_t exinf);

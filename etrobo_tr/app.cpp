@@ -2,9 +2,11 @@
 #include "InvertedWalker.h"
 #include "LineTracer.h"
 #include "ParmAdministrator.h"
+#include "LogManager.h"
 #include "TailController.h"
 #include "Recorder.h"
 #include "PID.h"
+#include "RobotInfo.h"
 #include <Clock.h>
 #include <SonarSensor.h>
 #include <TouchSensor.h>
@@ -13,8 +15,6 @@
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
 void *__dso_handle = 0;
-
-static FILE *bt = NULL;
 
 // using宣言
 using ev3api::Clock;
@@ -35,7 +35,10 @@ Motor g_wheel_L(PORT_C);
 Motor g_wheel_R(PORT_B);
 
 // オブジェクトの定義
+
+static RobotInfo *g_robot_info;
 static ParmAdministrator *g_parm_administrator;
+static LogManager *g_log_manager;
 static Recorder *g_recorder;
 static LineMonitor *g_line_monitor;
 static TailController *g_tail_controller;
@@ -49,6 +52,8 @@ static PID *g_pid_trace;
 static int g_bt_cmd = 0;
 int g_sonar_distance = 0;
 
+static FILE *bt = NULL;
+
 /**
  * システムの初期化処理
  */
@@ -59,17 +64,31 @@ initSystem()
     g_parm_administrator = new ParmAdministrator();
     g_parm_administrator->readParm();
 
+    g_odometer = new Odometer(g_wheel_L, g_wheel_R);
+    g_line_monitor = new LineMonitor(g_color_sensor, g_parm_administrator);
+
+    g_robot_info = new RobotInfo(g_clock,
+                                 g_color_sensor,
+                                 g_gyro_sensor,
+                                 g_wheel_L,
+                                 g_wheel_R,
+                                 g_tail_motor,
+                                 g_line_monitor,
+                                 g_odometer);
+
+    bt = ev3_serial_open_file(EV3_SERIAL_BT);
     g_recorder = new Recorder(g_parm_administrator);
+    g_log_manager = new LogManager(bt, g_recorder, g_robot_info);
+
     g_pid_tail = new PID(2.5, 0, 0);
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
 
     g_pid_trace = new PID(g_parm_administrator->trace_pid[0][0],
                           g_parm_administrator->trace_pid[0][1],
                           g_parm_administrator->trace_pid[0][2]);
+
     g_balancer = new Balancer();
-    g_odometer = new Odometer(g_wheel_L, g_wheel_R);
-    g_line_monitor = new LineMonitor(g_color_sensor, g_parm_administrator);
-    g_inverted_walker = new InvertedWalker(g_gyro_sensor,
+    g_inverted_walker = new InvertedWalker(g_robot_info,
                                            g_wheel_L,
                                            g_wheel_R,
                                            g_balancer);
@@ -84,11 +103,10 @@ initSystem()
                                    g_wheel_L,
                                    g_wheel_R);
 
-    bt = ev3_serial_open_file(EV3_SERIAL_BT);
+    g_log_manager->init();
 
-    // SDカードへの保存の初期化
-    g_recorder->init();
-
+    // タスクの開始
+    ev3_sta_cyc(INFO_TASK);
     ev3_sta_cyc(LOG_TASK);
     ev3_sta_cyc(BT_RCV_TASK);
 
@@ -155,10 +173,20 @@ void main_task(intptr_t unused)
     ev3_sta_cyc(TRACER_TASK);
 
     slp_tsk();                // バックボタンが押されるまで待つ
+    ev3_stp_cyc(INFO_TASK);   // 周期ハンドラ停止
     ev3_stp_cyc(TRACER_TASK); // 周期ハンドラ停止
     ev3_stp_cyc(LOG_TASK);    // 周期ハンドラ停止
     ev3_stp_cyc(BT_RCV_TASK); // 周期ハンドラ停止
     destroySystem();          // 終了処理
+    ext_tsk();
+}
+
+/**
+ * 測定タスク
+ */
+void info_task(intptr_t exinf)
+{
+    g_robot_info->update();
     ext_tsk();
 }
 
@@ -193,8 +221,8 @@ void tracer_task(intptr_t exinf)
     else
     {
         // g_tail_controller->control(0, 60); // 完全停止用角度に制御
-        g_odometer->measure(); // 計測
-        g_line_tracer->run();  // 倒立走行
+
+        g_line_tracer->run(); // 倒立走行
     }
 
     ext_tsk();
@@ -205,49 +233,8 @@ void tracer_task(intptr_t exinf)
  */
 void log_task(intptr_t exinf)
 {
-    // データを抽出して文字配列に格納
-    char data_str[32][32];
-    int i = 0;
-    sprintf(data_str[i++], "%f", g_clock.now() / 1000.0);
-    sprintf(data_str[i++], "%f", ev3_battery_voltage_mV() / 1000.0);
-    sprintf(data_str[i++], "%d", g_color_sensor.getBrightness());
-    sprintf(data_str[i++], "%f", g_odometer->getRobotPoseX());
-    sprintf(data_str[i++], "%f", g_odometer->getRobotPoseY());
-    sprintf(data_str[i++], "%f", g_odometer->getRobotAngle() * 180 / 3.14);
-    sprintf(data_str[i++], "%f", g_odometer->getRobotDistance());
-    sprintf(data_str[i++], "%d", g_sonar_sensor.getDistance());
-
-    // Bluetoothで送信
-    char file_str[32];
-    sprintf(file_str, "%s", data_str[0]);
-    for (int i = 1; i < 7; i++)
-    {
-        sprintf(file_str, "%s,\t%s", file_str, data_str[i]);
-    }
-    fprintf(bt, "%s\r\n", file_str);
-
-    // SDカード内に保存
-    g_recorder->record(file_str);
-
-    // LCD表示
-    char lcd_str[32][32];
-    char lcd_caption_str[32][32] = {
-        "time:    ",
-        "battery: ",
-        "color_s: ",
-        "pose_x:  ",
-        "pose_y:  ",
-        "angle:   ",
-        "dis:     ",
-        "sonar:   ",
-    };
-    for (int i = 0; i < 8; i++)
-    {
-        sprintf(lcd_str[i], "%s%s", lcd_caption_str[i], data_str[i]);
-        ev3_lcd_draw_string(lcd_str[i], 5, 5 + 10 * i);
-    }
-
-    tslp_tsk(10);
+    g_log_manager->update();
+    tslp_tsk(20);
 }
 
 /**
@@ -270,4 +257,6 @@ void bt_recieve_task(intptr_t exinf)
     default:
         break;
     }
+
+    tslp_tsk(10);
 }
