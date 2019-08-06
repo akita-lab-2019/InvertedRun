@@ -1,5 +1,6 @@
 #include "app.h"
 #include "InvertedWalker.h"
+#include "TailWalker.h"
 #include "LineTracer.h"
 #include "ParmAdministrator.h"
 #include "LogManager.h"
@@ -44,6 +45,7 @@ static LineMonitor *g_line_monitor;
 static TailController *g_tail_controller;
 static Balancer *g_balancer;
 static InvertedWalker *g_inverted_walker;
+static TailWalker *g_tail_walker;
 static LineTracer *g_line_tracer;
 static Odometer *g_odometer;
 static PID *g_pid_tail;
@@ -94,13 +96,11 @@ initSystem()
                                            g_wheel_L,
                                            g_wheel_R,
                                            g_balancer);
+    g_tail_walker = new TailWalker(g_wheel_L, g_wheel_R);
     g_line_tracer = new LineTracer(g_robot_info,
                                    g_inverted_walker,
-                                   g_pid_trace,
-                                   g_parm_administrator,
-                                   g_tail_controller,
-                                   g_wheel_L,
-                                   g_wheel_R);
+                                   g_tail_walker,
+                                   g_pid_trace);
 
     // タスクの開始
     ev3_sta_cyc(INFO_TASK);
@@ -217,9 +217,8 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        // g_tail_controller->control(0, 60); // 完全停止用角度に制御
-
-        g_line_tracer->run(); // 倒立走行
+        g_tail_controller->control(85, 60); // 完全停止用角度に制御
+        g_line_tracer->run();               // 倒立走行
     }
 
     ext_tsk();
