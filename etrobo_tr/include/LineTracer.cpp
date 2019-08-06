@@ -5,21 +5,17 @@
  * @param lineMonitor    ライン判定
  * @param invertedWalker 倒立走行
  */
-LineTracer::LineTracer(ev3api::Clock &clock,
-                       LineMonitor *line_monitor,
+LineTracer::LineTracer(RobotInfo *robot_info,
                        InvertedWalker *inverted_walker,
                        PID *pid,
                        ParmAdministrator *parm,
-                       Odometer *odometer,
                        TailController *tail_controller,
                        ev3api::Motor &wheel_L,
                        ev3api::Motor &wheel_R)
-    : m_clock(clock),
-      m_line_monitor(line_monitor),
+    : m_robot_info(robot_info),
       m_inverted_walker(inverted_walker),
       m_pid(pid),
       m_parm(parm),
-      m_odometer(odometer),
       m_tail_controller(tail_controller),
       m_wheel_L(wheel_L),
       m_wheel_R(wheel_R),
@@ -90,7 +86,7 @@ void LineTracer::run()
                         m_parm->trace_pid[is_curve[scenario_num]][2]);
         }
         sectionRun(m_parm->forward_v[is_curve[scenario_num]]);
-        if (m_odometer->getRobotDistance() > segment_dis[scenario_num])
+        if (m_robot_info->getRobotDis() > segment_dis[scenario_num])
         {
             ev3_speaker_play_tone(NOTE_C4 + scenario_num * 100, 100);
             scenario_num++;
@@ -102,7 +98,7 @@ void LineTracer::run()
 
         if (scenario_num == 11)
         {
-            if (m_odometer->getRobotDistance() > 9.8)
+            if (m_robot_info->getRobotDis() > 9.8)
             {
                 scenario_num++;
             }
@@ -111,8 +107,8 @@ void LineTracer::run()
 
         if (scenario_num == 12)
         {
-            long start_time = m_clock.now();
-            while (m_clock.now() - start_time < 200)
+            long start_time = m_robot_info->getRunTime();
+            while (m_robot_info->getRunTime() - start_time < 200)
             {
                 m_tail_controller->control(65, 40);
                 m_wheel_L.setPWM(80);
@@ -131,7 +127,7 @@ void LineTracer::run()
 void LineTracer::sectionRun(int forward_v)
 {
     // 旋回量を計算する
-    float direction = m_pid->calculate(0, m_line_monitor->getGap());
+    float direction = m_pid->calculate(0, m_robot_info->getBrightnessGap());
 
     // 速度指令をセット
     m_inverted_walker->setCommand(forward_v, direction);

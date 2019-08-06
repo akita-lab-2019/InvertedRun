@@ -60,13 +60,13 @@ static FILE *bt = NULL;
 static void
 initSystem()
 {
-    // オブジェクトの作成
+    // パラメータの管理
     g_parm_administrator = new ParmAdministrator();
     g_parm_administrator->readParm();
 
+    // 走行体情報
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
     g_line_monitor = new LineMonitor(g_color_sensor, g_parm_administrator);
-
     g_robot_info = new RobotInfo(g_clock,
                                  g_color_sensor,
                                  g_gyro_sensor,
@@ -76,34 +76,31 @@ initSystem()
                                  g_line_monitor,
                                  g_odometer);
 
+    // 記録
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     g_recorder = new Recorder(g_parm_administrator);
     g_log_manager = new LogManager(bt, g_recorder, g_robot_info);
+    g_log_manager->init();
 
-    g_pid_tail = new PID(2.5, 0, 0);
+    // 尻尾制御
+    g_pid_tail = new PID();
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
+    g_tail_controller->init();
 
-    g_pid_trace = new PID(g_parm_administrator->trace_pid[0][0],
-                          g_parm_administrator->trace_pid[0][1],
-                          g_parm_administrator->trace_pid[0][2]);
-
+    // 走行制御
+    g_pid_trace = new PID();
     g_balancer = new Balancer();
     g_inverted_walker = new InvertedWalker(g_robot_info,
                                            g_wheel_L,
                                            g_wheel_R,
                                            g_balancer);
-
-    g_line_tracer = new LineTracer(g_clock,
-                                   g_line_monitor,
+    g_line_tracer = new LineTracer(g_robot_info,
                                    g_inverted_walker,
                                    g_pid_trace,
                                    g_parm_administrator,
-                                   g_odometer,
                                    g_tail_controller,
                                    g_wheel_L,
                                    g_wheel_R);
-
-    g_log_manager->init();
 
     // タスクの開始
     ev3_sta_cyc(INFO_TASK);

@@ -4,8 +4,7 @@
  * コンストラクタ
  * @param tail_motor 尻尾モータ
  */
-PID::PID(float Kp, float Ki, float Kd)
-    : m_Kp(Kp), m_Ki(Ki), m_Kd(Kd)
+PID::PID()
 {
 }
 

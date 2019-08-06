@@ -15,6 +15,7 @@ TailController::TailController(ev3api::Motor &tail_motor, PID *pid)
 void TailController::init()
 {
     m_tail_motor.reset();
+    m_pid->init(2.5, 0, 0);
 }
 
 /**

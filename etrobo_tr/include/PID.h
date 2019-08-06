@@ -10,7 +10,7 @@
 class PID
 {
 public:
-    PID(float Kp, float Ki, float Kd);
+    PID();
 
     void init(float Kp, float Ki, float Kd);
     float calculate(float target_val, float now_val);
