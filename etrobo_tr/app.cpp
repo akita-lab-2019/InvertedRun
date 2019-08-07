@@ -8,6 +8,8 @@
 #include "Recorder.h"
 #include "PID.h"
 #include "RobotInfo.h"
+#include "Section.h"
+#include "SectionTracer.h"
 #include <Clock.h>
 #include <SonarSensor.h>
 #include <TouchSensor.h>
@@ -38,6 +40,8 @@ Motor g_wheel_R(PORT_B);
 // オブジェクトの定義
 
 static RobotInfo *g_robot_info;
+static Section *g_section;
+static SectionTracer *g_section_tracer;
 static ParmAdministrator *g_parm_administrator;
 static LogManager *g_log_manager;
 static Recorder *g_recorder;
@@ -92,15 +96,15 @@ initSystem()
     // 走行制御
     g_pid_trace = new PID();
     g_balancer = new Balancer();
-    g_inverted_walker = new InvertedWalker(g_robot_info,
-                                           g_wheel_L,
-                                           g_wheel_R,
-                                           g_balancer);
+    g_section = new Section(g_parm_administrator);
+    g_inverted_walker = new InvertedWalker(g_robot_info, g_wheel_L, g_wheel_R, g_balancer);
     g_tail_walker = new TailWalker(g_wheel_L, g_wheel_R);
     g_line_tracer = new LineTracer(g_robot_info,
+                                   g_section,
                                    g_inverted_walker,
                                    g_tail_walker,
                                    g_pid_trace);
+    g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer, g_parm_administrator);
 
     // タスクの開始
     ev3_sta_cyc(INFO_TASK);
@@ -217,8 +221,8 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        g_tail_controller->control(85, 60); // 完全停止用角度に制御
-        g_line_tracer->run();               // 倒立走行
+        g_tail_controller->control(0, 60); // 完全停止用角度に制御
+        g_section_tracer->run();            // 倒立走行
     }
 
     ext_tsk();

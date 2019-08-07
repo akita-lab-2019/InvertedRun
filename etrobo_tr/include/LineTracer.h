@@ -8,6 +8,7 @@
 #include "GyroSensor.h"
 #include "PID.h"
 #include "Motor.h"
+#include "Section.h"
 #include "Odometer.h"
 #include "TailController.h"
 #include "InvertedWalker.h"
@@ -19,21 +20,32 @@ class LineTracer
 {
 public:
     LineTracer(RobotInfo *robot_info,
+               Section *section,
                InvertedWalker *inverted_walker,
                TailWalker *tail_walker,
                PID *pid);
 
+    void init();
+
     void run();
+    void setParm(float is_inverted, float forward, float curvature, float pid[3], float color_target);
 
 private:
     RobotInfo *m_robot_info;
+    Section *m_section;
     InvertedWalker *m_inverted_walker;
     TailWalker *m_tail_walker;
     PID *m_pid;
 
-    bool m_is_initialized;
     void invertedRun(int forward_v, int turn_v);
     void tailRun(int forward_v, int turn_v);
+
+    bool m_is_initialized;
+    float m_forward;      // 前進指令速度[%]
+    float m_curvature;    // 曲率[m^-1]
+    float m_pid_parm[3];  // PIDパラメータ
+    float m_color_target; // カラーセンサの目標値
+    bool m_is_inverted;   // 倒立走行の有無
 };
 
 #endif // EV3_APP_LINETRACER_H_

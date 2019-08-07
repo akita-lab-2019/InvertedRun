@@ -14,6 +14,8 @@ APPL_CXXOBJS += \
 	TailWalker.o \
 	PID.o \
 	LogManager.o \
+	Section.o \
+	SectionTracer.o \
 	LineTracer.o
 
 SRCLANG := c++
@@ -25,9 +27,10 @@ include $(EV3RT_SDK_LIB_DIR)/libcpp-ev3/Makefile
 
 endif
 
-APPL_DIR += $(mkfile_path)log $(mkfile_path)include $(mkfile_path)RobotInfo
+APPL_DIR += $(mkfile_path)log $(mkfile_path)SectionManager $(mkfile_path)include $(mkfile_path)RobotInfo
 
 INCLUDES += \
 	-I$(mkfile_path)RobotInfo\
+	-I$(mkfile_path)SectionManager\
 	-I$(mkfile_path)log\
 	-I$(mkfile_path)include

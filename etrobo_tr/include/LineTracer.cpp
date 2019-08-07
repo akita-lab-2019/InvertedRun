@@ -6,6 +6,7 @@
  * @param invertedWalker 倒立走行
  */
 LineTracer::LineTracer(RobotInfo *robot_info,
+                       Section *section,
                        InvertedWalker *inverted_walker,
                        TailWalker *tail_walker,
                        PID *pid)
@@ -18,9 +19,20 @@ LineTracer::LineTracer(RobotInfo *robot_info,
 }
 
 /**
+ * 初期化する
+ */
+void LineTracer::init()
+{
+    m_is_inverted = m_section->isInverted();
+    m_forward = m_section->getForward();
+    m_curvature = m_section->getCurvature();
+    m_section->getPidParm(m_pid_parm);
+    m_color_target = m_section->getColorTarget();
+}
+
+/**
  * ライントレースする
  */
-bool b_flag = 0;
 void LineTracer::run()
 {
     if (m_is_initialized == false)
@@ -31,7 +43,14 @@ void LineTracer::run()
     }
 
     float direction = m_pid->calculate(0, m_robot_info->getBrightnessGap());
-    tailRun(20, direction);
+    if (m_is_inverted)
+    {
+        invertedRun(m_forward, direction);
+    }
+    else
+    {
+        tailRun(m_forward, direction);
+    }
 
     // if (scenario_num == 11)
     // {
