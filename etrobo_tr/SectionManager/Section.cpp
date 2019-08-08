@@ -14,14 +14,15 @@ Section::Section(ParmAdministrator *parm)
  */
 void Section::update(int num)
 {
+    m_distance = m_distance_list[num];
     m_forward = m_parm->forward_v[m_is_curve_list[num]];
-    m_curvature = 0;
+    m_curvature = m_curvature_list[num];
     m_pid_parm[0] = m_parm->trace_pid[m_is_curve_list[num]][0];
     m_pid_parm[1] = m_parm->trace_pid[m_is_curve_list[num]][1];
     m_pid_parm[2] = m_parm->trace_pid[m_is_curve_list[num]][2];
     m_color_target = m_parm->color_sensor_targrt;
     m_tail_angle = 0;
-    m_is_inverted = 0;
+    m_is_inverted = 1;
 }
 
 /**

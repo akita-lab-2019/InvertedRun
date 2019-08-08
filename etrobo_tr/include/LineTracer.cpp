@@ -11,6 +11,7 @@ LineTracer::LineTracer(RobotInfo *robot_info,
                        TailWalker *tail_walker,
                        PID *pid)
     : m_robot_info(robot_info),
+      m_section(section),
       m_inverted_walker(inverted_walker),
       m_tail_walker(tail_walker),
       m_pid(pid),
@@ -21,13 +22,21 @@ LineTracer::LineTracer(RobotInfo *robot_info,
 /**
  * 初期化する
  */
-void LineTracer::init()
+void LineTracer::update()
 {
+    // m_is_inverted = 1;
+    // m_forward = 20;
+    // m_curvature = 0;
+    // m_pid_parm[0] = 0.6;
+    // m_pid_parm[1] = 0.045;
+    // m_pid_parm[2] = 0.065;
+    // m_color_target = 25;
     m_is_inverted = m_section->isInverted();
     m_forward = m_section->getForward();
     m_curvature = m_section->getCurvature();
     m_section->getPidParm(m_pid_parm);
     m_color_target = m_section->getColorTarget();
+    m_pid->init(m_pid_parm[0], m_pid_parm[1], m_pid_parm[2]);
 }
 
 /**
@@ -38,11 +47,12 @@ void LineTracer::run()
     if (m_is_initialized == false)
     {
         m_inverted_walker->init();
-        m_pid->init(0.6, 0.045, 0.065);
+        m_pid->init(m_pid_parm[0], m_pid_parm[1], m_pid_parm[2]);
         m_is_initialized = true;
     }
 
     float direction = m_pid->calculate(0, m_robot_info->getBrightnessGap());
+    direction += -1.6 * m_curvature;
     if (m_is_inverted)
     {
         invertedRun(m_forward, direction);
@@ -51,54 +61,6 @@ void LineTracer::run()
     {
         tailRun(m_forward, direction);
     }
-
-    // if (scenario_num == 11)
-    // {
-    //     m_tail_controller->control(65, 40);
-    // }
-    // else
-    // {
-    //     if (scenario_num == 0 && b_flag == 0)
-    //     {
-    //         b_flag = 1;
-    //         m_pid->init(m_parm->trace_pid[is_curve[scenario_num]][0],
-    //                     m_parm->trace_pid[is_curve[scenario_num]][1],
-    //                     m_parm->trace_pid[is_curve[scenario_num]][2]);
-    //     }
-    //     sectionRun(m_parm->forward_v[is_curve[scenario_num]]);
-    //     if (m_robot_info->getRobotDis() > segment_dis[scenario_num])
-    //     {
-    //         ev3_speaker_play_tone(NOTE_C4 + scenario_num * 100, 100);
-    //         scenario_num++;
-    //         m_pid->init(m_parm->trace_pid[is_curve[scenario_num]][0],
-    //                     m_parm->trace_pid[is_curve[scenario_num]][1],
-    //                     m_parm->trace_pid[is_curve[scenario_num]][2]);
-    //     }
-    //     m_tail_controller->control(0, 60);
-
-    //     if (scenario_num == 11)
-    //     {
-    //         if (m_robot_info->getRobotDis() > 9.8)
-    //         {
-    //             scenario_num++;
-    //         }
-    //         sectionRun(20);
-    //     }
-
-    //     if (scenario_num == 12)
-    //     {
-    //         long start_time = m_robot_info->getRunTime();
-    //         while (m_robot_info->getRunTime() - start_time < 200)
-    //         {
-    //             m_tail_controller->control(65, 40);
-    //             m_wheel_L.setPWM(80);
-    //             m_wheel_R.setPWM(80);
-    //         }
-    //         m_tail_controller->control(65, 40);
-    //         m_wheel_L.reset();
-    //         m_wheel_R.reset();
-    //     }
-    // }
 }
 
 /**

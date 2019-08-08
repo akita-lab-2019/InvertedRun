@@ -25,10 +25,8 @@ public:
                TailWalker *tail_walker,
                PID *pid);
 
-    void init();
-
+    void update();
     void run();
-    void setParm(float is_inverted, float forward, float curvature, float pid[3], float color_target);
 
 private:
     RobotInfo *m_robot_info;

@@ -222,7 +222,7 @@ void tracer_task(intptr_t exinf)
     else
     {
         g_tail_controller->control(0, 60); // 完全停止用角度に制御
-        g_section_tracer->run();            // 倒立走行
+        g_section_tracer->run();           // 倒立走行
     }
 
     ext_tsk();

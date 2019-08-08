@@ -25,18 +25,20 @@ void SectionTracer::run()
 {
     if (m_is_initialized == false)
     {
-        // m_line_tracer->init();
-        // m_section->update(0);
-        // m_line_tracer->init();
-        // m_is_initialized = true;
+        m_section->update(0);
+        m_line_tracer->update();
+        m_is_initialized = true;
     }
 
-    if (m_robot_info->getRobotDis() > m_section->getDistance())
+    if (m_section_num != 17)
     {
-        m_section_num++;
-        m_line_tracer->init();
-        m_section->update(m_section_num);
-        ev3_speaker_play_tone(NOTE_C4 + m_section_num * 100, 100);
+        if (m_robot_info->getRobotDis() > m_section->getDistance())
+        {
+            m_section_num++;
+            m_section->update(m_section_num);
+            m_line_tracer->update();
+            ev3_speaker_play_tone(NOTE_C4 + m_section_num * 100, 100);
+        }
     }
 
     if (m_section_num % 2)

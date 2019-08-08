@@ -12,7 +12,6 @@ public:
 
     char all_data_str[20][256];
     float forward_v[2];
-    float turn_v;
     float color_sensor_targrt;
     float trace_pid[2][3];
 
