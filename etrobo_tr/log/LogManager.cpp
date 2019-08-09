@@ -43,32 +43,31 @@ void LogManager::update()
 void LogManager::readData()
 {
     // データを抽出して文字配列に格納
-    // int i = 0;
-    // sprintf(m_data_str[i++], "%f", g_clock.now() / 1000.0);
-    // sprintf(m_data_str[i++], "%f", ev3_battery_voltage_mV() / 1000.0);
-    // sprintf(m_data_str[i++], "%d", g_color_sensor.getBrightness());
-    // sprintf(m_data_str[i++], "%f", g_odometer->getRobotPoseX());
-    // sprintf(m_data_str[i++], "%f", g_odometer->getRobotPoseY());
-    // sprintf(m_data_str[i++], "%f", g_odometer->getRobotAngle() * 180 / 3.14);
-    // sprintf(m_data_str[i++], "%f", g_odometer->getRobotDistance());
-    // sprintf(m_data_str[i++], "%d", g_sonar_sensor.getDistance());
-
     int i = 0;
+    sprintf(m_data_str[i++], "%d", m_robot_info->getCourse());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getSectionNum());
     sprintf(m_data_str[i++], "%f", m_robot_info->getRunTime());
-    sprintf(m_data_str[i++], "%f", 10.0);
+    sprintf(m_data_str[i++], "%f", m_robot_info->getBatteryVoltage());
     sprintf(m_data_str[i++], "%d", m_robot_info->getBrightness());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(0));
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(1));
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(2));
+    sprintf(m_data_str[i++], "%f", m_robot_info->getBrightnessGap());
+    sprintf(m_data_str[i++], "%f", m_robot_info->getWheelVelocity(RobotInfo::L));
+    sprintf(m_data_str[i++], "%f", m_robot_info->getWheelVelocity(RobotInfo::R));
+    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotLinerVelocity());
+    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotAngularVelocity());
+    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(RobotInfo::X));
+    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(RobotInfo::Y));
+    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(RobotInfo::YAW));
     sprintf(m_data_str[i++], "%f", m_robot_info->getRobotDis());
-    sprintf(m_data_str[i++], "%f", 10.0);
+    sprintf(m_data_str[i++], "%d", m_robot_info->getPitchPos());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
+    sprintf(m_data_str[i++], "%f", m_robot_info->getSonarDistance());
 }
 
 void LogManager::sendToBT()
 {
-    char file_str[255];
+    char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 7; i++)
+    for (int i = 1; i < 17; i++)
     {
         sprintf(file_str, "%s\t%s", file_str, m_data_str[i]);
     }
@@ -77,9 +76,9 @@ void LogManager::sendToBT()
 
 void LogManager::sendToSD()
 {
-    char file_str[255];
+    char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 7; i++)
+    for (int i = 1; i < 17; i++)
     {
         sprintf(file_str, "%s, %s", file_str, m_data_str[i]);
     }

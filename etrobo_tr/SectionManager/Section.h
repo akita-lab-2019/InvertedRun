@@ -20,6 +20,7 @@ class Section
 public:
     Section(ParmAdministrator *parm);
     void update(int num);
+    int getSectionNum();
     float getDistance();
     float getForward();
     float getCurvature();
@@ -31,6 +32,7 @@ public:
 private:
     ParmAdministrator *m_parm;
 
+    int m_section_num = 0;
     float m_distance;     // 区間長さ[m]
     float m_forward;      // 前進指令速度[%]
     float m_curvature;    // 曲率[m^-1]

@@ -68,7 +68,6 @@ initSystem()
 {
     // パラメータの管理
     g_parm_administrator = new ParmAdministrator();
-    g_parm_administrator->readParm();
 
     // 走行体情報
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
@@ -80,18 +79,17 @@ initSystem()
                                  g_wheel_R,
                                  g_tail_motor,
                                  g_line_monitor,
-                                 g_odometer);
+                                 g_odometer,
+                                 g_section);
 
     // 記録
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     g_recorder = new Recorder(g_parm_administrator);
     g_log_manager = new LogManager(bt, g_recorder, g_robot_info);
-    g_log_manager->init();
 
     // 尻尾制御
     g_pid_tail = new PID();
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
-    g_tail_controller->init();
 
     // 走行制御
     g_pid_trace = new PID();
@@ -105,6 +103,10 @@ initSystem()
                                    g_tail_walker,
                                    g_pid_trace);
     g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer, g_parm_administrator);
+
+    g_parm_administrator->readParm();
+    g_log_manager->init();
+    g_tail_controller->init();
 
     // タスクの開始
     ev3_sta_cyc(INFO_TASK);
@@ -234,7 +236,7 @@ void tracer_task(intptr_t exinf)
 void log_task(intptr_t exinf)
 {
     g_log_manager->update();
-    tslp_tsk(20);
+    tslp_tsk(100);
 }
 
 /**

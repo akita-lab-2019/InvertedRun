@@ -15,10 +15,10 @@ Odometer::Odometer(ev3api::Motor &wheel_L, ev3api::Motor &wheel_R)
  */
 void Odometer::init()
 {
-    m_robot_x = 0;
-    m_robot_y = 0;
+    m_robot_pose[X] = 0;
+    m_robot_pose[Y] = 0;
+    m_robot_pose[YAW] = 0;
     m_robot_dis = 0; // 走行距離[m]
-    m_robot_rad = 0; // 角度[rad]
 }
 
 /**
@@ -26,8 +26,9 @@ void Odometer::init()
  */
 void Odometer::measure()
 {
-    m_wheel_rad_L = m_wheel_L.getCount() * TO_RAD;
-    m_wheel_rad_R = m_wheel_R.getCount() * TO_RAD;
+    // ホイールの回転角度を算出する
+    m_wheel_deg[L] = m_wheel_L.getCount() * TO_RAD;
+    m_wheel_deg[R] = m_wheel_R.getCount() * TO_RAD;
 
     calculate();
 }
@@ -37,37 +38,44 @@ void Odometer::measure()
  */
 void Odometer::calculate()
 {
-    float wheel_dis_l = m_wheel_rad_L * WHEEL_R;
-    float wheel_dis_r = m_wheel_rad_R * WHEEL_R;
+    const float dt = 0.004;
 
-    m_robot_dis = (wheel_dis_r + wheel_dis_l) / 2;
-    m_robot_rad = (wheel_dis_r - wheel_dis_l) / 0.177;
+    // ホイールの累計走行距離を計算
+    float wheel_dis[2];
+    wheel_dis[L] = m_wheel_deg[L] * WHEEL_RADIUS;
+    wheel_dis[R] = m_wheel_deg[R] * WHEEL_RADIUS;
 
+    // ロボットの累計走行距離を計算
+    m_robot_dis = (wheel_dis[R] + wheel_dis[L]) / 2;
+    m_robot_pose[YAW] = (wheel_dis[R] - wheel_dis[L]) / WHEEL_DIST;
+
+    // ロボットの座標を計算
     float dl = m_robot_dis - m_pre_robot_dis;
-    m_robot_x = m_pre_robot_x + dl * cos(m_robot_rad);
-    m_robot_y = m_pre_robot_y + dl * sin(m_robot_rad);
+    m_robot_pose[X] = m_pre_robot_pose[X] + dl * cos(m_robot_pose[YAW] * TO_RAD);
+    m_robot_pose[Y] = m_pre_robot_pose[Y] + dl * sin(m_robot_pose[YAW] * TO_RAD);
 
+    // ホイール速度を計算
+    // m_wheel_deg_v[L] = (m_wheel_deg[L] - m_pre_wheel_deg[L]) / dt;
+    // m_wheel_deg_v[R] = (m_wheel_deg[R] - m_pre_wheel_deg[R]) / dt;
+    // m_robot_liner_v = (m_robot_dis - m_pre_robot_dis) / dt;
+    // m_robot_angular_v = (m_robot_pose[YAW] - m_pre_robot_pose[YAW]) / dt;
+
+    // 次のループにデータを渡す
     m_pre_robot_dis = m_robot_dis;
-    m_pre_robot_x = m_robot_x;
-    m_pre_robot_y = m_robot_y;
+    m_pre_robot_pose[X] = m_robot_pose[X];
+    m_pre_robot_pose[Y] = m_robot_pose[Y];
+    m_pre_wheel_deg[L] = m_wheel_deg[L];
+    m_pre_wheel_deg[R] = m_wheel_deg[R];
 }
 
 /**
- * ロボットのx位置を取得
- * @return ロボットのx位置[m]
+ * ロボットの位置を取得する
+ * @parm 軸番号（X:0, Y:1, YAW:2）
+ * @return ロボットの位置（X:[m], Y:[m], YAW[deg]）
  */
-float Odometer::getRobotPoseX()
+float Odometer::getRobotPose(int axis)
 {
-    return m_robot_x;
-}
-
-/**
- * ロボットのy位置を取得
- * @return ロボットのx位置[m]
- */
-float Odometer::getRobotPoseY()
-{
-    return m_robot_y;
+    return m_robot_pose[axis];
 }
 
 /**
@@ -80,10 +88,39 @@ float Odometer::getRobotDistance()
 }
 
 /**
- * ロボットのyaw角位置を取得
- * @return ロボットのyaw角位置[rad]
+ * ロボットの並進速度を取得
+ * @return ロボットの並進速度[m/s]
  */
-float Odometer::getRobotAngle()
+float Odometer::getRobotLinerVelocity()
 {
-    return m_robot_rad;
+    return m_robot_liner_v;
+}
+
+/**
+ * ロボットの角速度を取得
+ * @return ロボットの角速度[deg/s]
+ */
+float Odometer::getRobotAngularVelocity()
+{
+    return m_robot_angular_v;
+}
+
+/**
+ * ホイール速度を取得
+ * @parm ホイール番号（L:0, R:1）
+ * @return ホイール角速度[deg/s]
+ */
+float Odometer::getWheelVelocity(int wheel)
+{
+    return m_wheel_deg_v[wheel];
+}
+
+/**
+ * ホイール角度を取得
+ * @parm ホイール番号（L:0, R:1）
+ * @return ホイール角度[deg]
+ */
+float Odometer::getWheelPose(int wheel)
+{
+    return m_wheel_deg[wheel];
 }

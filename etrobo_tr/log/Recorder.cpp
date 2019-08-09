@@ -72,7 +72,7 @@ void Recorder::writeHeader()
     fclose(parm_file);
 
     // 凡例を記入
-    fprintf(log_file, "\r\nTime[s], Battery[V], ColorSensor, PoseX[m], PoseY[m], Distance[m], Angle[deg], Sonar[cm]\r\n");
+    fprintf(log_file, "\r\nCourse,Section,Time[s], Battery[V], ColorSensor,ColorSensorGap,WheelVeloL[r/s],WheelVeloR[r/s],LinerVelo[m/s],angularVelo[deg/s], PoseX[m], PoseY[m], Distance[m], Angle[deg],PitchP[deg],PitchV[deg/s],SonarDist[m]\r\n");
     fclose(log_file);
 }
 
