@@ -14,7 +14,10 @@ Section::Section(ParmAdministrator *parm)
  */
 void Section::update(int num)
 {
+<<<<<<< HEAD
     m_section_num = num;
+=======
+>>>>>>> 4bef5a1... fix: スタート直後にハングアップするバグを修正
     m_distance = m_distance_list[num];
     m_forward = m_parm->forward_v[m_is_curve_list[num]];
     m_curvature = m_curvature_list[num];
@@ -24,11 +27,14 @@ void Section::update(int num)
     m_color_target = m_parm->color_sensor_targrt;
     m_tail_angle = 0;
     m_is_inverted = 1;
+<<<<<<< HEAD
 }
 
 int Section::getSectionNum()
 {
     return m_section_num;
+=======
+>>>>>>> 4bef5a1... fix: スタート直後にハングアップするバグを修正
 }
 
 /**
