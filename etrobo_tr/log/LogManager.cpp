@@ -46,21 +46,21 @@ void LogManager::readData()
     int i = 0;
     sprintf(m_data_str[i++], "%d", m_robot_info->getCourse());
     sprintf(m_data_str[i++], "%d", m_robot_info->getSectionNum());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRunTime());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getBatteryVoltage());
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRunTime());
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getBatteryVoltage());
     sprintf(m_data_str[i++], "%d", m_robot_info->getBrightness());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getBrightnessGap());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getWheelVelocity(RobotInfo::L));
-    sprintf(m_data_str[i++], "%f", m_robot_info->getWheelVelocity(RobotInfo::R));
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotLinerVelocity());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotAngularVelocity());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(RobotInfo::X));
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(RobotInfo::Y));
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotPos(RobotInfo::YAW));
-    sprintf(m_data_str[i++], "%f", m_robot_info->getRobotDis());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getBrightnessGap());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getWheelVelocity(RobotInfo::L));
+    sprintf(m_data_str[i++], "%d", m_robot_info->getWheelVelocity(RobotInfo::R));
+    sprintf(m_data_str[i++], "%d", m_robot_info->getRobotLinerVelocity());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getRobotAngularVelocity());
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::X));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::Y));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::YAW));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotDis());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchPos());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
-    sprintf(m_data_str[i++], "%f", m_robot_info->getSonarDistance());
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getSonarDistance());
 }
 
 void LogManager::sendToBT()

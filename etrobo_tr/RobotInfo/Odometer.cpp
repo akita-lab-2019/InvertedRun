@@ -18,7 +18,7 @@ void Odometer::init()
     m_robot_pose[X] = 0;
     m_robot_pose[Y] = 0;
     m_robot_pose[YAW] = 0;
-    m_robot_dis = 0; // 走行距離[m]
+    m_robot_dis = 0;
 }
 
 /**
@@ -47,7 +47,7 @@ void Odometer::calculate()
 
     // ロボットの累計走行距離を計算
     m_robot_dis = (wheel_dis[R] + wheel_dis[L]) / 2;
-    m_robot_pose[YAW] = (wheel_dis[R] - wheel_dis[L]) / WHEEL_DIST;
+    m_robot_pose[YAW] = (wheel_dis[R] - wheel_dis[L]) / WHEEL_DIST * TO_DEG;
 
     // ロボットの座標を計算
     float dl = m_robot_dis - m_pre_robot_dis;
@@ -55,10 +55,10 @@ void Odometer::calculate()
     m_robot_pose[Y] = m_pre_robot_pose[Y] + dl * sin(m_robot_pose[YAW] * TO_RAD);
 
     // ホイール速度を計算
-    // m_wheel_deg_v[L] = (m_wheel_deg[L] - m_pre_wheel_deg[L]) / dt;
-    // m_wheel_deg_v[R] = (m_wheel_deg[R] - m_pre_wheel_deg[R]) / dt;
-    // m_robot_liner_v = (m_robot_dis - m_pre_robot_dis) / dt;
-    // m_robot_angular_v = (m_robot_pose[YAW] - m_pre_robot_pose[YAW]) / dt;
+    m_wheel_deg_v[L] = (m_wheel_deg[L] - m_pre_wheel_deg[L]) / dt;
+    m_wheel_deg_v[R] = (m_wheel_deg[R] - m_pre_wheel_deg[R]) / dt;
+    m_robot_liner_v = (m_robot_dis - m_pre_robot_dis) / dt;
+    m_robot_angular_v = (m_robot_pose[YAW] - m_pre_robot_pose[YAW]) / dt;
 
     // 次のループにデータを渡す
     m_pre_robot_dis = m_robot_dis;

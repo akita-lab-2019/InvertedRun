@@ -10,6 +10,7 @@
 #include <Clock.h>
 #include <ColorSensor.h>
 #include <GyroSensor.h>
+#include <SonarSensor.h>
 #include <Motor.h>
 
 #include "LineMonitor.h"
@@ -22,6 +23,7 @@ public:
     RobotInfo(ev3api::Clock &clock,
               ev3api::ColorSensor &color_sensor,
               ev3api::GyroSensor &gyro_sensor,
+              ev3api::SonarSensor &sonar_sensor,
               ev3api::Motor &wheel_L,
               ev3api::Motor &wheel_R,
               ev3api::Motor &tail_motor,
@@ -40,13 +42,13 @@ public:
     int getPitchVel();
     int getPitchPos();
     int getWheelPos(int wheel);
-    float getWheelVelocity(int wheel);
+    int getWheelVelocity(int wheel);
     float getTailPos();
-    float getBrightnessGap();
+    int getBrightnessGap();
     float getRobotPos(int axis);
     float getRobotDis();
-    float getRobotLinerVelocity();
-    float getRobotAngularVelocity();
+    int getRobotLinerVelocity();
+    int getRobotAngularVelocity();
     float getSonarDistance();
 
     enum
@@ -66,6 +68,7 @@ private:
     ev3api::Clock &m_clock;
     ev3api::ColorSensor &m_color_sensor;
     ev3api::GyroSensor &m_gyro_sensor;
+    ev3api::SonarSensor &m_sonar_sensor;
     ev3api::Motor &m_wheel_L;
     ev3api::Motor &m_wheel_R;
     ev3api::Motor &m_tail_motor;
@@ -80,13 +83,14 @@ private:
     int m_pitch_vel = 0;        // pitchの角速度[deg/rad]
     int m_pitch_pos = 0;        // pitchの角位置[deg]
     int m_wheel_pos[2] = {0};   // 車輪の角位置（左[deg], 右[deg]）
-    float m_wheel_vel[2] = {0}; // 車輪の角速度（左[deg/s], 右[deg/s]）
+    int m_wheel_vel[2] = {0};   // 車輪の角速度（左[deg/s], 右[deg/s]）
     float m_tail_pos = 0;       // 尻尾モータの角位置[deg]
-    float m_brightness_gap = 0; // カラーセンサから取得した輝度と目標値との偏差
+    int m_brightness_gap = 0;   // カラーセンサから取得した輝度と目標値との偏差
     float m_robot_pos[3] = {0}; // ロボットの座標（x[m], y[m], yaw[deg]）
     float m_robot_dis = 0;      // 走行距離[m]
-    float m_robot_liner_velocity;
-    float m_robot_angular_velocity;
+    int m_robot_liner_velocity = 0;
+    int m_robot_angular_velocity = 0;
+    float m_sonar_distance = 0;
 };
 
 #endif // EV3_ROBOT_INFO_H_

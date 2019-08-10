@@ -52,7 +52,7 @@ void LineTracer::run()
     }
 
     float direction = m_pid->calculate(0, m_robot_info->getBrightnessGap());
-    direction += -1.6 * m_curvature;
+    // direction += -1.2 * m_curvature;
     if (m_is_inverted)
     {
         invertedRun(m_forward, direction);

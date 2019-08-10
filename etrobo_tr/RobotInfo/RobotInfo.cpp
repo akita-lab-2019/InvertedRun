@@ -6,6 +6,7 @@
 RobotInfo::RobotInfo(ev3api::Clock &clock,
                      ev3api::ColorSensor &color_sensor,
                      ev3api::GyroSensor &gyro_sensor,
+                     ev3api::SonarSensor &sonar_sensor,
                      ev3api::Motor &wheel_L,
                      ev3api::Motor &wheel_R,
                      ev3api::Motor &tail_motor,
@@ -15,6 +16,7 @@ RobotInfo::RobotInfo(ev3api::Clock &clock,
     : m_clock(clock),
       m_color_sensor(color_sensor),
       m_gyro_sensor(gyro_sensor),
+      m_sonar_sensor(sonar_sensor),
       m_wheel_L(wheel_L),
       m_wheel_R(wheel_R),
       m_tail_motor(tail_motor),
@@ -39,14 +41,15 @@ void RobotInfo::update()
 {
     m_odometer->measure();
 
-    // m_section_num = m_section->getSectionNum();
+    m_section_num = m_section->getSectionNum();
+
     m_runTime = (float)m_clock.now() / 1000.0;
     m_battery = ev3_battery_voltage_mV() / 1000.0;
     m_brightness = m_color_sensor.getBrightness();
     m_pitch_vel = m_gyro_sensor.getAnglerVelocity();
-    // // m_pitch_pos = m_gyro_sensor.getAngle();
-    m_wheel_pos[L] = m_odometer->getWheelPose(Odometer::L);
-    m_wheel_pos[R] = m_odometer->getWheelPose(Odometer::R);
+    // m_pitch_pos = m_gyro_sensor.getAngle();
+    m_wheel_pos[L] = m_wheel_L.getCount();
+    m_wheel_pos[R] = m_wheel_R.getCount();
     m_wheel_vel[L] = m_odometer->getWheelVelocity(Odometer::L);
     m_wheel_vel[R] = m_odometer->getWheelVelocity(Odometer::R);
     m_tail_pos = m_tail_motor.getCount();
@@ -55,11 +58,10 @@ void RobotInfo::update()
     m_robot_pos[Y] = m_odometer->getRobotPose(Odometer::Y);
     m_robot_pos[YAW] = m_odometer->getRobotPose(Odometer::YAW);
     m_robot_dis = m_odometer->getRobotDistance();
-    m_robot_liner_velocity = m_odometer->getRobotLinerVelocity();
-    m_robot_angular_velocity = m_odometer->getRobotAngularVelocity();
 
-    m_runTime = m_clock.now() - pre_time;
-    pre_time = m_clock.now();
+    m_robot_liner_velocity = m_odometer->getRobotLinerVelocity();
+    // m_robot_angular_velocity = m_odometer->getRobotAngularVelocity();
+    m_sonar_distance = m_sonar_sensor.getDistance();
 }
 
 int RobotInfo::getCourse()
@@ -132,7 +134,7 @@ int RobotInfo::getWheelPos(int wheel)
  * @parm ホイール番号（L:0, R:1）
  * @return ホイール角速度[deg/s]
  */
-float RobotInfo::getWheelVelocity(int wheel)
+int RobotInfo::getWheelVelocity(int wheel)
 {
     return m_wheel_vel[wheel];
 }
@@ -150,7 +152,7 @@ float RobotInfo::getTailPos()
  * カラーセンサから取得した輝度と目標値との偏差を取得する
  * @return カラーセンサから取得した輝度と目標値との偏差
  */
-float RobotInfo::getBrightnessGap()
+int RobotInfo::getBrightnessGap()
 {
     return m_brightness_gap;
 }
@@ -178,7 +180,7 @@ float RobotInfo::getRobotDis()
  * ロボットの並進速度を取得
  * @return ロボットの並進速度[m/s]
  */
-float RobotInfo::getRobotLinerVelocity()
+int RobotInfo::getRobotLinerVelocity()
 {
     return m_robot_liner_velocity;
 }
@@ -187,12 +189,12 @@ float RobotInfo::getRobotLinerVelocity()
  * ロボットの角速度を取得
  * @return ロボットの角速度[deg/s]
  */
-float RobotInfo::getRobotAngularVelocity()
+int RobotInfo::getRobotAngularVelocity()
 {
     return m_robot_angular_velocity;
 }
 
 float RobotInfo::getSonarDistance()
 {
-    return 0;
+    return m_sonar_distance;
 }

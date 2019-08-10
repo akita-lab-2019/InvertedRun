@@ -68,6 +68,7 @@ initSystem()
 {
     // パラメータの管理
     g_parm_administrator = new ParmAdministrator();
+    g_section = new Section(g_parm_administrator);
 
     // 走行体情報
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
@@ -75,6 +76,7 @@ initSystem()
     g_robot_info = new RobotInfo(g_clock,
                                  g_color_sensor,
                                  g_gyro_sensor,
+                                 g_sonar_sensor,
                                  g_wheel_L,
                                  g_wheel_R,
                                  g_tail_motor,
@@ -94,7 +96,6 @@ initSystem()
     // 走行制御
     g_pid_trace = new PID();
     g_balancer = new Balancer();
-    g_section = new Section(g_parm_administrator);
     g_inverted_walker = new InvertedWalker(g_robot_info, g_wheel_L, g_wheel_R, g_balancer);
     g_tail_walker = new TailWalker(g_wheel_L, g_wheel_R);
     g_line_tracer = new LineTracer(g_robot_info,

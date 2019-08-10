@@ -50,6 +50,30 @@ void InvertedWalker::run()
     m_wheel_R.setBrake(false);
 }
 
+//*****************************************************************************
+// 関数名 : backlash_cancel
+// 引数 : lpwm (左モーターPWM値 ※前回の出力値)
+//        rpwm (右モーターPWM値 ※前回の出力値)
+//        lenc (左モーターエンコーダー値)
+//        renc (右モーターエンコーダー値)
+// 返り値 : なし
+// 概要 : 直近のPWM値に応じてエンコーダー値にバックラッシュ分の値を追加します。
+//*****************************************************************************
+void backlash_cancel(signed char lpwm, signed char rpwm, int32_t *lenc, int32_t *renc)
+{
+    const int BACKLASHHALF = 4; // バックラッシュの半分[deg]
+
+    if (lpwm < 0)
+        *lenc += BACKLASHHALF;
+    else if (lpwm > 0)
+        *lenc -= BACKLASHHALF;
+
+    if (rpwm < 0)
+        *renc += BACKLASHHALF;
+    else if (rpwm > 0)
+        *renc -= BACKLASHHALF;
+}
+
 /**
  * バランス走行に必要なものをリセットする
  */
