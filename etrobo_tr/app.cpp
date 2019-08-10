@@ -37,7 +37,6 @@ Motor g_wheel_L(PORT_C);
 Motor g_wheel_R(PORT_B);
 
 // オブジェクトの定義
-
 static RobotInfo *g_robot_info;
 static Section *g_section;
 static SectionTracer *g_section_tracer;
@@ -143,11 +142,17 @@ void main_task(intptr_t unused)
     // 初期化処理
     initSystem();
 
+    // 尻尾の角位置をリセット
+    g_tail_motor.setPWM(-100);
+    tslp_tsk(700);
+    g_tail_motor.reset();
+
     // スタート待機
     while (1)
     {
+
         // 尻尾の角度を維持
-        g_tail_controller->control(85, 50);
+        g_tail_controller->control(86, 50);
 
         // BlueToothスタート
         if (g_bt_cmd == 1 || g_bt_cmd == 2)
@@ -222,8 +227,8 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        g_tail_controller->control(0, 60); // 完全停止用角度に制御
-        g_section_tracer->run();           // 倒立走行
+        g_tail_controller->control(65, 60); // 完全停止用角度に制御
+        g_section_tracer->run();            // 倒立走行
     }
 
     ext_tsk();
@@ -235,7 +240,7 @@ void tracer_task(intptr_t exinf)
 void log_task(intptr_t exinf)
 {
     g_log_manager->update();
-    tslp_tsk(100);
+    tslp_tsk(20);
 }
 
 /**
@@ -246,13 +251,13 @@ void bt_recieve_task(intptr_t exinf)
     uint8_t c = fgetc(bt);
     switch (c)
     {
-    case '1':
+    case 'l':
         g_bt_cmd = 1;
         break;
-    case '2':
+    case 'r':
         g_bt_cmd = 2;
         break;
-    case '3':
+    case 's':
         g_bt_cmd = 3;
         break;
     default:

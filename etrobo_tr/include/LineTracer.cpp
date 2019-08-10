@@ -23,6 +23,9 @@ LineTracer::LineTracer(RobotInfo *robot_info,
 {
 }
 
+/**
+ * 更新する
+ */
 void LineTracer::init()
 {
     // モータエンコーダをリセットする
@@ -60,16 +63,32 @@ void LineTracer::run()
         m_is_initialized = true;
     }
 
+    // 旋回指令値を計算
     // float direction = m_pid->calculate(0, m_robot_info->getBrightnessGap());
-    float direction = -1.2 * m_curvature;
+    m_turn = -1.2 * m_curvature;
+
+    // 倒立走行と尻尾走行を振り分ける
     if (m_is_inverted)
     {
-        invertedRun(m_forward, direction);
+        invertedRun(m_forward, m_turn);
     }
     else
     {
-        tailRun(m_forward, direction);
+        tailRun(m_forward, m_turn);
     }
+
+    // RobotInfoに指令値を伝える
+    m_robot_info->setForward(m_forward);
+    m_robot_info->setTurn(m_turn);
+    m_robot_info->setPWM(m_pwm[L], m_pwm[R]);
+
+    // 左右モータに回転を指示する
+    m_wheel_L.setPWM(m_pwm[L]);
+    m_wheel_R.setPWM(m_pwm[R]);
+
+    // ブレーキは解除
+    m_wheel_L.setBrake(false);
+    m_wheel_R.setBrake(false);
 }
 
 /**
@@ -86,14 +105,8 @@ void LineTracer::invertedRun(int forward_v, int turn_v)
     // 並進と旋回の指令値，各種データ与えてホイールの指令値を算出させる
     m_balancer->setCommand(forward_v, turn_v);
     m_balancer->update(angle, wheel_cnt_R, wheel_cnt_L, battery);
-
-    // 左右モータに回転を指示する
-    m_wheel_L.setPWM(m_balancer->getPwmLeft());
-    m_wheel_R.setPWM(m_balancer->getPwmRight());
-
-    // ブレーキは解除
-    m_wheel_L.setBrake(false);
-    m_wheel_R.setBrake(false);
+    m_pwm[L] = m_balancer->getPwmLeft();
+    m_pwm[R] = m_balancer->getPwmRight();
 }
 
 /**
@@ -101,14 +114,9 @@ void LineTracer::invertedRun(int forward_v, int turn_v)
  */
 void LineTracer::tailRun(int forward_v, int turn_v)
 {
+    // 並進と旋回の指令値を与えてホイールの指令値を算出させる
     m_tail_walker->setCommand(forward_v, turn_v);
     m_tail_walker->update();
-
-    // 左右モータに回転を指示する
-    m_wheel_L.setPWM(m_tail_walker->getPwmLeft());
-    m_wheel_R.setPWM(m_tail_walker->getPwmRight());
-
-    // ブレーキは解除
-    m_wheel_L.setBrake(false);
-    m_wheel_R.setBrake(false);
+    m_pwm[L] = m_tail_walker->getPwmLeft();
+    m_pwm[R] = m_tail_walker->getPwmRight();
 }

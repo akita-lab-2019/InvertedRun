@@ -34,6 +34,14 @@ public:
     void init();
     void update();
 
+    void setForward(int forward);
+    void setTurn(int turn);
+    void setPWM(int pwm_l, int pwm_r);
+
+    int getForward();
+    int getTurn();
+    int getPWM(int wheel);
+
     int getCourse();
     int getSectionNum();
     float getBatteryVoltage();
@@ -42,13 +50,10 @@ public:
     int getPitchVel();
     int getPitchPos();
     int getWheelPos(int wheel);
-    int getWheelVelocity(int wheel);
     float getTailPos();
     int getBrightnessGap();
     float getRobotPos(int axis);
     float getRobotDis();
-    int getRobotLinerVelocity();
-    int getRobotAngularVelocity();
     float getSonarDistance();
 
     enum
@@ -91,6 +96,9 @@ private:
     int m_robot_liner_velocity = 0;
     int m_robot_angular_velocity = 0;
     float m_sonar_distance = 0;
+    int m_forward = 0;
+    int m_turn = 0;
+    int m_pwm[2] = {0};
 };
 
 #endif // EV3_ROBOT_INFO_H_

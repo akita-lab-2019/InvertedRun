@@ -50,18 +50,13 @@ void RobotInfo::update()
     // m_pitch_pos = m_gyro_sensor.getAngle();
     m_wheel_pos[L] = m_wheel_L.getCount();
     m_wheel_pos[R] = m_wheel_R.getCount();
-    m_wheel_vel[L] = m_odometer->getWheelVelocity(Odometer::L);
-    m_wheel_vel[R] = m_odometer->getWheelVelocity(Odometer::R);
     m_tail_pos = m_tail_motor.getCount();
     m_brightness_gap = m_line_monitor->getGap();
     m_robot_pos[X] = m_odometer->getRobotPose(Odometer::X);
     m_robot_pos[Y] = m_odometer->getRobotPose(Odometer::Y);
     m_robot_pos[YAW] = m_odometer->getRobotPose(Odometer::YAW);
     m_robot_dis = m_odometer->getRobotDistance();
-
-    m_robot_liner_velocity = m_odometer->getRobotLinerVelocity();
-    // m_robot_angular_velocity = m_odometer->getRobotAngularVelocity();
-    m_sonar_distance = m_sonar_sensor.getDistance();
+    m_sonar_distance = (float)m_sonar_sensor.getDistance() / 100.0;
 }
 
 int RobotInfo::getCourse()
@@ -130,16 +125,6 @@ int RobotInfo::getWheelPos(int wheel)
 }
 
 /**
- * ホイール速度を取得
- * @parm ホイール番号（L:0, R:1）
- * @return ホイール角速度[deg/s]
- */
-int RobotInfo::getWheelVelocity(int wheel)
-{
-    return m_wheel_vel[wheel];
-}
-
-/**
  * 尻尾モータの角位置を取得する
  * @return 尻尾モータの角位置[deg]
  */
@@ -176,25 +161,38 @@ float RobotInfo::getRobotDis()
     return m_robot_dis;
 }
 
-/**
- * ロボットの並進速度を取得
- * @return ロボットの並進速度[m/s]
- */
-int RobotInfo::getRobotLinerVelocity()
-{
-    return m_robot_liner_velocity;
-}
-
-/**
- * ロボットの角速度を取得
- * @return ロボットの角速度[deg/s]
- */
-int RobotInfo::getRobotAngularVelocity()
-{
-    return m_robot_angular_velocity;
-}
-
 float RobotInfo::getSonarDistance()
 {
     return m_sonar_distance;
+}
+
+void RobotInfo::setForward(int forward)
+{
+    m_forward = forward;
+}
+
+void RobotInfo::setTurn(int turn)
+{
+    m_turn = turn;
+}
+
+void RobotInfo::setPWM(int pwm_l, int pwm_r)
+{
+    m_pwm[L] = pwm_l;
+    m_pwm[R] = pwm_r;
+}
+
+int RobotInfo::getForward()
+{
+    return m_forward;
+}
+
+int RobotInfo::getTurn()
+{
+    return m_turn;
+}
+
+int RobotInfo::getPWM(int wheel)
+{
+    return m_pwm[wheel];
 }

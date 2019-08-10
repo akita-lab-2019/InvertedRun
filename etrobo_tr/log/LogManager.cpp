@@ -50,13 +50,13 @@ void LogManager::readData()
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getBatteryVoltage());
     sprintf(m_data_str[i++], "%d", m_robot_info->getBrightness());
     sprintf(m_data_str[i++], "%d", m_robot_info->getBrightnessGap());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getWheelVelocity(RobotInfo::L));
-    sprintf(m_data_str[i++], "%d", m_robot_info->getWheelVelocity(RobotInfo::R));
-    sprintf(m_data_str[i++], "%d", m_robot_info->getRobotLinerVelocity());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getRobotAngularVelocity());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getForward());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getTurn());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(RobotInfo::L));
+    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(RobotInfo::R));
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::X));
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::Y));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::YAW));
+    sprintf(m_data_str[i++], "%d", (int)m_robot_info->getRobotPos(RobotInfo::YAW));
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotDis());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchPos());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
