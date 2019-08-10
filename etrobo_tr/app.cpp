@@ -1,5 +1,4 @@
 #include "app.h"
-#include "InvertedWalker.h"
 #include "TailWalker.h"
 #include "LineTracer.h"
 #include "ParmAdministrator.h"
@@ -48,7 +47,6 @@ static Recorder *g_recorder;
 static LineMonitor *g_line_monitor;
 static TailController *g_tail_controller;
 static Balancer *g_balancer;
-static InvertedWalker *g_inverted_walker;
 static TailWalker *g_tail_walker;
 static LineTracer *g_line_tracer;
 static Odometer *g_odometer;
@@ -96,13 +94,14 @@ initSystem()
     // 走行制御
     g_pid_trace = new PID();
     g_balancer = new Balancer();
-    g_inverted_walker = new InvertedWalker(g_robot_info, g_wheel_L, g_wheel_R, g_balancer);
-    g_tail_walker = new TailWalker(g_wheel_L, g_wheel_R);
+    g_tail_walker = new TailWalker();
     g_line_tracer = new LineTracer(g_robot_info,
                                    g_section,
-                                   g_inverted_walker,
                                    g_tail_walker,
-                                   g_pid_trace);
+                                   g_pid_trace,
+                                   g_balancer,
+                                   g_wheel_L,
+                                   g_wheel_R);
     g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer, g_parm_administrator);
 
     g_parm_administrator->readParm();
@@ -130,7 +129,6 @@ static void destroySystem()
     delete g_line_monitor;
     delete g_tail_controller;
     delete g_balancer;
-    delete g_inverted_walker;
     delete g_line_tracer;
     delete g_odometer;
     delete g_pid_tail;

@@ -6,46 +6,8 @@
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-TailWalker::TailWalker(ev3api::Motor &wheel_L,
-                       ev3api::Motor &wheel_R)
-    : m_wheel_L(wheel_L),
-      m_wheel_R(wheel_R)
+TailWalker::TailWalker()
 {
-}
-
-/**
- * バランス走行する
- */
-void TailWalker::run()
-{
-    // 左右モータに回転を指示する
-    int wheel_v_L = m_forward + K * m_turn;
-    int wheel_v_R = m_forward - K * m_turn;
-
-    if (wheel_v_L > 100)
-    {
-        wheel_v_L = 100;
-    }
-    else if (wheel_v_L < -100)
-    {
-        wheel_v_L = -100;
-    }
-
-    if (wheel_v_R > 100)
-    {
-        wheel_v_R = 100;
-    }
-    else if (wheel_v_R < -100)
-    {
-        wheel_v_R = -100;
-    }
-
-    m_wheel_L.setPWM(wheel_v_L);
-    m_wheel_R.setPWM(wheel_v_R);
-
-    // ブレーキは解除
-    m_wheel_L.setBrake(false);
-    m_wheel_R.setBrake(false);
 }
 
 /**
@@ -53,6 +15,33 @@ void TailWalker::run()
  */
 void TailWalker::init()
 {
+}
+
+/**
+ * バランス走行する
+ */
+void TailWalker::update()
+{
+    m_left_pwm = m_forward + K * m_turn;
+    m_right_pwm = m_forward - K * m_turn;
+
+    if (m_left_pwm > 100)
+    {
+        m_left_pwm = 100;
+    }
+    else if (m_left_pwm < -100)
+    {
+        m_left_pwm = -100;
+    }
+
+    if (m_right_pwm > 100)
+    {
+        m_right_pwm = 100;
+    }
+    else if (m_right_pwm < -100)
+    {
+        m_right_pwm = -100;
+    }
 }
 
 /**
@@ -81,4 +70,22 @@ void TailWalker::setCommand(int forward, int turn)
     {
         m_turn = -100;
     }
+}
+
+/**
+ * 右車輪のPWM値を取得する
+ * @return 右車輪のPWM値
+ */
+int8_t TailWalker::getPwmRight()
+{
+    return m_right_pwm;
+}
+
+/**
+ * 左車輪のPWM値を取得する
+ * @return 左車輪のPWM値
+ */
+int8_t TailWalker::getPwmLeft()
+{
+    return m_left_pwm;
 }

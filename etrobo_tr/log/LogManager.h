@@ -18,7 +18,6 @@
 #include "Motor.h"
 #include "Odometer.h"
 #include "TailController.h"
-#include "InvertedWalker.h"
 #include "stdlib.h"
 
 class LogManager

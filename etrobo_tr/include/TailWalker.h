@@ -11,19 +11,21 @@
 class TailWalker
 {
 public:
-    TailWalker(ev3api::Motor &wheel_L,
-               ev3api::Motor &wheel_R);
+    TailWalker();
 
     void init();
-    void run();
+    void update();
     void setCommand(int forward, int turn);
+    int8_t getPwmRight();
+    int8_t getPwmLeft();
 
 private:
-    ev3api::Motor &m_wheel_L;
-    ev3api::Motor &m_wheel_R;
+    int cancelBacklash(int8_t pwm, int enc);
 
     int m_forward;
     int m_turn;
+    int8_t m_right_pwm;
+    int8_t m_left_pwm;
 
     float K = 1;
 };

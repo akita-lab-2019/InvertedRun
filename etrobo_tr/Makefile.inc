@@ -10,7 +10,6 @@ APPL_CXXOBJS += \
 	TailController.o \
 	BalancerCpp.o \
 	Odometer.o \
-	InvertedWalker.o \
 	TailWalker.o \
 	PID.o \
 	LogManager.o \

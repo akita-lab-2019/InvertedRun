@@ -11,7 +11,6 @@
 #include "Section.h"
 #include "Odometer.h"
 #include "TailController.h"
-#include "InvertedWalker.h"
 #include "TailWalker.h"
 #include "ParmAdministrator.h"
 #include "stdlib.h"
@@ -21,19 +20,24 @@ class LineTracer
 public:
     LineTracer(RobotInfo *robot_info,
                Section *section,
-               InvertedWalker *inverted_walker,
                TailWalker *tail_walker,
-               PID *pid);
+               PID *pid,
+               Balancer *balancer,
+               ev3api::Motor &wheel_L,
+               ev3api::Motor &wheel_R);
 
+    void init();
     void update();
     void run();
 
 private:
     RobotInfo *m_robot_info;
     Section *m_section;
-    InvertedWalker *m_inverted_walker;
     TailWalker *m_tail_walker;
     PID *m_pid;
+    Balancer *m_balancer;
+    ev3api::Motor &m_wheel_L;
+    ev3api::Motor &m_wheel_R;
 
     void invertedRun(int forward_v, int turn_v);
     void tailRun(int forward_v, int turn_v);

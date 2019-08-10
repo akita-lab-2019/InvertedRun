@@ -12,7 +12,6 @@
 #include "Section.h"
 #include "LineTracer.h"
 #include "TailController.h"
-#include "InvertedWalker.h"
 #include "TailWalker.h"
 #include "ParmAdministrator.h"
 #include "stdlib.h"
