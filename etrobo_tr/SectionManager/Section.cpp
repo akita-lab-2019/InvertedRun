@@ -24,7 +24,7 @@ void Section::update(int num)
     m_pid_parm[2] = m_parm->trace_pid[m_is_curve_list[num]][2];
     m_color_target = m_parm->color_sensor_targrt;
     m_tail_angle = 0;
-    m_is_inverted = 0;
+    m_is_inverted = 1;
 }
 
 int Section::getSectionNum()

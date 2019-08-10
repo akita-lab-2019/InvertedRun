@@ -1,7 +1,5 @@
 mkfile_path := $(dir $(lastword $(MAKEFILE_LIST)))
 
-APPL_COBJS += balancer.o balancer_param.o
-
 APPL_CXXOBJS += \
 	RobotInfo.o \
 	ParmAdministrator.o \
