@@ -58,6 +58,7 @@ void LogManager::readData()
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::Y));
     sprintf(m_data_str[i++], "%d", (int)m_robot_info->getRobotPos(RobotInfo::YAW));
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotDis());
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getGyroOffset());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchPos());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getSonarDistance());

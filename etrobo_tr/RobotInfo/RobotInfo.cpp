@@ -196,3 +196,13 @@ int RobotInfo::getPWM(int wheel)
 {
     return m_pwm[wheel];
 }
+
+void RobotInfo::setGyroOffset(float offset)
+{
+    m_gyro_offset = offset;
+}
+
+float RobotInfo::getGyroOffset()
+{
+    return m_gyro_offset;
+}

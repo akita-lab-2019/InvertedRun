@@ -20,7 +20,7 @@ class Balancer
 public:
     Balancer();
 
-    void init(int offset);
+    void init(float offset);
     void update(int angle, int rwEnc, int lwEnc, int battery);
     void setCommand(int forward, int turn);
     int8_t getPwmRight();

@@ -25,6 +25,10 @@ void Section::update(int num)
     m_color_target = m_parm->color_sensor_targrt;
     m_tail_angle = 0;
     m_is_inverted = 1;
+    if (m_section_num == 0)
+    {
+        m_forward = 90;
+    }
 }
 
 int Section::getSectionNum()

@@ -147,12 +147,15 @@ void main_task(intptr_t unused)
     tslp_tsk(700);
     g_tail_motor.reset();
 
+    g_robot_info->setGyroOffset(0.5);
+
     // スタート待機
     while (1)
     {
+        g_robot_info->update();
 
         // 尻尾の角度を維持
-        g_tail_controller->control(86, 50);
+        g_tail_controller->control(98, 50);
 
         // BlueToothスタート
         if (g_bt_cmd == 1 || g_bt_cmd == 2)
@@ -162,7 +165,7 @@ void main_task(intptr_t unused)
         if (g_touch_sensor.isPressed())
             break;
 
-        g_clock.sleep(10);
+        g_clock.sleep(4);
         g_clock.reset();
     }
 
@@ -174,6 +177,15 @@ void main_task(intptr_t unused)
         g_parm_administrator->trace_pid[1][0] /= -1;
         g_parm_administrator->trace_pid[1][1] /= -1;
         g_parm_administrator->trace_pid[1][2] /= -1;
+    }
+    ev3_speaker_play_tone(NOTE_E4, 100);
+
+    // 尻尾を少し前に
+    for (int i = 0; i < 150 / 4; i++)
+    {
+        g_robot_info->update();
+        g_tail_controller->control(105, 50);
+        g_clock.sleep(4);
     }
 
     // 周期ハンドラ開始
@@ -193,7 +205,6 @@ void main_task(intptr_t unused)
  */
 void info_task(intptr_t exinf)
 {
-    g_robot_info->update();
     ext_tsk();
 }
 
@@ -215,20 +226,21 @@ void tracer_task(intptr_t exinf)
             long start_time = g_clock.now();
             while (g_clock.now() - start_time < 150)
             {
-                g_tail_controller->control(65, 40);
+                g_tail_controller->control(75, 40);
                 g_wheel_L.setPWM(80);
                 g_wheel_R.setPWM(80);
             }
         }
         flag = 1;
-        g_tail_controller->control(65, 40);
+        g_tail_controller->control(75, 40);
         g_wheel_L.reset();
         g_wheel_R.reset();
     }
     else
     {
-        g_tail_controller->control(65, 60); // 完全停止用角度に制御
-        g_section_tracer->run();            // 倒立走行
+        g_tail_controller->control(0, 20); // 完全停止用角度に制御
+        g_robot_info->update();
+        g_section_tracer->run(); // 倒立走行
     }
 
     ext_tsk();

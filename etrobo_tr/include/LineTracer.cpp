@@ -33,8 +33,7 @@ void LineTracer::init()
     m_wheel_R.reset();
 
     // 倒立振子制御初期化
-    int offset = m_robot_info->getPitchVel();
-    m_balancer->init(offset);
+    m_balancer->init(m_robot_info->getGyroOffset());
 
     update();
 }
@@ -64,8 +63,8 @@ void LineTracer::run()
     }
 
     // 旋回指令値を計算
-    // float direction = m_pid->calculate(0, m_robot_info->getBrightnessGap());
-    m_turn = -1.2 * m_curvature;
+    m_turn = m_pid->calculate(0, m_robot_info->getBrightnessGap());
+    m_turn += -1.0 * m_curvature;
 
     // 倒立走行と尻尾走行を振り分ける
     if (m_is_inverted)

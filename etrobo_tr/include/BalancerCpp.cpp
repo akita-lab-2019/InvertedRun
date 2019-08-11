@@ -17,7 +17,7 @@ Balancer::Balancer()
  * バランサを初期化する
  * @param offset ジャイロセンサオフセット値
  */
-void Balancer::init(int offset)
+void Balancer::init(float offset)
 {
     mOffset = offset;
     balance_init(); // 倒立振子制御初期化
@@ -83,7 +83,7 @@ int8_t Balancer::getPwmLeft()
  */
 int Balancer::cancelBacklash(int8_t pwm, int enc)
 {
-    const int kBacklashHalf = 4; // バックラッシュの半分[deg]
+    const int kBacklashHalf = 5; // バックラッシュの半分[deg]
 
     if (pwm == 0)
         return enc;
