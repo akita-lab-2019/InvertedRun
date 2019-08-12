@@ -11,15 +11,16 @@ PID::PID()
 /**
  * 初期化する
  */
-void PID::init(float Kp, float Ki, float Kd)
+void PID::init(float K[3])
 {
-    m_Kp = Kp;
-    m_Ki = Ki;
-    m_Kd = Kd;
+    for (int i = 0; i < 3; i++)
+    {
+        m_K[i] = K[i];
+    }
 
-    integral = 0;
-    diff[0] = 0;
-    diff[1] = 0;
+    m_integral = 0;
+    m_diff[0] = 0;
+    m_diff[1] = 0;
 }
 
 /**
@@ -32,16 +33,26 @@ float PID::calculate(float target_val, float now_val)
 {
     float dt = 0.004; // 制御周期は4ms
 
-    diff[0] = target_val - now_val;
-    integral += (diff[0] + diff[1]) * (dt / 2.0);
+    m_diff[0] = target_val - now_val;
+    m_integral += (m_diff[0] + m_diff[1]) * (dt / 2.0);
 
-    float p, i, d;
-    p = m_Kp * diff[0];
-    i = m_Ki * integral;
-    d = m_Kd * ((diff[0] - diff[1]) / dt);
+    m_team_val[P] = m_K[P] * m_diff[0];
+    m_team_val[I] = m_K[I] * m_integral;
+    m_team_val[D] = m_K[D] * ((m_diff[0] - m_diff[1]) / dt);
 
-    // 次回ループのために今回の値を前回の値にする
-    diff[1] = diff[0];
+    // 次回演算用状態量保存処理
+    m_diff[1] = m_diff[0];
 
-    return p + i + d;
+    return m_team_val[P] + m_team_val[I] + m_team_val[D];
+}
+
+/**
+ * 各項の値を取得する
+ * 4ms周期で呼び出される前提
+ * @param team 項の番号（0:P, 1:I, 2:D）
+ * @return 各項の値
+ */
+float PID::getTeamValue(int team)
+{
+    return m_team_val[team];
 }

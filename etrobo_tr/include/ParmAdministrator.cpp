@@ -29,7 +29,7 @@ void ParmAdministrator::readParm()
     fclose(fp); // ファイルを閉じる
 
     // 各変数に代入
-    int i = 0;
+    // int i = 0;
     color_sensor_targrt[0] = 25;
     color_sensor_targrt[1] = 25;
     trace_pid[0][0] = 0.60;

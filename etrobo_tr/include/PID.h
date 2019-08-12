@@ -1,5 +1,5 @@
-#ifndef EV3_APP_PID_H_
-#define EV3_APP_PID_H_
+#ifndef EV3_PID_H_
+#define EV3_PID_H_
 
 #include "LineMonitor.h"
 #include "GyroSensor.h"
@@ -12,16 +12,22 @@ class PID
 public:
     PID();
 
-    void init(float Kp, float Ki, float Kd);
+    void init(float K[3]);
     float calculate(float target_val, float now_val);
+    float getTeamValue(int team);
+
+    enum
+    {
+        P,
+        I,
+        D
+    };
 
 private:
-    float m_Kp = 0;
-    float m_Ki = 0;
-    float m_Kd = 0;
-
-    float integral = 0;
-    float diff[2] = {0}; // 0: 現在, 1: 過去
+    float m_K[3] = {0};        // 各項の係数
+    float m_team_val[3] = {0}; // 各項の値
+    float m_integral = 0;      // 積分値
+    float m_diff[2] = {0};     // 0: 現在, 1: 過去
 };
 
-#endif // EV3_APP_PID_H_
+#endif

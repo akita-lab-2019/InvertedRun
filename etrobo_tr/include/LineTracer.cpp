@@ -48,8 +48,7 @@ void LineTracer::update()
     m_curvature = m_section->getCurvature();
     m_section->getPidParm(m_pid_parm);
     m_color_target = m_section->getColorTarget();
-    m_pid->init(m_pid_parm[0], m_pid_parm[1], m_pid_parm[2]);
-    // m_pid->init(0.6, 0.045, 0.065);
+    m_pid->init(m_pid_parm);
 }
 
 /**
