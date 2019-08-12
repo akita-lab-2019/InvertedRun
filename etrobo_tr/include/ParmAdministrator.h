@@ -10,13 +10,13 @@ public:
     explicit ParmAdministrator();
     void readParm();
 
-    char all_data_str[20][256];
-    float forward_v[2];
-    float color_sensor_targrt;
-    float trace_pid[2][3];
+    float color_sensor_targrt[2]; // [0]:尻尾走行の場合 [1]:倒立走行の場合
+    float trace_pid[5][3];
+    float curvature[5];
+    float forward[18];
 
 private:
-    float m_parm_data[20];
+    float m_parm_data[50];
 };
 
 #endif // EV3_PARMADMINISTRATOR_H_

@@ -65,6 +65,8 @@ initSystem()
 {
     // パラメータの管理
     g_parm_administrator = new ParmAdministrator();
+    g_parm_administrator->readParm();
+
     g_section = new Section(g_parm_administrator);
 
     // 走行体情報
@@ -103,7 +105,6 @@ initSystem()
                                    g_wheel_R);
     g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer, g_parm_administrator);
 
-    g_parm_administrator->readParm();
     g_log_manager->init();
     g_tail_controller->init();
 

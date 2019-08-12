@@ -17,18 +17,23 @@ void Section::update(int num)
 {
     m_section_num = num;
     m_distance = m_distance_list[num];
-    m_forward = m_parm->forward_v[m_is_curve_list[num]];
-    m_curvature = m_curvature_list[num];
+    m_forward = m_parm->forward[num];
+    m_curvature = m_parm->curvature[m_is_curve_list[num]];
     m_pid_parm[0] = m_parm->trace_pid[m_is_curve_list[num]][0];
     m_pid_parm[1] = m_parm->trace_pid[m_is_curve_list[num]][1];
     m_pid_parm[2] = m_parm->trace_pid[m_is_curve_list[num]][2];
-    m_color_target = m_parm->color_sensor_targrt;
+    m_color_target = m_parm->color_sensor_targrt[1];
     m_tail_angle = 0;
     m_is_inverted = 1;
-    if (m_section_num == 0)
+
+    if (num == 5 || num == 6 || num == 7 || num == 10 || num == 12)
     {
-        m_forward = 90;
+        m_curvature *= -1;
     }
+    // if (m_section_num == 0)
+    // {
+    //     m_forward = 90;
+    // }
 }
 
 int Section::getSectionNum()

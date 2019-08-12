@@ -1,8 +1,8 @@
 #include "LineMonitor.h"
 
-LineMonitor::LineMonitor(ev3api::ColorSensor &colorSensor, ParmAdministrator *parm) : m_color_sensor(colorSensor), m_target(parm->color_sensor_targrt)
+LineMonitor::LineMonitor(ev3api::ColorSensor &colorSensor, ParmAdministrator *parm) : m_color_sensor(colorSensor), m_target(parm->color_sensor_targrt[1])
 {
-    m_target = parm->color_sensor_targrt;
+    m_target = parm->color_sensor_targrt[1];
 }
 
 /**
@@ -11,5 +11,5 @@ LineMonitor::LineMonitor(ev3api::ColorSensor &colorSensor, ParmAdministrator *pa
  */
 float LineMonitor::getGap()
 {
-    return m_target - m_color_sensor.getBrightness();
+    return 35 - m_color_sensor.getBrightness();
 }
