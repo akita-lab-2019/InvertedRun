@@ -13,6 +13,7 @@
 #include <SonarSensor.h>
 #include <TouchSensor.h>
 #include "Odometer.h"
+#include "BluetoothManager.h"
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -51,11 +52,10 @@ static LineTracer *g_line_tracer;
 static Odometer *g_odometer;
 static PID *g_pid_tail;
 static PID *g_pid_trace;
+static BluetoothManager *g_bt;
 
 static int g_bt_cmd = 0;
 int g_sonar_distance = 0;
-
-static FILE *bt = NULL;
 
 /**
  * システムの初期化処理
@@ -63,6 +63,8 @@ static FILE *bt = NULL;
 static void
 initSystem()
 {
+    g_bt = new BluetoothManager();
+
     // パラメータの管理
     g_parm_administrator = new ParmAdministrator();
     g_parm_administrator->readParm();
@@ -84,9 +86,10 @@ initSystem()
                                  g_section);
 
     // 記録
-    bt = ev3_serial_open_file(EV3_SERIAL_BT);
     g_recorder = new Recorder(g_parm_administrator);
-    g_log_manager = new LogManager(bt, g_recorder, g_robot_info);
+    g_log_manager = new LogManager(g_recorder,
+                                   g_bt,
+                                   g_robot_info);
 
     // 尻尾制御
     g_pid_tail = new PID();
@@ -159,7 +162,10 @@ void main_task(intptr_t unused)
         g_tail_controller->control(98, 50);
 
         // BlueToothスタート
-        if (g_bt_cmd == 1 || g_bt_cmd == 2)
+        if (g_bt->getStartSignal() == BluetoothManager::START_L)
+            break;
+
+        if (g_bt->getStartSignal() == BluetoothManager::START_R)
             break;
 
         // タッチセンサスタート
@@ -170,7 +176,7 @@ void main_task(intptr_t unused)
         g_clock.reset();
     }
 
-    if (g_bt_cmd == 2)
+    if (g_bt->getStartSignal() == BluetoothManager::START_R)
     {
         g_parm_administrator->trace_pid[0][0] /= -1;
         g_parm_administrator->trace_pid[0][1] /= -1;
@@ -219,24 +225,24 @@ void tracer_task(intptr_t exinf)
     {
         wup_tsk(MAIN_TASK); // バックボタン押下
     }
-    else if (g_bt_cmd == 3 || (g_touch_sensor.isPressed() && g_clock.now() > 500))
-    {
-        g_bt_cmd = 3;
-        if (flag == 0)
-        {
-            long start_time = g_clock.now();
-            while (g_clock.now() - start_time < 150)
-            {
-                g_tail_controller->control(75, 40);
-                g_wheel_L.setPWM(80);
-                g_wheel_R.setPWM(80);
-            }
-        }
-        flag = 1;
-        g_tail_controller->control(75, 40);
-        g_wheel_L.reset();
-        g_wheel_R.reset();
-    }
+    // else if (g_bt_cmd == 3 || (g_touch_sensor.isPressed() && g_clock.now() > 500))
+    // {
+    //     g_bt_cmd = 3;
+    //     if (flag == 0)
+    //     {
+    //         long start_time = g_clock.now();
+    //         while (g_clock.now() - start_time < 150)
+    //         {
+    //             g_tail_controller->control(75, 40);
+    //             g_wheel_L.setPWM(80);
+    //             g_wheel_R.setPWM(80);
+    //         }
+    //     }
+    //     flag = 1;
+    //     g_tail_controller->control(75, 40);
+    //     g_wheel_L.reset();
+    //     g_wheel_R.reset();
+    // }
     else
     {
         g_tail_controller->control(0, 20); // 完全停止用角度に制御
@@ -261,21 +267,6 @@ void log_task(intptr_t exinf)
  */
 void bt_recieve_task(intptr_t exinf)
 {
-    uint8_t c = fgetc(bt);
-    switch (c)
-    {
-    case 'l':
-        g_bt_cmd = 1;
-        break;
-    case 'r':
-        g_bt_cmd = 2;
-        break;
-    case 's':
-        g_bt_cmd = 3;
-        break;
-    default:
-        break;
-    }
-
+    g_bt->receive();
     tslp_tsk(10);
 }

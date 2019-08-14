@@ -13,6 +13,7 @@ APPL_CXXOBJS += \
 	LogManager.o \
 	Section.o \
 	SectionTracer.o \
+	BluetoothManager.o \
 	LineTracer.o
 
 SRCLANG := c++

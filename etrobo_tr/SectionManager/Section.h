@@ -32,14 +32,14 @@ public:
 private:
     ParmAdministrator *m_parm;
 
-    int m_section_num = 0;
-    float m_distance;     // 区間長さ[m]
-    float m_forward;      // 前進指令速度[%]
-    float m_curvature;    // 曲率[m^-1]
-    float m_pid_parm[3];  // PIDパラメータ
-    float m_color_target; // カラーセンサの目標値
-    float m_tail_angle;   // 尻尾の角度[deg]
-    bool m_is_inverted;   // 倒立走行の有無
+    int m_section_num = 0; // 区間番号
+    float m_distance;      // 区間長さ[m]
+    float m_forward;       // 前進指令速度[%]
+    float m_curvature;     // 曲率[m^-1]
+    float m_pid_parm[3];   // PIDパラメータ
+    float m_color_target;  // カラーセンサの目標値
+    float m_tail_angle;    // 尻尾の角度[deg]
+    bool m_is_inverted;    // 倒立走行の有無
 
     int m_is_curve_list[18] = {
         0, 2, 0, 1, 4, 4, 3, 0, 1, 0, 2, 0, 3, 3, 0, 0, 0, 0};

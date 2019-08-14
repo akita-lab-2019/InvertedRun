@@ -3,11 +3,11 @@
 /**
  * コンストラクタ
  */
-LogManager::LogManager(FILE *bt, Recorder *recorder, RobotInfo *robot_info)
+LogManager::LogManager(Recorder *recorder, BluetoothManager *bt, RobotInfo *robot_info)
+    : m_recorder(recorder),
+      m_bt(bt),
+      m_robot_info(robot_info)
 {
-    m_bt = bt;
-    m_recorder = recorder;
-    m_robot_info = robot_info;
 }
 
 /**
@@ -72,7 +72,7 @@ void LogManager::sendToBT()
     {
         sprintf(file_str, "%s\t%s", file_str, m_data_str[i]);
     }
-    fprintf(m_bt, "%s\r\n", file_str);
+    m_bt->send(file_str);
 }
 
 void LogManager::sendToSD()

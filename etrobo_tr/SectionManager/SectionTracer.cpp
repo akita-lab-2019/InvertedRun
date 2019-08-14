@@ -37,7 +37,7 @@ void SectionTracer::run()
             m_section_num++;
             m_section->update(m_section_num);
             m_line_tracer->update();
-            ev3_speaker_play_tone(NOTE_C4 + m_section_num * 100, 100);
+            ev3_speaker_play_tone((int)(261.63 * pow(M_E, m_section_num * 0.1)), 100);
         }
     }
 

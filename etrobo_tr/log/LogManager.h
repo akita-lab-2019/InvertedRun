@@ -18,20 +18,22 @@
 #include "Motor.h"
 #include "Odometer.h"
 #include "TailController.h"
+#include "BluetoothManager.h"
 #include "stdlib.h"
 
 class LogManager
 {
 public:
-    LogManager(FILE *bt, Recorder *recorder, RobotInfo *robot_info);
+    LogManager(Recorder *recorder, BluetoothManager *bt, RobotInfo *robot_info);
 
     void init();
     void update();
 
 private:
     char m_data_str[32][32];
-    FILE *m_bt;
+    // FILE *m_bt;
     Recorder *m_recorder;
+    BluetoothManager *m_bt;
     RobotInfo *m_robot_info;
 
     void readData();

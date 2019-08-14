@@ -2,6 +2,7 @@
 #ifndef EV3_SECTION_TRACER_H_
 #define EV3_SECTION_TRACER_H_
 
+#include <math.h>
 #include <Clock.h>
 #include "RobotInfo.h"
 #include "LineMonitor.h"
