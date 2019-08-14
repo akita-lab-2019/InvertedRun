@@ -60,8 +60,7 @@ int g_sonar_distance = 0;
 /**
  * システムの初期化処理
  */
-static void
-initSystem()
+static void initSystem()
 {
     g_bt = new BluetoothManager();
 
@@ -111,8 +110,21 @@ initSystem()
     g_log_manager->init();
     g_tail_controller->init();
 
+    // 尻尾の角位置をリセット
+    g_tail_motor.setPWM(-100);
+    tslp_tsk(700);
+    g_tail_motor.reset();
+
+    // ジャイロのオフセット
+    g_robot_info->setGyroOffset(0.5);
+
+    // 尻尾の角度を維持
+    g_tail_controller->setAngle(98);
+    g_tail_controller->setMaxSpeed(50);
+
     // タスクの開始
     ev3_sta_cyc(INFO_TASK);
+    ev3_sta_cyc(TAIL_TASK);
     ev3_sta_cyc(LOG_TASK);
     ev3_sta_cyc(BT_RCV_TASK);
 
@@ -146,21 +158,9 @@ void main_task(intptr_t unused)
     // 初期化処理
     initSystem();
 
-    // 尻尾の角位置をリセット
-    g_tail_motor.setPWM(-100);
-    tslp_tsk(700);
-    g_tail_motor.reset();
-
-    g_robot_info->setGyroOffset(0.5);
-
     // スタート待機
     while (1)
     {
-        g_robot_info->update();
-
-        // 尻尾の角度を維持
-        g_tail_controller->control(98, 50);
-
         // BlueToothスタート
         if (g_bt->getStartSignal() == BluetoothManager::START_L)
             break;
@@ -188,12 +188,9 @@ void main_task(intptr_t unused)
     ev3_speaker_play_tone(NOTE_E4, 100);
 
     // 尻尾を少し前に
-    for (int i = 0; i < 150 / 4; i++)
-    {
-        g_robot_info->update();
-        g_tail_controller->control(105, 50);
-        g_clock.sleep(4);
-    }
+    g_tail_controller->setAngle(105);
+    g_tail_controller->setMaxSpeed(50);
+    g_clock.sleep(150);
 
     // 周期ハンドラ開始
     ev3_sta_cyc(TRACER_TASK);
@@ -201,9 +198,19 @@ void main_task(intptr_t unused)
     slp_tsk();                // バックボタンが押されるまで待つ
     ev3_stp_cyc(INFO_TASK);   // 周期ハンドラ停止
     ev3_stp_cyc(TRACER_TASK); // 周期ハンドラ停止
+    ev3_stp_cyc(TAIL_TASK);   // 周期ハンドラ停止
     ev3_stp_cyc(LOG_TASK);    // 周期ハンドラ停止
     ev3_stp_cyc(BT_RCV_TASK); // 周期ハンドラ停止
     destroySystem();          // 終了処理
+    ext_tsk();
+}
+
+/**
+ * 尻尾制御タスク
+ */
+void tail_task(intptr_t exinf)
+{
+    g_tail_controller->control();
     ext_tsk();
 }
 
@@ -212,6 +219,7 @@ void main_task(intptr_t unused)
  */
 void info_task(intptr_t exinf)
 {
+    g_robot_info->update();
     ext_tsk();
 }
 
@@ -245,8 +253,9 @@ void tracer_task(intptr_t exinf)
     // }
     else
     {
-        g_tail_controller->control(0, 20); // 完全停止用角度に制御
-        g_robot_info->update();
+        g_tail_controller->setAngle(0);
+        g_tail_controller->setMaxSpeed(20);
+
         g_section_tracer->run(); // 倒立走行
     }
 

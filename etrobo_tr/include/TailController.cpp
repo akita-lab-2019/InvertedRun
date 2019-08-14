@@ -20,17 +20,32 @@ void TailController::init()
 }
 
 /**
- * 尻尾モータを制御する
+ * 尻尾モータの目標角度を設定する
  * @param target_angle 尻尾の目標角度
- * @param max_speed 尻尾モータの最高速度
  */
-void TailController::control(int target_angle, int max_speed)
+void TailController::setAngle(int target_angle)
 {
-    int pwm = m_pid->calculate(target_angle, m_tail_motor.getCount());
-    // signed int pwm = (signed int)(target_angle - m_tail_motor.getCount());
+    m_target_angle = target_angle;
+}
 
-    pwm = (pwm > max_speed) ? max_speed : pwm;
-    pwm = (pwm < -max_speed) ? -max_speed : pwm;
+/**
+ * 尻尾モータの最高速度を設定する
+ * @param target_angle 尻尾の最高速度
+ */
+void TailController::setMaxSpeed(int max_speed)
+{
+    m_max_speed = max_speed;
+}
+
+/**
+ * 尻尾モータを制御する
+ */
+void TailController::control()
+{
+    int pwm = m_pid->calculate(m_target_angle, m_tail_motor.getCount());
+
+    pwm = (pwm > m_max_speed) ? m_max_speed : pwm;
+    pwm = (pwm < -m_max_speed) ? -m_max_speed : pwm;
 
     if (pwm == 0)
     {
