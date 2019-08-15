@@ -12,7 +12,8 @@ RobotInfo::RobotInfo(ev3api::Clock &clock,
                      ev3api::Motor &tail_motor,
                      LineMonitor *line_monitor,
                      Odometer *odometer,
-                     Section *section)
+                     Section *section,
+                     PID *trace_pid)
     : m_clock(clock),
       m_color_sensor(color_sensor),
       m_gyro_sensor(gyro_sensor),
@@ -22,7 +23,8 @@ RobotInfo::RobotInfo(ev3api::Clock &clock,
       m_tail_motor(tail_motor),
       m_line_monitor(line_monitor),
       m_odometer(odometer),
-      m_section(section)
+      m_section(section),
+      m_trace_pid(trace_pid)
 {
 }
 
@@ -44,7 +46,7 @@ void RobotInfo::update()
     m_section_num = m_section->getSectionNum();
 
     m_runTime = (float)m_clock.now() / 1000.0;
-    m_battery = ev3_battery_voltage_mV() / 1000.0;
+    m_battery = 0.9 * m_pre_battery + 0.1 * ev3_battery_voltage_mV() / 1000.0;
     m_brightness = m_color_sensor.getBrightness();
     m_pitch_vel = m_gyro_sensor.getAnglerVelocity();
     // m_pitch_pos = m_gyro_sensor.getAngle();
@@ -57,6 +59,12 @@ void RobotInfo::update()
     m_robot_pos[YAW] = m_odometer->getRobotPose(Odometer::YAW);
     m_robot_dis = m_odometer->getRobotDistance();
     m_sonar_distance = (float)m_sonar_sensor.getDistance() / 100.0;
+
+    m_trace_pid_team_val[P] = m_trace_pid->getTeamValue(PID::P);
+    m_trace_pid_team_val[I] = m_trace_pid->getTeamValue(PID::I);
+    m_trace_pid_team_val[D] = m_trace_pid->getTeamValue(PID::D);
+
+    m_pre_battery = m_battery;
 }
 
 int RobotInfo::getCourse()
@@ -205,4 +213,9 @@ void RobotInfo::setGyroOffset(float offset)
 float RobotInfo::getGyroOffset()
 {
     return m_gyro_offset;
+}
+
+float RobotInfo::getTracePidTeamValue(int team)
+{
+    return m_trace_pid_team_val[team];
 }

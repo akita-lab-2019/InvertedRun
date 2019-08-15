@@ -26,7 +26,7 @@ void Section::update(int num)
     m_tail_angle = 0;
     m_is_inverted = 1;
 
-    if (num == 5 || num == 6 || num == 7 || num == 10 || num == 12)
+    if (num == 5 || num == 6 || num == 8 || num == 10 || num == 12)
     {
         m_curvature *= -1;
     }

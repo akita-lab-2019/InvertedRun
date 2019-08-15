@@ -16,6 +16,7 @@
 #include "LineMonitor.h"
 #include "Odometer.h"
 #include "Section.h"
+#include "PID.h"
 
 class RobotInfo
 {
@@ -29,7 +30,8 @@ public:
               ev3api::Motor &tail_motor,
               LineMonitor *line_monitor,
               Odometer *odometer,
-              Section *section);
+              Section *section,
+              PID *trace_pid);
 
     void init();
     void update();
@@ -58,6 +60,7 @@ public:
     float getRobotPos(int axis);
     float getRobotDis();
     float getSonarDistance();
+    float getTracePidTeamValue(int team);
 
     enum
     {
@@ -72,6 +75,13 @@ public:
         YAW
     };
 
+    enum
+    {
+        P,
+        I,
+        D
+    };
+
 private:
     ev3api::Clock &m_clock;
     ev3api::ColorSensor &m_color_sensor;
@@ -83,6 +93,7 @@ private:
     LineMonitor *m_line_monitor;
     Odometer *m_odometer;
     Section *m_section;
+    PID *m_trace_pid;
 
     int m_section_num = 0;      // セクション番号
     float m_runTime = 0;        // 走行開始からの時間[sec]
@@ -103,6 +114,9 @@ private:
     int m_turn = 0;
     int m_pwm[2] = {0};
     float m_gyro_offset = 0;
+    float m_trace_pid_team_val[3] = {0};
+
+    float m_pre_battery = 0;
 };
 
 #endif // EV3_ROBOT_INFO_H_

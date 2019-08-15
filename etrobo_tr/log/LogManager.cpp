@@ -62,13 +62,16 @@ void LogManager::readData()
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchPos());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getSonarDistance());
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(RobotInfo::P));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(RobotInfo::P));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(RobotInfo::P));
 }
 
 void LogManager::sendToBT()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 17; i++)
+    for (int i = 1; i < 21; i++)
     {
         sprintf(file_str, "%s\t%s", file_str, m_data_str[i]);
     }
@@ -79,7 +82,7 @@ void LogManager::sendToSD()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 17; i++)
+    for (int i = 1; i < 21; i++)
     {
         sprintf(file_str, "%s, %s", file_str, m_data_str[i]);
     }

@@ -13,6 +13,7 @@ public:
 
 private:
     const ev3api::ColorSensor &m_color_sensor;
+    float m_pre_sensor_val = 0;
 
     float m_target = 30;
 };

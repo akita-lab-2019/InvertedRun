@@ -71,6 +71,7 @@ static void initSystem()
     g_section = new Section(g_parm_administrator);
 
     // 走行体情報
+    g_pid_trace = new PID();
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
     g_line_monitor = new LineMonitor(g_color_sensor, g_parm_administrator);
     g_robot_info = new RobotInfo(g_clock,
@@ -82,7 +83,8 @@ static void initSystem()
                                  g_tail_motor,
                                  g_line_monitor,
                                  g_odometer,
-                                 g_section);
+                                 g_section,
+                                 g_pid_trace);
 
     // 記録
     g_recorder = new Recorder(g_parm_administrator);
@@ -95,7 +97,6 @@ static void initSystem()
     g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
 
     // 走行制御
-    g_pid_trace = new PID();
     g_balancer = new Balancer();
     g_tail_walker = new TailWalker();
     g_line_tracer = new LineTracer(g_robot_info,
@@ -116,7 +117,7 @@ static void initSystem()
     g_tail_motor.reset();
 
     // ジャイロのオフセット
-    g_robot_info->setGyroOffset(0.5);
+    g_robot_info->setGyroOffset(0);
 
     // 尻尾の角度を維持
     g_tail_controller->setAngle(98);
