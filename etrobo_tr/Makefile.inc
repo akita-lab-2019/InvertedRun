@@ -14,6 +14,7 @@ APPL_CXXOBJS += \
 	Section.o \
 	SectionTracer.o \
 	BluetoothManager.o \
+	StartManager.o \
 	LineTracer.o
 
 SRCLANG := c++

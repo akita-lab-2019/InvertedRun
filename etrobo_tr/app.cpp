@@ -14,6 +14,7 @@
 #include <TouchSensor.h>
 #include "Odometer.h"
 #include "BluetoothManager.h"
+#include "StartManager.h"
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -53,9 +54,7 @@ static Odometer *g_odometer;
 static PID *g_pid_tail;
 static PID *g_pid_trace;
 static BluetoothManager *g_bt;
-
-static int g_bt_cmd = 0;
-int g_sonar_distance = 0;
+static StartManager *g_start_manager;
 
 /**
  * システムの初期化処理
@@ -63,6 +62,7 @@ int g_sonar_distance = 0;
 static void initSystem()
 {
     g_bt = new BluetoothManager();
+    g_start_manager = new StartManager(g_bt, g_touch_sensor, g_clock);
 
     // パラメータの管理
     g_parm_administrator = new ParmAdministrator();
@@ -159,22 +159,7 @@ void main_task(intptr_t unused)
     initSystem();
 
     // スタート待機
-    while (1)
-    {
-        // BlueToothスタート
-        if (g_bt->getStartSignal() == BluetoothManager::START_L)
-            break;
-
-        if (g_bt->getStartSignal() == BluetoothManager::START_R)
-            break;
-
-        // タッチセンサスタート
-        if (g_touch_sensor.isPressed())
-            break;
-
-        g_clock.sleep(4);
-        g_clock.reset();
-    }
+    g_start_manager->waitForStart();
 
     if (g_bt->getStartSignal() == BluetoothManager::START_R)
     {
@@ -195,6 +180,7 @@ void main_task(intptr_t unused)
     // 周期ハンドラ開始
     ev3_sta_cyc(TRACER_TASK);
 
+    // 後始末
     slp_tsk();                // バックボタンが押されるまで待つ
     ev3_stp_cyc(INFO_TASK);   // 周期ハンドラ停止
     ev3_stp_cyc(TRACER_TASK); // 周期ハンドラ停止
@@ -229,34 +215,33 @@ void info_task(intptr_t exinf)
 bool flag = 0;
 void tracer_task(intptr_t exinf)
 {
-    if (ev3_button_is_pressed(BACK_BUTTON))
-    {
-        wup_tsk(MAIN_TASK); // バックボタン押下
-    }
-    // else if (g_bt_cmd == 3 || (g_touch_sensor.isPressed() && g_clock.now() > 500))
-    // {
-    //     g_bt_cmd = 3;
-    //     if (flag == 0)
-    //     {
-    //         long start_time = g_clock.now();
-    //         while (g_clock.now() - start_time < 150)
-    //         {
-    //             g_tail_controller->control(75, 40);
-    //             g_wheel_L.setPWM(80);
-    //             g_wheel_R.setPWM(80);
-    //         }
-    //     }
-    //     flag = 1;
-    //     g_tail_controller->control(75, 40);
-    //     g_wheel_L.reset();
-    //     g_wheel_R.reset();
-    // }
-    else
-    {
-        g_tail_controller->setAngle(0);
-        g_tail_controller->setMaxSpeed(20);
+    g_tail_controller->setAngle(0);
+    g_tail_controller->setMaxSpeed(20);
 
-        g_section_tracer->run(); // 倒立走行
+    g_section_tracer->run();
+
+    if (g_bt->getStartSignal() == BluetoothManager::STOP || (g_touch_sensor.isPressed() && g_robot_info->getRunTime() > 0.5))
+    {
+        // 停止信号を受信
+        g_tail_controller->setAngle(75);
+        g_tail_controller->setMaxSpeed(40);
+        g_wheel_L.setPWM(80);
+        g_wheel_R.setPWM(80);
+        g_clock.sleep(150);
+
+        g_wheel_L.reset();
+        g_wheel_R.reset();
+
+        while (true)
+        {
+            if (ev3_button_is_pressed(BACK_BUTTON))
+            {
+                // バックボタン押下
+                wup_tsk(MAIN_TASK); // タスクの起床
+            }
+
+            g_clock.sleep(4);
+        }
     }
 
     ext_tsk();

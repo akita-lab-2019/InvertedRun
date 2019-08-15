@@ -5,7 +5,12 @@
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-StartManager::StartManager()
+StartManager::StartManager(BluetoothManager *bt,
+                           ev3api::TouchSensor &touch_sensor,
+                           ev3api::Clock &clock)
+    : m_bt(bt),
+      m_touch_sensor(touch_sensor),
+      m_clock(clock)
 {
 }
 
@@ -16,29 +21,25 @@ void StartManager::init()
 {
 }
 
-/**
- * バランス走行する
- */
-void StartManager::update()
+void StartManager::waitForStart()
 {
-    m_left_pwm = m_forward + K * m_turn;
-    m_right_pwm = m_forward - K * m_turn;
+    while (1)
+    {
+        // BlueToothスタート
+        if (m_bt->getStartSignal() == BluetoothManager::START_L)
+            break;
 
-    if (m_left_pwm > 100)
-    {
-        m_left_pwm = 100;
-    }
-    else if (m_left_pwm < -100)
-    {
-        m_left_pwm = -100;
-    }
+        if (m_bt->getStartSignal() == BluetoothManager::START_R)
+            break;
 
-    if (m_right_pwm > 100)
-    {
-        m_right_pwm = 100;
+        // タッチセンサスタート
+        if (m_touch_sensor.isPressed())
+            break;
+
+        m_clock.sleep(4);
+        m_clock.reset();
     }
-    else if (m_right_pwm < -100)
-    {
-        m_right_pwm = -100;
-    }
+}
+void StartManager::start()
+{
 }

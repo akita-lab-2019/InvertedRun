@@ -12,27 +12,18 @@
 class StartManager
 {
 public:
-    StartManager(BluetoothManager bt,
-                 ev3api::TouchSensor touch_sensor);
+    StartManager(BluetoothManager *bt,
+                 ev3api::TouchSensor &touch_sensor,
+                 ev3api::Clock &clock);
 
     void init();
     void waitForStart();
-    void start(int forward, int turn);
-    int8_t getPwmRight();
-    int8_t getPwmLeft();
+    void start();
 
 private:
-    BluetoothManager m_bt;
-    ev3api::TouchSensor m_touch_sensor;
-
-    int cancelBacklash(int8_t pwm, int enc);
-
-    int m_forward;
-    int m_turn;
-    int8_t m_right_pwm;
-    int8_t m_left_pwm;
-
-    float K = 1;
+    BluetoothManager *m_bt;
+    ev3api::TouchSensor &m_touch_sensor;
+    ev3api::Clock &m_clock;
 };
 
 #endif
