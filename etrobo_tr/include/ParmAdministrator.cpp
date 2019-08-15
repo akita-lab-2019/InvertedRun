@@ -33,25 +33,45 @@ void ParmAdministrator::readParm()
     color_sensor_targrt[0] = 30;
     color_sensor_targrt[1] = 30;
 
-    trace_pid[0][0] = 0.60;
-    trace_pid[0][1] = 0.055;
-    trace_pid[0][2] = 0.065;
+    trace_pid[0][0] = 0.500;
+    trace_pid[0][1] = 0;
+    trace_pid[0][2] = 0.039;
 
-    trace_pid[1][0] = 0.680;
-    trace_pid[1][1] = 0.055;
-    trace_pid[1][2] = 0.100;
+    trace_pid[1][0] = 0.492;
+    trace_pid[1][1] = 0;
+    trace_pid[1][2] = 0.038;
 
-    trace_pid[2][0] = 0.630;
-    trace_pid[2][1] = 0.045;
-    trace_pid[2][2] = 0.065;
+    trace_pid[2][0] = 0.8;
+    trace_pid[2][1] = 0;
+    trace_pid[2][2] = 0;
 
-    trace_pid[3][0] = 0.900;
-    trace_pid[3][1] = 0.020;
-    trace_pid[3][2] = 0.080;
+    trace_pid[3][0] = 0.492;
+    trace_pid[3][1] = 0;
+    trace_pid[3][2] = 0.038;
 
-    trace_pid[4][0] = 0.970;
-    trace_pid[4][1] = 0.001;
-    trace_pid[4][2] = 0.083;
+    trace_pid[4][0] = 0.492;
+    trace_pid[4][1] = 0;
+    trace_pid[4][2] = 0.038;
+
+    // trace_pid[0][0] = 0.60;
+    // trace_pid[0][1] = 0.055;
+    // trace_pid[0][2] = 0.065;
+
+    // trace_pid[1][0] = 0.680;
+    // trace_pid[1][1] = 0.055;
+    // trace_pid[1][2] = 0.100;
+
+    // trace_pid[2][0] = 0.630;
+    // trace_pid[2][1] = 0.045;
+    // trace_pid[2][2] = 0.065;
+
+    // trace_pid[3][0] = 0.900;
+    // trace_pid[3][1] = 0.020;
+    // trace_pid[3][2] = 0.080;
+
+    // trace_pid[4][0] = 0.970;
+    // trace_pid[4][1] = 0.001;
+    // trace_pid[4][2] = 0.083;
 
     curvature[0] = 0;
     curvature[1] = 15;
