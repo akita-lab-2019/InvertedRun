@@ -29,6 +29,11 @@ public:
     void init();
     void update();
     void run();
+    void setIsInverted(bool is_inverted);
+    void setForward(float forward);
+    void setCurvature(float curvature);
+    void setPidParm(float pid_param[3]);
+    void setColorTarget(float target);
 
     enum
     {

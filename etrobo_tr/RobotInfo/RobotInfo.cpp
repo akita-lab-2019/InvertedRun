@@ -53,7 +53,6 @@ void RobotInfo::update()
     m_wheel_pos[L] = m_wheel_L.getCount();
     m_wheel_pos[R] = m_wheel_R.getCount();
     m_tail_pos = m_tail_motor.getCount();
-    m_brightness_gap = m_line_monitor->getGap();
     m_robot_pos[X] = m_odometer->getRobotPose(Odometer::X);
     m_robot_pos[Y] = m_odometer->getRobotPose(Odometer::Y);
     m_robot_pos[YAW] = m_odometer->getRobotPose(Odometer::YAW);
@@ -67,9 +66,14 @@ void RobotInfo::update()
     m_pre_battery = m_battery;
 }
 
+void RobotInfo::setCourse(int course)
+{
+    m_course = course;
+}
+
 int RobotInfo::getCourse()
 {
-    return 0;
+    return m_course;
 }
 
 int RobotInfo::getSectionNum()
@@ -145,9 +149,10 @@ float RobotInfo::getTailPos()
  * カラーセンサから取得した輝度と目標値との偏差を取得する
  * @return カラーセンサから取得した輝度と目標値との偏差
  */
-int RobotInfo::getBrightnessGap()
+int RobotInfo::getBrightnessGap(int target)
 {
-    return m_brightness_gap;
+    return (int)m_line_monitor->getGap(target);
+    ;
 }
 
 /**

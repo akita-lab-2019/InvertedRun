@@ -51,6 +51,30 @@ void LineTracer::update()
     m_pid->init(m_pid_parm);
 }
 
+void LineTracer::setIsInverted(bool is_inverted)
+{
+    m_is_inverted = is_inverted;
+}
+void LineTracer::setForward(float forward)
+{
+    m_forward = forward;
+}
+void LineTracer::setCurvature(float curvature)
+{
+    m_curvature = curvature;
+}
+void LineTracer::setPidParm(float pid_param[3])
+{
+    m_pid_parm[0] = pid_param[0];
+    m_pid_parm[1] = pid_param[1];
+    m_pid_parm[2] = pid_param[2];
+    m_pid->init(m_pid_parm);
+}
+void LineTracer::setColorTarget(float target)
+{
+    m_color_target = target;
+}
+
 /**
  * ライントレースする
  */
@@ -63,8 +87,13 @@ void LineTracer::run()
     }
 
     // 旋回指令値を計算
-    m_turn = m_pid->calculate(0, m_robot_info->getBrightnessGap());
+    m_turn = m_pid->calculate(0, m_robot_info->getBrightnessGap(m_color_target));
     m_turn += -1.0 * m_curvature;
+
+    if (m_robot_info->getCourse() == 1)
+    {
+        m_turn *= -1;
+    }
 
     // 倒立走行と尻尾走行を振り分ける
     if (m_is_inverted)

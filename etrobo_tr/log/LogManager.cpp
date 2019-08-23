@@ -49,7 +49,7 @@ void LogManager::readData()
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRunTime());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getBatteryVoltage());
     sprintf(m_data_str[i++], "%d", m_robot_info->getBrightness());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getBrightnessGap());
+    sprintf(m_data_str[i++], "%d", m_robot_info->getBrightnessGap(37));
     sprintf(m_data_str[i++], "%d", m_robot_info->getForward());
     sprintf(m_data_str[i++], "%d", m_robot_info->getTurn());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(RobotInfo::L));

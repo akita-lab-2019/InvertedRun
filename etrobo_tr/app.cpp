@@ -161,16 +161,12 @@ void main_task(intptr_t unused)
 
     // スタート待機
     g_start_manager->waitForStart();
-
+    g_robot_info->setCourse(0);
     if (g_bt->getStartSignal() == BluetoothManager::START_R)
     {
-        g_parm_administrator->trace_pid[0][0] /= -1;
-        g_parm_administrator->trace_pid[0][1] /= -1;
-        g_parm_administrator->trace_pid[0][2] /= -1;
-        g_parm_administrator->trace_pid[1][0] /= -1;
-        g_parm_administrator->trace_pid[1][1] /= -1;
-        g_parm_administrator->trace_pid[1][2] /= -1;
+        g_robot_info->setCourse(1);
     }
+
     ev3_speaker_play_tone(NOTE_E4, 100);
 
     // 尻尾を少し前に
@@ -213,25 +209,27 @@ void info_task(intptr_t exinf)
 /**
  * ライントレースタスク
  */
-bool flag = 0;
+bool is_goal = false;
 void tracer_task(intptr_t exinf)
 {
-    g_tail_controller->setAngle(0);
-    g_tail_controller->setMaxSpeed(20);
+    if (is_goal == false)
+    {
+        // 未完走
+        g_tail_controller->setAngle(75);
+        g_tail_controller->setMaxSpeed(40);
 
-    g_section_tracer->run();
+        is_goal = g_section_tracer->run();
+    }
+    else
+    {
+        // 完走
+        doLookup();
+    }
 
     if (g_bt->getStartSignal() == BluetoothManager::STOP || (g_touch_sensor.isPressed() && g_robot_info->getRunTime() > 0.5))
     {
         // 停止信号を受信
-        g_tail_controller->setAngle(75);
-        g_tail_controller->setMaxSpeed(40);
-        g_wheel_L.setPWM(80);
-        g_wheel_R.setPWM(80);
-        g_clock.sleep(150);
-
-        g_wheel_L.reset();
-        g_wheel_R.reset();
+        landing();
 
         while (true)
         {
@@ -246,6 +244,285 @@ void tracer_task(intptr_t exinf)
     }
 
     ext_tsk();
+}
+
+void upBody()
+{
+    g_tail_controller->setAngle(90);
+    g_tail_controller->setMaxSpeed(100);
+}
+
+void downBody()
+{
+    g_tail_controller->setAngle(70);
+    g_tail_controller->setMaxSpeed(100);
+}
+
+float tail_walk_pid_param[2][3] = {{0.3, 0.0, 0.0}, {0.5, 0.0, 0.0}};
+void lineRun(int forward, int pid_index, int target)
+{
+    g_line_tracer->setIsInverted(false);
+    g_line_tracer->setForward(forward);
+    g_line_tracer->setCurvature(0);
+    g_line_tracer->setPidParm(tail_walk_pid_param[pid_index]);
+    g_line_tracer->setColorTarget(target);
+    g_line_tracer->run();
+}
+
+int lookup_sequence_num = 0;
+void doLookup()
+{
+
+    switch (lookup_sequence_num)
+    {
+    case 0:
+        // 尻尾をつく
+        ev3_speaker_play_tone(262, 100);
+        landing();
+
+        ev3_speaker_play_tone(262, 100);
+        g_clock.sleep(1000);
+
+        ev3_speaker_play_tone(262, 100);
+        upBody();
+
+        g_clock.sleep(1000);
+
+        lookup_sequence_num++;
+        break;
+
+    case 1:
+        // 高姿勢で前進
+        lineRun(15, 0, 15);
+
+        if (g_robot_info->getSonarDistance() < 0.05)
+        {
+            g_clock.sleep(10);
+            if (g_robot_info->getSonarDistance() < 0.05)
+            {
+                lookup_sequence_num++;
+            }
+        }
+        break;
+
+    case 2:
+        // 倒す
+        ev3_speaker_play_tone(262, 100);
+        downBody();
+
+        g_wheel_R.reset();
+        g_wheel_L.reset();
+        g_clock.sleep(1000);
+        ev3_speaker_play_tone(262, 100);
+        lookup_sequence_num++;
+
+    case 3:
+        // 低い姿勢で前進
+        lineRun(15, 1, 5);
+
+        if (g_robot_info->getRobotDis() > 0.15)
+        {
+            ev3_speaker_play_tone(262, 100);
+            lookup_sequence_num++;
+        }
+        break;
+
+    case 4:
+        // 低い姿勢で前進
+        lineRun(-15, 1, 5);
+
+        if (g_robot_info->getRobotDis() < -0.2)
+        {
+            ev3_speaker_play_tone(262, 100);
+            lookup_sequence_num++;
+        }
+        break;
+
+    case 5:
+        // 低い姿勢で前進
+        lineRun(15, 1, 5);
+
+        if (g_robot_info->getRobotDis() > 0.15)
+        {
+            ev3_speaker_play_tone(262, 100);
+            lookup_sequence_num++;
+        }
+        break;
+
+    case 6:
+        // 低い姿勢で前進
+        lineRun(-15, 1, 5);
+
+        if (g_robot_info->getRobotDis() < -0.2)
+        {
+            ev3_speaker_play_tone(262, 100);
+            lookup_sequence_num++;
+        }
+        break;
+
+    case 7:
+        // 低い姿勢で前進
+        lineRun(15, 1, 5);
+
+        if (g_robot_info->getRobotDis() > 0.15)
+        {
+            ev3_speaker_play_tone(262, 100);
+            lookup_sequence_num++;
+        }
+        break;
+
+    case 8:
+        // 高姿勢で前進
+        lineRun(15, 0, 15);
+
+        if (g_robot_info->getRobotDis() > 0.45)
+        {
+            ev3_speaker_play_tone(262, 100);
+            g_wheel_R.reset();
+            g_wheel_L.reset();
+            lookup_sequence_num++;
+        }
+        break;
+
+    case 9:
+        g_wheel_R.reset();
+        g_wheel_L.reset();
+        break;
+
+        // case 4:
+        //     // 旋回
+        //     g_wheel_R.setPWM(30);
+        //     g_wheel_L.setPWM(-30);
+
+        //     if (g_robot_info->getRobotPos(2) > 180)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 5:
+        //     // 低い姿勢で前進
+        //     g_robot_info->setCourse(1);
+        //     lineRun(8, 1, 5);
+
+        //     if (g_robot_info->getRobotDis() > 0.45)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 6:
+        //     // 旋回
+        //     g_wheel_R.setPWM(30);
+        //     g_wheel_L.setPWM(-30);
+
+        //     if (g_robot_info->getRobotPos(2) > 360)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 7:
+        //     // 低い姿勢で前進
+        //     g_robot_info->setCourse(0);
+        //     lineRun(8, 1, 5);
+
+        //     if (g_robot_info->getRobotDis() > 0.45 + 0.30)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 8:
+        //     // 旋回
+        //     g_wheel_R.setPWM(30);
+        //     g_wheel_L.setPWM(-30);
+
+        //     if (g_robot_info->getRobotPos(2) > 540)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 9:
+        //     // 低い姿勢で前進
+        //     g_robot_info->setCourse(1);
+        //     lineRun(8, 1, 5);
+
+        //     if (g_robot_info->getRobotDis() > 0.45 + 0.60)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 10:
+        //     // 旋回
+        //     g_wheel_R.setPWM(30);
+        //     g_wheel_L.setPWM(-30);
+
+        //     if (g_robot_info->getRobotPos(2) > 540 + 180)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 11:
+        //     // 低い姿勢で前進
+        //     g_robot_info->setCourse(0);
+        //     lineRun(8, 1, 5);
+
+        //     if (g_robot_info->getRobotDis() > 0.45 + 0.90)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 12:
+        //     // 高姿勢で前進
+        //     lineRun(8, 0, 15);
+
+        //     if (g_robot_info->getRobotDis() > 0.45 + 1.20)
+        //     {
+        //         ev3_speaker_play_tone(262, 100);
+        //         g_wheel_R.reset();
+        //         g_wheel_L.reset();
+        //         lookup_sequence_num++;
+        //     }
+        //     break;
+
+        // case 13:
+        //     g_wheel_R.reset();
+        //     g_wheel_L.reset();
+        //     break;
+
+    default:
+        break;
+    }
+}
+
+void landing()
+{
+    g_tail_controller->setAngle(75);
+    g_tail_controller->setMaxSpeed(40);
+    g_wheel_L.setPWM(90);
+    g_wheel_R.setPWM(90);
+    g_clock.sleep(300);
+
+    g_wheel_R.reset();
+    g_wheel_L.reset();
+
+    // g_wheel_L.setPWM(0);
+    // g_wheel_R.setPWM(0);
+    // g_wheel_L.setBrake(true);
+    // g_wheel_R.setBrake(true);
 }
 
 /**

@@ -28,6 +28,8 @@ extern "C"
     extern void tail_task(intptr_t exinf);
     extern void log_task(intptr_t exinf);
     extern void bt_recieve_task(intptr_t exinf);
+    void doLookup();
+    void landing();
 
 #endif /* TOPPERS_MACRO_ONLY */
 

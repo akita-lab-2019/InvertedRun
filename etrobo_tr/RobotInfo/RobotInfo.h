@@ -39,6 +39,7 @@ public:
     void setGyroOffset(float offset);
     float getGyroOffset();
 
+    void setCourse(int course);
     void setForward(int forward);
     void setTurn(int turn);
     void setPWM(int pwm_l, int pwm_r);
@@ -56,7 +57,7 @@ public:
     int getPitchPos();
     int getWheelPos(int wheel);
     float getTailPos();
-    int getBrightnessGap();
+    int getBrightnessGap(int target);
     float getRobotPos(int axis);
     float getRobotDis();
     float getSonarDistance();
@@ -95,6 +96,7 @@ private:
     Section *m_section;
     PID *m_trace_pid;
 
+    int m_course = 0;
     int m_section_num = 0;      // セクション番号
     float m_runTime = 0;        // 走行開始からの時間[sec]
     float m_battery = 0;        // バッテリー電圧[V]

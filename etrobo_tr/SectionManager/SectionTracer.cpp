@@ -21,23 +21,27 @@ SectionTracer::SectionTracer(RobotInfo *robot_info,
  * ライントレースする
  */
 bool b_flag = 0;
-void SectionTracer::run()
+bool SectionTracer::run()
 {
     if (m_is_initialized == false)
     {
-        m_section->update(0);
+        m_section->update(m_section_num);
         m_line_tracer->update();
         m_is_initialized = true;
     }
 
-    if (m_section_num != 17)
+    if (m_robot_info->getRobotDis() > m_section->getDistance())
     {
-        if (m_robot_info->getRobotDis() > m_section->getDistance())
+        m_section_num++;
+        if (m_section_num < 15)
         {
-            m_section_num++;
             m_section->update(m_section_num);
             m_line_tracer->update();
             ev3_speaker_play_tone((int)(261.63 * pow(M_E, m_section_num * 0.1)), 100);
+        }
+        else
+        {
+            return true;
         }
     }
 
@@ -51,4 +55,6 @@ void SectionTracer::run()
     }
 
     m_line_tracer->run();
+
+    return false;
 }

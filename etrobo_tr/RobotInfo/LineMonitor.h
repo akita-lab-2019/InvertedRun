@@ -9,7 +9,7 @@ class LineMonitor
 {
 public:
     explicit LineMonitor(ev3api::ColorSensor &colorSensor, ParmAdministrator *parm);
-    float getGap();
+    float getGap(float target);
 
 private:
     const ev3api::ColorSensor &m_color_sensor;
