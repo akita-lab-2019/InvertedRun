@@ -52,7 +52,7 @@ void ParmAdministrator::readParm()
     curvature[0] = 0;
     curvature[1] = 10;
     curvature[2] = 11;
-    curvature[3] = 15;
+    curvature[3] = 13;
 
     forward[0] = 110;
     forward[1] = 120;
@@ -63,11 +63,11 @@ void ParmAdministrator::readParm()
     forward[6] = 80;
     forward[7] = 85;
     forward[8] = 90;
-    forward[9] = 95;
-    forward[10] = 90;
-    forward[11] = 85;
-    forward[12] = 75;
-    forward[13] = 70;
+    forward[9] = 110;
+    forward[10] = 95;
+    forward[11] = 90;
+    forward[12] = 85;
+    forward[13] = 85;
     forward[14] = 120;
     forward[15] = 110;
     forward[16] = 110;

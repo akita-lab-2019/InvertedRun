@@ -514,7 +514,7 @@ void landing()
     g_tail_controller->setMaxSpeed(40);
     g_wheel_L.setPWM(90);
     g_wheel_R.setPWM(90);
-    g_clock.sleep(300);
+    g_clock.sleep(150);
 
     g_wheel_R.reset();
     g_wheel_L.reset();
