@@ -26,10 +26,16 @@ include $(EV3RT_SDK_LIB_DIR)/libcpp-ev3/Makefile
 
 endif
 
-APPL_DIR += $(mkfile_path)log $(mkfile_path)SectionManager $(mkfile_path)include $(mkfile_path)RobotInfo
+APPL_DIR += $(mkfile_path)Control\
+            $(mkfile_path)GaugeManagement\
+            $(mkfile_path)Log\
+            $(mkfile_path)RunManagement\
+            $(mkfile_path)Start\
+            $(mkfile_path)Tail
 
-INCLUDES += \
-	-I$(mkfile_path)RobotInfo\
-	-I$(mkfile_path)SectionManager\
-	-I$(mkfile_path)log\
-	-I$(mkfile_path)include
+INCLUDES += -I$(mkfile_path)Control\
+            -I$(mkfile_path)GaugeManagement\
+            -I$(mkfile_path)Log\
+            -I$(mkfile_path)RunManagement\
+            -I$(mkfile_path)Start\
+            -I$(mkfile_path)Tail
