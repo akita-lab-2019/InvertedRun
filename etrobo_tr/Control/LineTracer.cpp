@@ -5,7 +5,7 @@
  * @param lineMonitor    ライン判定
  * @param invertedWalker 倒立走行
  */
-LineTracer::LineTracer(RobotInfo *robot_info,
+LineTracer::LineTracer(GuageManager *robot_info,
                        Section *section,
                        TailWalker *tail_walker,
                        PID *pid,
@@ -105,7 +105,7 @@ void LineTracer::run()
         tailRun(m_forward, m_turn);
     }
 
-    // RobotInfoに指令値を伝える
+    // GuageManagerに指令値を伝える
     m_robot_info->setForward(m_forward);
     m_robot_info->setTurn(m_turn);
     m_robot_info->setPWM(m_pwm[L], m_pwm[R]);
@@ -125,9 +125,9 @@ void LineTracer::run()
 void LineTracer::invertedRun(int forward_v, int turn_v)
 {
     // 倒立走行に必要な各種データを取得
-    int angle = m_robot_info->getPitchVel();                   // ジャイロセンサ値
-    int wheel_cnt_R = m_robot_info->getWheelPos(RobotInfo::L); // 右モータ回転角度
-    int wheel_cnt_L = m_robot_info->getWheelPos(RobotInfo::R); // 左モータ回転角度
+    int angle = m_robot_info->getPitchVel();                      // ジャイロセンサ値
+    int wheel_cnt_R = m_robot_info->getWheelPos(GuageManager::L); // 右モータ回転角度
+    int wheel_cnt_L = m_robot_info->getWheelPos(GuageManager::R); // 左モータ回転角度
     int battery = m_robot_info->getBatteryVoltage() * 1000;
 
     // 並進と旋回の指令値，各種データ与えてホイールの指令値を算出させる

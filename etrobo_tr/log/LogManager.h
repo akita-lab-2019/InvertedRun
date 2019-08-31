@@ -13,7 +13,7 @@
 #include "LineMonitor.h"
 #include "GyroSensor.h"
 #include "ColorSensor.h"
-#include "RobotInfo.h"
+#include "GuageManager.h"
 #include "PID.h"
 #include "Motor.h"
 #include "Odometer.h"
@@ -24,7 +24,7 @@
 class LogManager
 {
 public:
-    LogManager(Recorder *recorder, BluetoothManager *bt, RobotInfo *robot_info);
+    LogManager(Recorder *recorder, BluetoothManager *bt, GuageManager *robot_info);
 
     void init();
     void update();
@@ -34,7 +34,7 @@ private:
     // FILE *m_bt;
     Recorder *m_recorder;
     BluetoothManager *m_bt;
-    RobotInfo *m_robot_info;
+    GuageManager *m_robot_info;
 
     void readData();
     void sendToBT();

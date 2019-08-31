@@ -4,7 +4,7 @@
 
 #include <math.h>
 #include <Clock.h>
-#include "RobotInfo.h"
+#include "GuageManager.h"
 #include "LineMonitor.h"
 #include "GyroSensor.h"
 #include "PID.h"
@@ -20,7 +20,7 @@
 class SectionTracer
 {
 public:
-    SectionTracer(RobotInfo *robot_info,
+    SectionTracer(GuageManager *robot_info,
                   Section *section,
                   LineTracer *line_tracer,
                   ParmAdministrator *parm);
@@ -28,7 +28,7 @@ public:
     bool run();
 
 private:
-    RobotInfo *m_robot_info;
+    GuageManager *m_robot_info;
     Section *m_section;
     LineTracer *m_line_tracer;
     ParmAdministrator *m_parm;

@@ -2,7 +2,7 @@
 #ifndef EV3_UNIT_TAILWALKER_H_
 #define EV3_UNIT_TAILWALKER_H_
 
-#include "RobotInfo.h"
+#include "GuageManager.h"
 #include "GyroSensor.h"
 #include "Motor.h"
 #include "BalancerCpp.h"

@@ -14,9 +14,6 @@ StartManager::StartManager(BluetoothManager *bt,
 {
 }
 
-/**
- * バランス走行に必要なものをリセットする
- */
 void StartManager::init()
 {
 }
@@ -40,6 +37,7 @@ void StartManager::waitForStart()
         m_clock.reset();
     }
 }
+
 void StartManager::start()
 {
 }

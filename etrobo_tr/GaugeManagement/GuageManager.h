@@ -18,20 +18,20 @@
 #include "Section.h"
 #include "PID.h"
 
-class RobotInfo
+class GuageManager
 {
 public:
-    RobotInfo(ev3api::Clock &clock,
-              ev3api::ColorSensor &color_sensor,
-              ev3api::GyroSensor &gyro_sensor,
-              ev3api::SonarSensor &sonar_sensor,
-              ev3api::Motor &wheel_L,
-              ev3api::Motor &wheel_R,
-              ev3api::Motor &tail_motor,
-              LineMonitor *line_monitor,
-              Odometer *odometer,
-              Section *section,
-              PID *trace_pid);
+    GuageManager(ev3api::Clock &clock,
+                 ev3api::ColorSensor &color_sensor,
+                 ev3api::GyroSensor &gyro_sensor,
+                 ev3api::SonarSensor &sonar_sensor,
+                 ev3api::Motor &wheel_L,
+                 ev3api::Motor &wheel_R,
+                 ev3api::Motor &tail_motor,
+                 LineMonitor *line_monitor,
+                 Odometer *odometer,
+                 Section *section,
+                 PID *trace_pid);
 
     void init();
     void update();
@@ -121,4 +121,4 @@ private:
     float m_pre_battery = 0;
 };
 
-#endif // EV3_ROBOT_INFO_H_
+#endif

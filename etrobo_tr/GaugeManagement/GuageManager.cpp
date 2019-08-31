@@ -1,19 +1,19 @@
-#include "RobotInfo.h"
+#include "GuageManager.h"
 
 /**
  * コンストラクタ
  */
-RobotInfo::RobotInfo(ev3api::Clock &clock,
-                     ev3api::ColorSensor &color_sensor,
-                     ev3api::GyroSensor &gyro_sensor,
-                     ev3api::SonarSensor &sonar_sensor,
-                     ev3api::Motor &wheel_L,
-                     ev3api::Motor &wheel_R,
-                     ev3api::Motor &tail_motor,
-                     LineMonitor *line_monitor,
-                     Odometer *odometer,
-                     Section *section,
-                     PID *trace_pid)
+GuageManager::GuageManager(ev3api::Clock &clock,
+                           ev3api::ColorSensor &color_sensor,
+                           ev3api::GyroSensor &gyro_sensor,
+                           ev3api::SonarSensor &sonar_sensor,
+                           ev3api::Motor &wheel_L,
+                           ev3api::Motor &wheel_R,
+                           ev3api::Motor &tail_motor,
+                           LineMonitor *line_monitor,
+                           Odometer *odometer,
+                           Section *section,
+                           PID *trace_pid)
     : m_clock(clock),
       m_color_sensor(color_sensor),
       m_gyro_sensor(gyro_sensor),
@@ -31,7 +31,7 @@ RobotInfo::RobotInfo(ev3api::Clock &clock,
 /**
  * 初期化する
  */
-void RobotInfo::init()
+void GuageManager::init()
 {
 }
 
@@ -39,7 +39,7 @@ void RobotInfo::init()
  * 情報を更新する
  */
 float pre_time;
-void RobotInfo::update()
+void GuageManager::update()
 {
     m_odometer->measure();
 
@@ -66,17 +66,17 @@ void RobotInfo::update()
     m_pre_battery = m_battery;
 }
 
-void RobotInfo::setCourse(int course)
+void GuageManager::setCourse(int course)
 {
     m_course = course;
 }
 
-int RobotInfo::getCourse()
+int GuageManager::getCourse()
 {
     return m_course;
 }
 
-int RobotInfo::getSectionNum()
+int GuageManager::getSectionNum()
 {
     return m_section_num;
 }
@@ -85,7 +85,7 @@ int RobotInfo::getSectionNum()
  * 走行開始からの時間を取得する
  * @return 走行開始からの時間[sec]
  */
-float RobotInfo::getRunTime()
+float GuageManager::getRunTime()
 {
     return m_runTime;
 }
@@ -94,7 +94,7 @@ float RobotInfo::getRunTime()
  * バッテリー電圧を取得する
  * @return バッテリー電圧[V]
  */
-float RobotInfo::getBatteryVoltage()
+float GuageManager::getBatteryVoltage()
 {
     return m_battery;
 }
@@ -103,7 +103,7 @@ float RobotInfo::getBatteryVoltage()
  * カラーセンサからの輝度を取得する
  * @return カラーセンサから取得した輝度
  */
-int RobotInfo::getBrightness()
+int GuageManager::getBrightness()
 {
     return m_brightness;
 }
@@ -112,7 +112,7 @@ int RobotInfo::getBrightness()
  * pitchの角速度を取得する
  * @return pitchの角速度[deg/rad]
  */
-int RobotInfo::getPitchVel()
+int GuageManager::getPitchVel()
 {
     return m_pitch_vel;
 }
@@ -121,7 +121,7 @@ int RobotInfo::getPitchVel()
  * pitchの角位置を取得する
  * @return pitchの角位置[deg]
  */
-int RobotInfo::getPitchPos()
+int GuageManager::getPitchPos()
 {
     return m_pitch_pos;
 }
@@ -131,7 +131,7 @@ int RobotInfo::getPitchPos()
  * @parm 車輪番号（左:0, 右:1）
  * @return 車輪の角位置（左[deg], 右[deg]）
  */
-int RobotInfo::getWheelPos(int wheel)
+int GuageManager::getWheelPos(int wheel)
 {
     return m_wheel_pos[wheel];
 }
@@ -140,7 +140,7 @@ int RobotInfo::getWheelPos(int wheel)
  * 尻尾モータの角位置を取得する
  * @return 尻尾モータの角位置[deg]
  */
-float RobotInfo::getTailPos()
+float GuageManager::getTailPos()
 {
     return m_tail_pos;
 }
@@ -149,7 +149,7 @@ float RobotInfo::getTailPos()
  * カラーセンサから取得した輝度と目標値との偏差を取得する
  * @return カラーセンサから取得した輝度と目標値との偏差
  */
-int RobotInfo::getBrightnessGap(int target)
+int GuageManager::getBrightnessGap(int target)
 {
     return (int)m_line_monitor->getGap(target);
     ;
@@ -160,7 +160,7 @@ int RobotInfo::getBrightnessGap(int target)
  * @parm 軸番号（X:0, Y:1, YAW:2）
  * @return ロボットの座標（x[m], y[m], yaw[deg]）
  */
-float RobotInfo::getRobotPos(int axis)
+float GuageManager::getRobotPos(int axis)
 {
     return m_robot_pos[axis];
 }
@@ -169,58 +169,58 @@ float RobotInfo::getRobotPos(int axis)
  * 走行距離を取得する
  * @return 走行距離[m]
  */
-float RobotInfo::getRobotDis()
+float GuageManager::getRobotDis()
 {
     return m_robot_dis;
 }
 
-float RobotInfo::getSonarDistance()
+float GuageManager::getSonarDistance()
 {
     return m_sonar_distance;
 }
 
-void RobotInfo::setForward(int forward)
+void GuageManager::setForward(int forward)
 {
     m_forward = forward;
 }
 
-void RobotInfo::setTurn(int turn)
+void GuageManager::setTurn(int turn)
 {
     m_turn = turn;
 }
 
-void RobotInfo::setPWM(int pwm_l, int pwm_r)
+void GuageManager::setPWM(int pwm_l, int pwm_r)
 {
     m_pwm[L] = pwm_l;
     m_pwm[R] = pwm_r;
 }
 
-int RobotInfo::getForward()
+int GuageManager::getForward()
 {
     return m_forward;
 }
 
-int RobotInfo::getTurn()
+int GuageManager::getTurn()
 {
     return m_turn;
 }
 
-int RobotInfo::getPWM(int wheel)
+int GuageManager::getPWM(int wheel)
 {
     return m_pwm[wheel];
 }
 
-void RobotInfo::setGyroOffset(float offset)
+void GuageManager::setGyroOffset(float offset)
 {
     m_gyro_offset = offset;
 }
 
-float RobotInfo::getGyroOffset()
+float GuageManager::getGyroOffset()
 {
     return m_gyro_offset;
 }
 
-float RobotInfo::getTracePidTeamValue(int team)
+float GuageManager::getTracePidTeamValue(int team)
 {
     return m_trace_pid_team_val[team];
 }

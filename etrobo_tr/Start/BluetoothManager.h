@@ -2,7 +2,7 @@
 #ifndef EV3_BLUETOOTH_MANAGER_H_
 #define EV3_BLUETOOTH_MANAGER_H_
 
-#include "RobotInfo.h"
+#include "GuageManager.h"
 #include "GyroSensor.h"
 #include "Motor.h"
 #include "BalancerCpp.h"

@@ -5,7 +5,7 @@
  * @param lineMonitor    ライン判定
  * @param invertedWalker 倒立走行
  */
-SectionTracer::SectionTracer(RobotInfo *robot_info,
+SectionTracer::SectionTracer(GuageManager *robot_info,
                              Section *section,
                              LineTracer *line_tracer,
                              ParmAdministrator *parm)

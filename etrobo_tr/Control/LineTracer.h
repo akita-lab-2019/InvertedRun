@@ -3,7 +3,7 @@
 #define EV3_APP_LINETRACER_H_
 
 #include <Clock.h>
-#include "RobotInfo.h"
+#include "GuageManager.h"
 #include "LineMonitor.h"
 #include "GyroSensor.h"
 #include "PID.h"
@@ -18,7 +18,7 @@
 class LineTracer
 {
 public:
-    LineTracer(RobotInfo *robot_info,
+    LineTracer(GuageManager *robot_info,
                Section *section,
                TailWalker *tail_walker,
                PID *pid,
@@ -42,7 +42,7 @@ public:
     };
 
 private:
-    RobotInfo *m_robot_info;
+    GuageManager *m_robot_info;
     Section *m_section;
     TailWalker *m_tail_walker;
     PID *m_pid;

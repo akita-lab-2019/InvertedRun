@@ -1,7 +1,7 @@
 mkfile_path := $(dir $(lastword $(MAKEFILE_LIST)))
 
 APPL_CXXOBJS += \
-	RobotInfo.o \
+	GuageManager.o \
 	ParmAdministrator.o \
 	Recorder.o \
 	LineMonitor.o \

@@ -6,7 +6,7 @@
 #include "TailController.h"
 #include "Recorder.h"
 #include "PID.h"
-#include "RobotInfo.h"
+#include "GuageManager.h"
 #include "Section.h"
 #include "SectionTracer.h"
 #include <Clock.h>
@@ -39,7 +39,7 @@ Motor g_wheel_L(PORT_C);
 Motor g_wheel_R(PORT_B);
 
 // オブジェクトの定義
-static RobotInfo *g_robot_info;
+static GuageManager *g_robot_info;
 static Section *g_section;
 static SectionTracer *g_section_tracer;
 static ParmAdministrator *g_parm_administrator;
@@ -74,17 +74,17 @@ static void initSystem()
     g_pid_trace = new PID();
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
     g_line_monitor = new LineMonitor(g_color_sensor, g_parm_administrator);
-    g_robot_info = new RobotInfo(g_clock,
-                                 g_color_sensor,
-                                 g_gyro_sensor,
-                                 g_sonar_sensor,
-                                 g_wheel_L,
-                                 g_wheel_R,
-                                 g_tail_motor,
-                                 g_line_monitor,
-                                 g_odometer,
-                                 g_section,
-                                 g_pid_trace);
+    g_robot_info = new GuageManager(g_clock,
+                                    g_color_sensor,
+                                    g_gyro_sensor,
+                                    g_sonar_sensor,
+                                    g_wheel_L,
+                                    g_wheel_R,
+                                    g_tail_motor,
+                                    g_line_monitor,
+                                    g_odometer,
+                                    g_section,
+                                    g_pid_trace);
 
     // 記録
     g_recorder = new Recorder(g_parm_administrator);

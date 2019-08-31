@@ -3,7 +3,7 @@
 /**
  * コンストラクタ
  */
-LogManager::LogManager(Recorder *recorder, BluetoothManager *bt, RobotInfo *robot_info)
+LogManager::LogManager(Recorder *recorder, BluetoothManager *bt, GuageManager *robot_info)
     : m_recorder(recorder),
       m_bt(bt),
       m_robot_info(robot_info)
@@ -52,19 +52,19 @@ void LogManager::readData()
     sprintf(m_data_str[i++], "%d", m_robot_info->getBrightnessGap(37));
     sprintf(m_data_str[i++], "%d", m_robot_info->getForward());
     sprintf(m_data_str[i++], "%d", m_robot_info->getTurn());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(RobotInfo::L));
-    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(RobotInfo::R));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::X));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(RobotInfo::Y));
-    sprintf(m_data_str[i++], "%d", (int)m_robot_info->getRobotPos(RobotInfo::YAW));
+    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(GuageManager::L));
+    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(GuageManager::R));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(GuageManager::X));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(GuageManager::Y));
+    sprintf(m_data_str[i++], "%d", (int)m_robot_info->getRobotPos(GuageManager::YAW));
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotDis());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getGyroOffset());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchPos());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getSonarDistance());
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(RobotInfo::P));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(RobotInfo::P));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(RobotInfo::P));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(GuageManager::P));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(GuageManager::P));
+    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(GuageManager::P));
 }
 
 void LogManager::sendToBT()
