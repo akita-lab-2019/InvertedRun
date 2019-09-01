@@ -2,7 +2,6 @@
 
 /**
  * コンストラクタ
- * @param tail_motor 尻尾モータ
  */
 PID::PID()
 {
@@ -10,6 +9,7 @@ PID::PID()
 
 /**
  * 初期化する
+ * @param K[3] PID係数（0:P, 1:I, 2:D）
  */
 void PID::init(float K[3])
 {
@@ -24,7 +24,7 @@ void PID::init(float K[3])
 }
 
 /**
- * 尻尾モータを制御する
+ * PID計算を行う
  * 4ms周期で呼び出される前提
  * @param target_val 目標値
  * @param now_val    現在の値

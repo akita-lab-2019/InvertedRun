@@ -1,11 +1,11 @@
+/**
+ *******************************************************************************
+ ** PID計算を行う
+ *******************************************************************************
+ **/
+
 #ifndef EV3_PID_H_
 #define EV3_PID_H_
-
-#include "LineMonitor.h"
-#include "GyroSensor.h"
-#include "Motor.h"
-#include "BalancerCpp.h"
-#include "stdlib.h"
 
 class PID
 {

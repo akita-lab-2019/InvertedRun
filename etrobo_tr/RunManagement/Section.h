@@ -1,18 +1,11 @@
 /**
  *******************************************************************************
- ** 区間データを提供する
+ ** 区間パラメータリストを提供する
  *******************************************************************************
  **/
 
 #ifndef EV3_SECTION_H_
 #define EV3_SECTION_H_
-
-#include <Clock.h>
-#include <ColorSensor.h>
-#include <GyroSensor.h>
-#include <Motor.h>
-
-#include "Odometer.h"
 
 class Section
 {
