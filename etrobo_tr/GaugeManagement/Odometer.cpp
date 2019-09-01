@@ -38,8 +38,6 @@ void Odometer::measure()
  */
 void Odometer::calculate()
 {
-    const float dt = 0.004;
-
     // ホイールの累計走行距離を計算
     float wheel_dis[2];
     wheel_dis[L] = m_wheel_deg[L] * WHEEL_RADIUS;
@@ -54,18 +52,10 @@ void Odometer::calculate()
     m_robot_pose[X] = m_pre_robot_pose[X] + dl * cos(m_robot_pose[YAW] * TO_RAD);
     m_robot_pose[Y] = m_pre_robot_pose[Y] + dl * sin(m_robot_pose[YAW] * TO_RAD);
 
-    // ホイール速度を計算
-    m_wheel_deg_v[L] = (m_wheel_deg[L] - m_pre_wheel_deg[L]) / dt;
-    m_wheel_deg_v[R] = (m_wheel_deg[R] - m_pre_wheel_deg[R]) / dt;
-    m_robot_liner_v = (m_robot_dis - m_pre_robot_dis) / dt;
-    m_robot_angular_v = (m_robot_pose[YAW] - m_pre_robot_pose[YAW]) / dt;
-
     // 次のループにデータを渡す
     m_pre_robot_dis = m_robot_dis;
-    m_pre_robot_pose[X] = m_robot_pose[X];
-    m_pre_robot_pose[Y] = m_robot_pose[Y];
-    m_pre_wheel_deg[L] = m_wheel_deg[L];
-    m_pre_wheel_deg[R] = m_wheel_deg[R];
+    for (int i = 0; i < 3; i++)
+        m_pre_robot_pose[i] = m_robot_pose[i];
 }
 
 /**
@@ -85,34 +75,6 @@ float Odometer::getRobotPose(int axis)
 float Odometer::getRobotDistance()
 {
     return m_robot_dis;
-}
-
-/**
- * ロボットの並進速度を取得
- * @return ロボットの並進速度[m/s]
- */
-float Odometer::getRobotLinerVelocity()
-{
-    return m_robot_liner_v;
-}
-
-/**
- * ロボットの角速度を取得
- * @return ロボットの角速度[deg/s]
- */
-float Odometer::getRobotAngularVelocity()
-{
-    return m_robot_angular_v;
-}
-
-/**
- * ホイール速度を取得
- * @parm ホイール番号（L:0, R:1）
- * @return ホイール角速度[deg/s]
- */
-float Odometer::getWheelVelocity(int wheel)
-{
-    return m_wheel_deg_v[wheel];
 }
 
 /**
