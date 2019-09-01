@@ -43,7 +43,6 @@ void LineTracer::init()
  */
 void LineTracer::update()
 {
-    m_is_inverted = 1;
     m_forward = m_section->getForward();
     m_curvature = m_section->getCurvature();
     m_section->getPidParm(m_pid_parm);
@@ -120,7 +119,7 @@ void LineTracer::run()
 }
 
 /**
- * ライントレースする
+ * 倒立走行
  */
 void LineTracer::invertedRun(int forward_v, int turn_v)
 {
@@ -138,7 +137,7 @@ void LineTracer::invertedRun(int forward_v, int turn_v)
 }
 
 /**
- * ライントレースする
+ * 尻尾走行
  */
 void LineTracer::tailRun(int forward_v, int turn_v)
 {

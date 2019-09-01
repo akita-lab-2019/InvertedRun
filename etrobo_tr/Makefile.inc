@@ -14,7 +14,8 @@ APPL_CXXOBJS += \
 	SectionTracer.o \
 	BluetoothManager.o \
 	StartManager.o \
-	LineTracer.o
+	LineTracer.o \
+	Seesaw.o
 
 SRCLANG := c++
 
@@ -30,11 +31,13 @@ APPL_DIR += $(mkfile_path)Control\
             $(mkfile_path)Log\
             $(mkfile_path)RunManagement\
             $(mkfile_path)Start\
-            $(mkfile_path)Tail
+            $(mkfile_path)Tail\
+            $(mkfile_path)Seesaw
 
 INCLUDES += -I$(mkfile_path)Control\
             -I$(mkfile_path)GaugeManagement\
             -I$(mkfile_path)Log\
             -I$(mkfile_path)RunManagement\
             -I$(mkfile_path)Start\
-            -I$(mkfile_path)Tail
+            -I$(mkfile_path)Tail\
+            -I$(mkfile_path)Seesaw

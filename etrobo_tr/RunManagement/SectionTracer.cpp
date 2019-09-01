@@ -25,6 +25,7 @@ bool SectionTracer::run()
     {
         m_section->update(m_section_num);
         m_line_tracer->update();
+        m_line_tracer->setIsInverted(1);
         m_is_initialized = true;
     }
 
@@ -35,6 +36,7 @@ bool SectionTracer::run()
         {
             m_section->update(m_section_num);
             m_line_tracer->update();
+            m_line_tracer->setIsInverted(1);
             ev3_speaker_play_tone((int)(261.63 * pow(M_E, m_section_num * 0.1)), 100);
         }
         else
