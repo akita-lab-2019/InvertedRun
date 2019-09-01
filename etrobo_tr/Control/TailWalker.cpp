@@ -3,22 +3,20 @@
 
 /**
  * コンストラクタ
- * @param leftWheel  左モータ
- * @param rightWheel 右モータ
  */
 TailWalker::TailWalker()
 {
 }
 
 /**
- * バランス走行に必要なものをリセットする
+ * 尻尾走行に必要なものをリセットする
  */
 void TailWalker::init()
 {
 }
 
 /**
- * バランス走行する
+ * 尻尾走行する
  */
 void TailWalker::update()
 {

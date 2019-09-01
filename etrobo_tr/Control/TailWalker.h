@@ -1,12 +1,13 @@
+/**
+ *******************************************************************************
+ ** 尻尾走行の計算を行う
+ *******************************************************************************
+ **/
 
-#ifndef EV3_UNIT_TAILWALKER_H_
-#define EV3_UNIT_TAILWALKER_H_
+#ifndef EV3_TAILWALKER_H_
+#define EV3_TAILWALKER_H_
 
-#include "GuageManager.h"
-#include "GyroSensor.h"
-#include "Motor.h"
-#include "BalancerCpp.h"
-#include "stdlib.h"
+#include "ev3api.h"
 
 class TailWalker
 {
@@ -20,8 +21,6 @@ public:
     int8_t getPwmLeft();
 
 private:
-    int cancelBacklash(int8_t pwm, int enc);
-
     int m_forward;
     int m_turn;
     int8_t m_right_pwm;
@@ -30,4 +29,4 @@ private:
     float K = 1;
 };
 
-#endif // EV3_UNIT_TAILWALKER_H_
+#endif
