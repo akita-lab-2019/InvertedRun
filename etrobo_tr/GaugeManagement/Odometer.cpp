@@ -27,8 +27,8 @@ void Odometer::init()
 void Odometer::measure()
 {
     // ホイールの回転角度を算出する
-    m_wheel_deg[L] = m_wheel_L.getCount() * TO_RAD;
-    m_wheel_deg[R] = m_wheel_R.getCount() * TO_RAD;
+    m_wheel_deg[L] = m_wheel_L.getCount();
+    m_wheel_deg[R] = m_wheel_R.getCount();
 
     calculate();
 }
@@ -40,8 +40,8 @@ void Odometer::calculate()
 {
     // ホイールの累計走行距離を計算
     float wheel_dis[2];
-    wheel_dis[L] = m_wheel_deg[L] * WHEEL_RADIUS;
-    wheel_dis[R] = m_wheel_deg[R] * WHEEL_RADIUS;
+    wheel_dis[L] = m_wheel_deg[L] * TO_RAD * WHEEL_RADIUS;
+    wheel_dis[R] = m_wheel_deg[R] * TO_RAD * WHEEL_RADIUS;
 
     // ロボットの累計走行距離を計算
     m_robot_dis = (wheel_dis[R] + wheel_dis[L]) / 2;

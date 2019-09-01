@@ -3,10 +3,11 @@
 /**
  * コンストラクタ
  */
-LogManager::LogManager(Recorder *recorder, BluetoothManager *bt, GuageManager *robot_info)
+LogManager::LogManager(Recorder *recorder, BluetoothManager *bt, GuageManager *robot_info, Section *section)
     : m_recorder(recorder),
       m_bt(bt),
-      m_robot_info(robot_info)
+      m_robot_info(robot_info),
+      m_section(section)
 {
 }
 
@@ -45,7 +46,7 @@ void LogManager::readData()
     // データを抽出して文字配列に格納
     int i = 0;
     sprintf(m_data_str[i++], "%d", m_robot_info->getCourse());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getSectionNum());
+    sprintf(m_data_str[i++], "%d", m_section->getSectionNum());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRunTime());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getBatteryVoltage());
     sprintf(m_data_str[i++], "%d", m_robot_info->getBrightness());
@@ -59,19 +60,15 @@ void LogManager::readData()
     sprintf(m_data_str[i++], "%d", (int)m_robot_info->getRobotPos(GuageManager::YAW));
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotDis());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getGyroOffset());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getPitchPos());
     sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
     sprintf(m_data_str[i++], "%.2f", m_robot_info->getSonarDistance());
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(GuageManager::P));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(GuageManager::P));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getTracePidTeamValue(GuageManager::P));
 }
 
 void LogManager::sendToBT()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 21; i++)
+    for (int i = 1; i < 17; i++)
     {
         sprintf(file_str, "%s\t%s", file_str, m_data_str[i]);
     }
@@ -82,7 +79,7 @@ void LogManager::sendToSD()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 21; i++)
+    for (int i = 1; i < 17; i++)
     {
         sprintf(file_str, "%s, %s", file_str, m_data_str[i]);
     }

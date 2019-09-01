@@ -9,22 +9,14 @@
 #define EV3_LOG_MANAGER_H_
 
 #include "Recorder.h"
-#include <Clock.h>
-#include "LineMonitor.h"
-#include "GyroSensor.h"
-#include "ColorSensor.h"
 #include "GuageManager.h"
-#include "PID.h"
-#include "Motor.h"
-#include "Odometer.h"
-#include "TailController.h"
 #include "BluetoothManager.h"
-#include "stdlib.h"
+#include "Section.h"
 
 class LogManager
 {
 public:
-    LogManager(Recorder *recorder, BluetoothManager *bt, GuageManager *robot_info);
+    LogManager(Recorder *recorder, BluetoothManager *bt, GuageManager *robot_info, Section *section);
 
     void init();
     void update();
@@ -35,6 +27,7 @@ private:
     Recorder *m_recorder;
     BluetoothManager *m_bt;
     GuageManager *m_robot_info;
+    Section *m_section;
 
     void readData();
     void sendToBT();

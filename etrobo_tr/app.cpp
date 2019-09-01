@@ -69,22 +69,17 @@ static void initSystem()
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
     g_line_monitor = new LineMonitor(g_color_sensor);
     g_robot_info = new GuageManager(g_clock,
-                                    g_color_sensor,
                                     g_gyro_sensor,
                                     g_sonar_sensor,
-                                    g_wheel_L,
-                                    g_wheel_R,
-                                    g_tail_motor,
                                     g_line_monitor,
-                                    g_odometer,
-                                    g_section,
-                                    g_pid_trace);
+                                    g_odometer);
 
     // 記録
     g_recorder = new Recorder();
     g_log_manager = new LogManager(g_recorder,
                                    g_bt,
-                                   g_robot_info);
+                                   g_robot_info,
+                                   g_section);
 
     // 尻尾制御
     g_pid_tail = new PID();

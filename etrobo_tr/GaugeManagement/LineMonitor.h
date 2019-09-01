@@ -8,6 +8,7 @@ class LineMonitor
 {
 public:
     explicit LineMonitor(ev3api::ColorSensor &colorSensor);
+    int getBrightness();
     float getGap(float target);
 
 private:
