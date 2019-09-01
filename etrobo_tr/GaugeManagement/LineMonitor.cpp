@@ -1,13 +1,12 @@
 #include "LineMonitor.h"
 
-LineMonitor::LineMonitor(ev3api::ColorSensor &colorSensor, ParmAdministrator *parm) : m_color_sensor(colorSensor), m_target(parm->color_sensor_targrt[1])
+LineMonitor::LineMonitor(ev3api::ColorSensor &colorSensor) : m_color_sensor(colorSensor)
 {
-    m_target = parm->color_sensor_targrt[1];
 }
 
 /**
- * エッジ部分からのずれ（白と黒の中間値をエッジ部分の色と仮定）
- * @return エッジ部分からのずれ
+ * 輝度偏差を取得する
+ * @return 輝度偏差
  */
 float LineMonitor::getGap(float target)
 {

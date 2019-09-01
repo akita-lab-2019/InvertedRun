@@ -2,9 +2,8 @@
 
 /**
  * コンストラクタ
- * @param *parm パラメータ管理者
  */
-Recorder::Recorder(ParmAdministrator *parm) : m_parm(parm)
+Recorder::Recorder()
 {
 }
 

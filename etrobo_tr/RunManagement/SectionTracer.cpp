@@ -7,12 +7,10 @@
  */
 SectionTracer::SectionTracer(GuageManager *robot_info,
                              Section *section,
-                             LineTracer *line_tracer,
-                             ParmAdministrator *parm)
+                             LineTracer *line_tracer)
     : m_robot_info(robot_info),
       m_section(section),
       m_line_tracer(line_tracer),
-      m_parm(parm),
       m_is_initialized(false)
 {
 }

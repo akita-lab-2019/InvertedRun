@@ -3,8 +3,7 @@
 /**
  * コンストラクタ
  */
-Section::Section(ParmAdministrator *parm)
-    : m_parm(parm)
+Section::Section()
 {
     update(0);
 }
@@ -15,39 +14,29 @@ Section::Section(ParmAdministrator *parm)
  */
 void Section::update(int num)
 {
+    // それぞれの値を更新する
     m_section_num = num;
     m_distance = m_distance_list[num];
-    m_forward = m_parm->forward[num];
-    m_curvature = m_parm->curvature[m_is_curve_list[num]];
-    m_pid_parm[0] = m_parm->trace_pid[m_is_curve_list[num]][0];
-    m_pid_parm[1] = m_parm->trace_pid[m_is_curve_list[num]][1];
-    m_pid_parm[2] = m_parm->trace_pid[m_is_curve_list[num]][2];
-    m_color_target = 37;
-    m_tail_angle = 0;
-    m_is_inverted = 1;
+    m_forward = m_forward_list[num];
+    m_curvature = m_curvature_list[m_is_curve_list[num]];
+    m_pid_parm[0] = m_trace_pid_list[m_is_curve_list[num]][0];
+    m_pid_parm[1] = m_trace_pid_list[m_is_curve_list[num]][1];
+    m_pid_parm[2] = m_trace_pid_list[m_is_curve_list[num]][2];
 
+    // 以下の区間では旋回方向が逆になるので，曲率旋回量を負にする
     if (num == 5 || num == 6 || num == 8 || num == 10 || num == 12)
     {
         m_curvature *= -1;
     }
-    // if (m_section_num == 0)
-    // {
-    //     m_forward = 90;
-    // }
-}
-
-int Section::getSectionNum()
-{
-    return m_section_num;
 }
 
 /**
- * 区間長さ[m]を取得する
- * @return 区間長さ[m]
+ * 現在の区間番号を取得する
+ * @return 区間番号
  */
-float Section::getDistance()
+int Section::getSectionNum()
 {
-    return m_distance;
+    return m_section_num;
 }
 
 /**
@@ -60,8 +49,8 @@ float Section::getForward()
 }
 
 /**
- * 曲率[m^-1]を取得する
- * @return 曲率[m^-1]
+ * 曲率旋回量を取得する
+ * @return 曲率旋回量
  */
 float Section::getCurvature()
 {
@@ -79,8 +68,8 @@ void Section::getPidParm(float pid_parm[3])
 }
 
 /**
- * カラーセンサの目標値を取得する
- * @return カラーセンサの目標値
+ * 輝度目標値を取得する
+ * @parm 輝度目標値
  */
 float Section::getColorTarget()
 {
@@ -88,19 +77,10 @@ float Section::getColorTarget()
 }
 
 /**
- * 尻尾の角度[deg]を取得する
- * @return 尻尾の角度[deg]
+ * 区間長さ[m]を取得する
+ * @return 区間長さ[m]
  */
-float Section::getTailAngle()
+float Section::getDistance()
 {
-    return m_tail_angle;
-}
-
-/**
- * 倒立走行の有無を取得する
- * @return 倒立走行の有無
- */
-bool Section::isInverted()
-{
-    return m_is_inverted;
+    return m_distance;
 }

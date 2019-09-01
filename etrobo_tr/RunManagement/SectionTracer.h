@@ -14,7 +14,6 @@
 #include "LineTracer.h"
 #include "TailController.h"
 #include "TailWalker.h"
-#include "ParmAdministrator.h"
 #include "stdlib.h"
 
 class SectionTracer
@@ -22,8 +21,7 @@ class SectionTracer
 public:
     SectionTracer(GuageManager *robot_info,
                   Section *section,
-                  LineTracer *line_tracer,
-                  ParmAdministrator *parm);
+                  LineTracer *line_tracer);
 
     bool run();
 
@@ -31,7 +29,6 @@ private:
     GuageManager *m_robot_info;
     Section *m_section;
     LineTracer *m_line_tracer;
-    ParmAdministrator *m_parm;
 
     bool m_is_initialized;
     int m_section_num = 0;

@@ -43,7 +43,7 @@ void LineTracer::init()
  */
 void LineTracer::update()
 {
-    m_is_inverted = m_section->isInverted();
+    m_is_inverted = 1;
     m_forward = m_section->getForward();
     m_curvature = m_section->getCurvature();
     m_section->getPidParm(m_pid_parm);

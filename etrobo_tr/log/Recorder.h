@@ -14,7 +14,7 @@
 class Recorder
 {
 public:
-    Recorder(ParmAdministrator *parm);
+    Recorder();
 
     void init();
     int getFileNum();
@@ -23,7 +23,6 @@ public:
 
 private:
     char m_logfile_name[15];
-    ParmAdministrator *m_parm;
     const int parm_mum = 9;
 };
 

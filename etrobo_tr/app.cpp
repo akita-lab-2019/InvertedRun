@@ -1,7 +1,6 @@
 #include "app.h"
 #include "TailWalker.h"
 #include "LineTracer.h"
-#include "ParmAdministrator.h"
 #include "LogManager.h"
 #include "TailController.h"
 #include "Recorder.h"
@@ -42,7 +41,6 @@ Motor g_wheel_R(PORT_B);
 static GuageManager *g_robot_info;
 static Section *g_section;
 static SectionTracer *g_section_tracer;
-static ParmAdministrator *g_parm_administrator;
 static LogManager *g_log_manager;
 static Recorder *g_recorder;
 static LineMonitor *g_line_monitor;
@@ -64,16 +62,12 @@ static void initSystem()
     g_bt = new BluetoothManager();
     g_start_manager = new StartManager(g_bt, g_touch_sensor, g_clock);
 
-    // パラメータの管理
-    g_parm_administrator = new ParmAdministrator();
-    g_parm_administrator->readParm();
-
-    g_section = new Section(g_parm_administrator);
+    g_section = new Section();
 
     // 走行体情報
     g_pid_trace = new PID();
     g_odometer = new Odometer(g_wheel_L, g_wheel_R);
-    g_line_monitor = new LineMonitor(g_color_sensor, g_parm_administrator);
+    g_line_monitor = new LineMonitor(g_color_sensor);
     g_robot_info = new GuageManager(g_clock,
                                     g_color_sensor,
                                     g_gyro_sensor,
@@ -87,7 +81,7 @@ static void initSystem()
                                     g_pid_trace);
 
     // 記録
-    g_recorder = new Recorder(g_parm_administrator);
+    g_recorder = new Recorder();
     g_log_manager = new LogManager(g_recorder,
                                    g_bt,
                                    g_robot_info);
@@ -106,7 +100,7 @@ static void initSystem()
                                    g_balancer,
                                    g_wheel_L,
                                    g_wheel_R);
-    g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer, g_parm_administrator);
+    g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer);
 
     g_log_manager->init();
     g_tail_controller->init();
