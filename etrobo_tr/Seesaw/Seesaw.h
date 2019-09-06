@@ -47,6 +47,8 @@ private:
 
     // 走行のPIDパラメータ
     float m_run_pid_param[2][3] = {{0.3, 0.0, 0.0}, {0.5, 0.0, 0.0}};
+
+    long m_timer = 0;
 };
 
 #endif

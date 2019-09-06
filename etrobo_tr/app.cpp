@@ -15,6 +15,7 @@
 #include "BluetoothManager.h"
 #include "StartManager.h"
 #include "Seesaw.h"
+#include "Lookup.h"
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -55,6 +56,7 @@ static PID *g_pid_trace;
 static BluetoothManager *g_bt;
 static StartManager *g_start_manager;
 static Seesaw *g_seesaw;
+static Lookup *g_lookup;
 
 /**
  * システムの初期化処理
@@ -100,6 +102,14 @@ static void initSystem()
     g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer);
 
     g_seesaw = new Seesaw(g_clock,
+                          g_gyro_sensor,
+                          g_wheel_L,
+                          g_wheel_R,
+                          g_robot_info,
+                          g_line_tracer,
+                          g_tail_controller);
+
+    g_lookup = new Lookup(g_clock,
                           g_gyro_sensor,
                           g_wheel_L,
                           g_wheel_R,
@@ -214,7 +224,7 @@ void tracer_task(intptr_t exinf)
     if (is_goal == false)
     {
         // 未完走
-        g_tail_controller->setAngle(75);
+        g_tail_controller->setAngle(70);
         g_tail_controller->setMaxSpeed(40);
 
         is_goal = g_section_tracer->run();
@@ -222,7 +232,8 @@ void tracer_task(intptr_t exinf)
     else
     {
         // 完走
-        g_seesaw->run();
+        g_lookup->run();
+        // g_seesaw->run();
     }
 
     if (g_bt->getStartSignal() == BluetoothManager::STOP || (g_touch_sensor.isPressed() && g_robot_info->getRunTime() > 0.5))

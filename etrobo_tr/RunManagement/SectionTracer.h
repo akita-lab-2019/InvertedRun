@@ -32,7 +32,6 @@ private:
 
     bool m_is_initialized;
     int m_section_num = 0;
-    // int m_section_num = 14;
 };
 
 #endif // EV3_SECTION_TRACER_H_
