@@ -17,6 +17,7 @@ public:
     void send(char *str);
     void receive();
     int getStartSignal();
+    int getStartSectionNum();
 
     enum
     {
@@ -28,6 +29,8 @@ public:
 
 private:
     uint8_t m_rcv_char = 0;
+    uint8_t m_start_sig = 0;
+    uint8_t m_start_section_num = 0;
 };
 
 #endif

@@ -42,8 +42,19 @@ float PID::calculate(float target_val, float now_val)
 
     // 次回演算用状態量保存処理
     m_diff[1] = m_diff[0];
+    float rtval = m_team_val[P] + m_team_val[I] + m_team_val[D];
 
-    return m_team_val[P] + m_team_val[I] + m_team_val[D];
+    if (rtval < -50)
+    {
+        rtval = -50;
+    }
+
+    if (rtval > 50)
+    {
+        rtval = 50;
+    }
+
+    return rtval;
 }
 
 /**

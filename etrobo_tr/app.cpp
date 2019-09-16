@@ -227,13 +227,13 @@ void tracer_task(intptr_t exinf)
         g_tail_controller->setAngle(70);
         g_tail_controller->setMaxSpeed(40);
 
-        is_goal = g_section_tracer->run();
+        is_goal = g_section_tracer->run(g_bt->getStartSectionNum());
     }
     else
     {
         // 完走
-        g_lookup->run();
-        // g_seesaw->run();
+        // g_lookup->run();
+        g_seesaw->run();
     }
 
     if (g_bt->getStartSignal() == BluetoothManager::STOP || (g_touch_sensor.isPressed() && g_robot_info->getRunTime() > 0.5))

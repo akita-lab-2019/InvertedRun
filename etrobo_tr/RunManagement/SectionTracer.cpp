@@ -19,10 +19,13 @@ SectionTracer::SectionTracer(GuageManager *robot_info,
  * ライントレースする
  */
 bool b_flag = 0;
-bool SectionTracer::run()
+bool SectionTracer::run(int start_section_num)
 {
     if (m_is_initialized == false)
     {
+        int m_section_num = start_section_num;
+        float distance_list[16] = {0, 0.60, 1.25, 1.70, 2.45, 3.30, 4.00, 4.60, 4.70, 5.55, 6.45, 7.00, 7.05, 7.60, 8.95, 9.25};
+        m_robot_info->setOdomOffset(-distance_list[start_section_num]);
         m_section->update(m_section_num);
         m_line_tracer->update();
         m_line_tracer->setIsInverted(1);

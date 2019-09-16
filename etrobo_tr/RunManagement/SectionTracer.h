@@ -23,7 +23,7 @@ public:
                   Section *section,
                   LineTracer *line_tracer);
 
-    bool run();
+    bool run(int start_section_num);
 
 private:
     GuageManager *m_robot_info;

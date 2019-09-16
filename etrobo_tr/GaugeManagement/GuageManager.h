@@ -26,6 +26,8 @@ public:
     void init();
     void update();
 
+    void setOdomOffset(float offset);
+
     void setGyroOffset(float offset);
     float getGyroOffset();
 
@@ -93,6 +95,7 @@ private:
     int m_turn = 0;
     int m_pwm[2] = {0};
     float m_gyro_offset = 0;
+    float m_odom_offset = 0;
 };
 
 #endif

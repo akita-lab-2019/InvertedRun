@@ -39,8 +39,13 @@ void GuageManager::update()
     m_robot_pos[X] = m_odometer->getRobotPose(Odometer::X);
     m_robot_pos[Y] = m_odometer->getRobotPose(Odometer::Y);
     m_robot_pos[YAW] = m_odometer->getRobotPose(Odometer::YAW);
-    m_robot_dis = m_odometer->getRobotDistance();
+    m_robot_dis = m_odometer->getRobotDistance() - m_odom_offset;
     m_sonar_distance = (float)m_sonar_sensor.getDistance() / 100.0;
+}
+
+void GuageManager::setOdomOffset(float offset)
+{
+    m_odom_offset = offset;
 }
 
 void GuageManager::setCourse(int course)

@@ -4,8 +4,8 @@
  *******************************************************************************
  **/
 
-#ifndef EV3_SEESAW_H_
-#define EV3_SEESAW_H_
+#ifndef EV3_Seesaw_H_
+#define EV3_Seesaw_H_
 
 #include <Clock.h>
 #include <GyroSensor.h>
@@ -37,7 +37,7 @@ private:
     TailController *m_tail;
 
     void update();
-    void lineRun(int forward, int pid_index, int target);
+    void lineRun(bool is_inverted, int forward, int pid_index, int target);
     void downBody();
     void upBody();
     void landing();
@@ -45,10 +45,17 @@ private:
     // 現在のシーソーシーケンス番号
     int m_sequence_num = 0;
 
-    // 走行のPIDパラメータ
-    float m_run_pid_param[2][3] = {{0.3, 0.0, 0.0}, {0.5, 0.0, 0.0}};
+    // 着地した時の走行距離
+    float m_seesaw_start_dis = 0;
 
-    long m_timer = 0;
+    // 走行のPIDパラメータ
+    float m_run_pid_param[7][3] = {{0.180, 0.000, 0.000},
+                                   {0.100, 0.000, 0.000},
+                                   {0.000, 0.000, 0.000},
+                                   {0.100, 0.000, 0.000},
+                                   {0.100, 0.000, 0.000},
+                                   {0.100, 0.000, 0.000},
+                                   {0.100, 0.000, 0.000}};
 };
 
 #endif
