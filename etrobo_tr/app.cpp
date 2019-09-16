@@ -21,6 +21,8 @@
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
 void *__dso_handle = 0;
 
+int g_run_course = 0;
+
 // using宣言
 using ev3api::Clock;
 using ev3api::ColorSensor;
@@ -173,6 +175,7 @@ void main_task(intptr_t unused)
     g_robot_info->setCourse(0);
     if (g_bt->getStartSignal() == BluetoothManager::START_R)
     {
+        g_run_course = 1;
         g_robot_info->setCourse(1);
     }
 
@@ -232,8 +235,16 @@ void tracer_task(intptr_t exinf)
     else
     {
         // 完走
-        // g_lookup->run();
-        g_seesaw->run();
+        if (g_run_course == 0)
+        {
+            // Lコース（シーソー）
+            g_seesaw->run();
+        }
+        else
+        {
+            // Rコース（ルックアップ）
+            g_lookup->run();
+        }
     }
 
     if (g_bt->getStartSignal() == BluetoothManager::STOP || (g_touch_sensor.isPressed() && g_robot_info->getRunTime() > 0.5))
