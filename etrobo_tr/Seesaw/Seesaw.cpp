@@ -80,11 +80,11 @@ void Seesaw::run()
         // 姿勢上げ
         m_tail->setAngle(1000);
         m_tail->setMaxSpeed(55);
-        m_wheel_L.setPWM(-45);
-        m_wheel_R.setPWM(-45);
-        m_clock.sleep(120);
+        m_wheel_L.setPWM(-40);
+        m_wheel_R.setPWM(-40);
+        m_clock.sleep(100);
 
-        m_tail->setAngle(97);
+        m_tail->setAngle(95);
         m_tail->setMaxSpeed(90);
         m_wheel_L.reset();
         m_wheel_R.reset();
@@ -158,17 +158,17 @@ void Seesaw::run()
         m_tail->setMaxSpeed(20);
         m_wheel_L.setPWM(-8);
         m_wheel_R.setPWM(-8);
-        if (m_guage->getWheelPos(GuageManager::L) < -22)
+        if (m_guage->getWheelPos(GuageManager::L) < -20)
         {
             m_tail->setAngle(105);
-            m_tail->setMaxSpeed(25);
+            m_tail->setMaxSpeed(22);
             m_sequence_num++;
         }
         break;
 
     // 昇段
     case 5:
-        m_tail->setMaxSpeed(90);
+        m_tail->setMaxSpeed(100);
         m_wheel_L.setPWM(100);
         m_wheel_R.setPWM(100);
         if (m_guage->getWheelPos(GuageManager::L) > 180)

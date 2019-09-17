@@ -75,6 +75,7 @@ void Lookup::run()
         m_wheel_R.setPWM(90);
         m_clock.sleep(150);
         m_landing_dis = m_guage->getRobotDis();
+        m_guage->setOdomOffset(0);
         m_wheel_L.reset();
         m_wheel_R.reset();
         m_clock.sleep(10);
@@ -85,7 +86,8 @@ void Lookup::run()
     case 3:
         m_tail->setAngle(67);
         m_tail->setMaxSpeed(40);
-        lineRun(0, 8, 1, 5);
+        m_wheel_L.setPWM(8);
+        m_wheel_R.setPWM(8);
 
         if (m_guage->getRobotDis() > 0.25)
         {
@@ -99,7 +101,8 @@ void Lookup::run()
     case 4:
         m_tail->setAngle(67);
         m_tail->setMaxSpeed(40);
-        lineRun(0, -9, 1, 5);
+        m_wheel_L.setPWM(-9);
+        m_wheel_R.setPWM(-9);
 
         if (m_guage->getRobotDis() < -0.10)
         {
@@ -113,7 +116,8 @@ void Lookup::run()
     case 5:
         m_tail->setAngle(67);
         m_tail->setMaxSpeed(40);
-        lineRun(0, 8, 1, 5);
+        m_wheel_L.setPWM(8);
+        m_wheel_R.setPWM(8);
 
         if (m_guage->getRobotDis() > 0.25)
         {
@@ -127,7 +131,8 @@ void Lookup::run()
     case 6:
         m_tail->setAngle(67);
         m_tail->setMaxSpeed(40);
-        lineRun(0, -9, 1, 5);
+        m_wheel_L.setPWM(-9);
+        m_wheel_R.setPWM(-9);
 
         if (m_guage->getRobotDis() < -0.10)
         {
@@ -141,7 +146,8 @@ void Lookup::run()
     case 7:
         m_tail->setAngle(67);
         m_tail->setMaxSpeed(40);
-        lineRun(0, 8, 1, 5);
+        m_wheel_L.setPWM(8);
+        m_wheel_R.setPWM(8);
 
         if (m_guage->getRobotDis() > 0.25)
         {
@@ -153,18 +159,18 @@ void Lookup::run()
 
     // 姿勢を上げる
     case 8:
-        m_wheel_L.setPWM(-50);
-        m_wheel_R.setPWM(-50);
+        m_wheel_L.setPWM(-48);
+        m_wheel_R.setPWM(-52);
         m_tail->setAngle(1000);
-        m_tail->setMaxSpeed(61);
+        m_tail->setMaxSpeed(60);
         m_clock.sleep(155);
         m_tail->setAngle(85);
         m_tail->setMaxSpeed(90);
         m_sequence_num++;
         break;
+
     // 高い姿勢で前進
     case 9:
-
         lineRun(0, 8, 1, 15);
 
         if (m_guage->getRobotDis() > 0.90)
