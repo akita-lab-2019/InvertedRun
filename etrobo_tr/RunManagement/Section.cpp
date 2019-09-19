@@ -18,10 +18,11 @@ void Section::update(int num)
     m_section_num = num;
     m_distance = m_distance_list[num];
     m_forward = m_forward_list[num];
-    m_curvature = m_curvature_list[m_is_curve_list[num]];
-    m_pid_parm[0] = m_trace_pid_list[m_is_curve_list[num]][0];
-    m_pid_parm[1] = m_trace_pid_list[m_is_curve_list[num]][1];
-    m_pid_parm[2] = m_trace_pid_list[m_is_curve_list[num]][2];
+    m_curvature = m_curvature_list[num];
+    m_pid_parm[0] = m_trace_pid_list[num][0];
+    m_pid_parm[1] = m_trace_pid_list[num][1];
+    m_pid_parm[2] = m_trace_pid_list[num][2];
+    // m_color_target = m_color_target_list[m_is_coler_target_list[num]];
 
     // 以下の区間では旋回方向が逆になるので，曲率旋回量を負にする
     if (num == 5 || num == 6 || num == 8 || num == 10 || num == 12)
