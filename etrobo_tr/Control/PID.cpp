@@ -17,10 +17,6 @@ void PID::init(float K[3])
     {
         m_K[i] = K[i];
     }
-
-    m_integral = 0;
-    m_diff[0] = 0;
-    m_diff[1] = 0;
 }
 
 /**
