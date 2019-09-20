@@ -9,7 +9,7 @@
 
 // 適用するパラメータを選択する
 #define LOW_PARAM 
-// #define HIGH_PARAM 
+//#define HIGH_PARAM 
 // #define PID_PARAM 
 
 class Section
@@ -69,7 +69,7 @@ private:
     float m_forward_list[15] = {110, 115, 113, 108, 105, 100, 105, 107, 113, 120, 110, 110, 110, 115, 120};
 
     // 曲率旋回量リスト
-	float m_curvature_list[15] = {0, 11.4, 0, 10.3, 15.6, 15.3, 11.4, 0, 10.3, 0, 10.3, 10, 11.4, 11.4, 0};
+	float m_curvature_list[15] = {0, 11, 0, 10, 15.4, 15.3, 11.4, 0, 10.3, 0, 10.3, 10, 11.4, 11.4, 0};
 
     // PID係数リスト
      float m_trace_pid_list[15][3] = {{0.300, 0.000, 0.023},  // 0
