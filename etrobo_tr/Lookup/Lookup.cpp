@@ -146,7 +146,7 @@ void Lookup::run()
     case 7:
         m_tail->setAngle(67);
         m_tail->setMaxSpeed(40);
-        m_wheel_L.setPWM(8);
+        m_wheel_L.setPWM(9);
         m_wheel_R.setPWM(8);
 
         if (m_guage->getRobotDis() > 0.25)
