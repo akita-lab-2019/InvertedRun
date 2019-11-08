@@ -1,26 +1,27 @@
 #include "LineMonitor.h"
 
-LineMonitor::LineMonitor(ev3api::ColorSensor &colorSensor) : m_color_sensor(colorSensor)
+extern ev3api::ColorSensor color_sensor;
+
+float m_brightness_target = 35;
+
+void initLineMonitor()
 {
+}
+
+void processLineMonitor()
+{
+}
+
+void setBrightnessTarget(float target)
+{
+    m_brightness_target = target;
 }
 
 /**
  * 輝度偏差を取得する
  * @return 輝度偏差
  */
-int LineMonitor::getBrightness()
+float getBrightnessGap()
 {
-    return m_color_sensor.getBrightness();
-}
-
-/**
- * 輝度偏差を取得する
- * @return 輝度偏差
- */
-float LineMonitor::getGap(float target)
-{
-    float sensor_val = target - (0.9 * m_pre_sensor_val + 0.1 * m_color_sensor.getBrightness());
-    m_pre_sensor_val = m_color_sensor.getBrightness();
-
-    return sensor_val;
+    return m_brightness_target - color_sensor.getBrightness();
 }

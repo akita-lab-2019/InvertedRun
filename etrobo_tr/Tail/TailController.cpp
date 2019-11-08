@@ -1,11 +1,12 @@
 #include "TailController.h"
 
+extern ev3api::Motor tail_motor;
+
 /**
  * コンストラクタ
  * @param tail_motor 尻尾モータ
  */
-TailController::TailController(ev3api::Motor &tail_motor, PID *pid)
-    : m_tail_motor(tail_motor), m_pid(pid)
+TailController::TailController(PID *pid) : m_pid(pid)
 {
 }
 
@@ -14,7 +15,7 @@ TailController::TailController(ev3api::Motor &tail_motor, PID *pid)
  */
 void TailController::init()
 {
-    m_tail_motor.reset();
+    tail_motor.reset();
     float tail_pid_gain[3] = {2.3, 0.0, 0.6};
     m_pid->init(tail_pid_gain);
 }
@@ -43,7 +44,7 @@ void TailController::setMaxSpeed(int max_speed)
  */
 void TailController::setTailSpeed(int tail_speed)
 {
-    m_tail_motor.setPWM(tail_speed);
+    tail_motor.setPWM(tail_speed);
 }
 
 /**
@@ -51,17 +52,17 @@ void TailController::setTailSpeed(int tail_speed)
  */
 void TailController::control()
 {
-    int pwm = m_pid->calculate(m_target_angle, m_tail_motor.getCount());
+    int pwm = m_pid->calculate(m_target_angle, tail_motor.getCount());
 
     pwm = (pwm > m_max_speed) ? m_max_speed : pwm;
     pwm = (pwm < -m_max_speed) ? -m_max_speed : pwm;
 
     if (pwm == 0)
     {
-        m_tail_motor.stop();
+        tail_motor.stop();
     }
     else
     {
-        m_tail_motor.setPWM(pwm);
+        tail_motor.setPWM(pwm);
     }
 }

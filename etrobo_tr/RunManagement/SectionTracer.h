@@ -19,14 +19,12 @@
 class SectionTracer
 {
 public:
-    SectionTracer(GuageManager *robot_info,
-                  Section *section,
+    SectionTracer(Section *section,
                   LineTracer *line_tracer);
 
     bool run(int start_section_num);
 
 private:
-    GuageManager *m_robot_info;
     Section *m_section;
     LineTracer *m_line_tracer;
 

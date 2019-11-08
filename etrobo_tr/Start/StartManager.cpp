@@ -1,16 +1,15 @@
 #include "StartManager.h"
 
+extern ev3api::Clock clock;
+extern ev3api::TouchSensor touch_sensor;
+
 /**
  * コンストラクタ
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-StartManager::StartManager(BluetoothManager *bt,
-                           ev3api::TouchSensor &touch_sensor,
-                           ev3api::Clock &clock)
-    : m_bt(bt),
-      m_touch_sensor(touch_sensor),
-      m_clock(clock)
+StartManager::StartManager(BluetoothManager *bt)
+    : m_bt(bt)
 {
 }
 
@@ -30,11 +29,11 @@ void StartManager::waitForStart()
             break;
 
         // タッチセンサスタート
-        if (m_touch_sensor.isPressed())
+        if (touch_sensor.isPressed())
             break;
 
-        m_clock.sleep(4);
-        m_clock.reset();
+        clock.sleep(4);
+        clock.reset();
     }
 }
 

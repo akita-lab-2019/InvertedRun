@@ -1,6 +1,7 @@
 #ifndef EV3_APP_TAILCONTROLLER_H_
 #define EV3_APP_TAILCONTROLLER_H_
 
+#include "ev3api.h"
 #include "LineMonitor.h"
 #include "GyroSensor.h"
 #include "Motor.h"
@@ -11,7 +12,7 @@
 class TailController
 {
 public:
-    TailController(ev3api::Motor &tail_motor, PID *pid);
+    TailController(PID *pid);
 
     void init();
     void setAngle(int target_angle);
@@ -20,7 +21,6 @@ public:
     void control();
 
 private:
-    ev3api::Motor &m_tail_motor;
     PID *m_pid;
 
     int m_target_angle = 0;

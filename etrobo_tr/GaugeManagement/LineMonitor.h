@@ -1,24 +1,12 @@
-#ifndef EV3_UNIT_LINEMONITOR_H_
-#define EV3_UNIT_LINEMONITOR_H_
+#ifndef EV3_LINEMONITOR_H_
+#define EV3_LINEMONITOR_H_
 
+#include "ev3api.h"
 #include "ColorSensor.h"
 
-// 定義
-class LineMonitor
-{
-public:
-    explicit LineMonitor(ev3api::ColorSensor &colorSensor);
-    int getBrightness();
-    float getGap(float target);
+void initLineMonitor();
+void processLineMonitor();
+void setBrightnessTarget(float target);
+float getBrightnessGap();
 
-private:
-    const ev3api::ColorSensor &m_color_sensor;
-
-    // 輝度目標値
-    float m_target = 30;
-
-    // 前回の輝度値
-    float m_pre_sensor_val = 0;
-};
-
-#endif // EV3_UNIT_LINEMONITOR_H_
+#endif

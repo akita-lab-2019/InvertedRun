@@ -17,13 +17,10 @@
 class LineTracer
 {
 public:
-    LineTracer(GuageManager *robot_info,
-               Section *section,
+    LineTracer(Section *section,
                TailWalker *tail_walker,
                PID *pid,
-               Balancer *balancer,
-               ev3api::Motor &wheel_L,
-               ev3api::Motor &wheel_R);
+               Balancer *balancer);
 
     void init();
     void update();
@@ -41,13 +38,10 @@ public:
     };
 
 private:
-    GuageManager *m_robot_info;
     Section *m_section;
     TailWalker *m_tail_walker;
     PID *m_pid;
     Balancer *m_balancer;
-    ev3api::Motor &m_wheel_L;
-    ev3api::Motor &m_wheel_R;
 
     void invertedRun(int forward_v, int turn_v);
     void tailRun(int forward_v, int turn_v);

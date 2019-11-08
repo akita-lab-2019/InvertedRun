@@ -1,12 +1,15 @@
 #include "LogManager.h"
 
+extern ev3api::Clock clock;
+extern ev3api::ColorSensor color_sensor;
+extern ev3api::SonarSensor sonar_sensor;
+
 /**
  * コンストラクタ
  */
-LogManager::LogManager(Recorder *recorder, BluetoothManager *bt, GuageManager *robot_info, Section *section)
+LogManager::LogManager(Recorder *recorder, BluetoothManager *bt, Section *section)
     : m_recorder(recorder),
       m_bt(bt),
-      m_robot_info(robot_info),
       m_section(section)
 {
 }
@@ -45,23 +48,16 @@ void LogManager::readData()
 {
     // データを抽出して文字配列に格納
     int i = 0;
-    sprintf(m_data_str[i++], "%d", m_robot_info->getCourse());
     sprintf(m_data_str[i++], "%d", m_section->getSectionNum());
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRunTime());
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getBatteryVoltage());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getBrightness());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getBrightnessGap(30));
-    sprintf(m_data_str[i++], "%d", m_robot_info->getForward());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getTurn());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(GuageManager::L));
-    sprintf(m_data_str[i++], "%d", m_robot_info->getPWM(GuageManager::R));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(GuageManager::X));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotPos(GuageManager::Y));
-    sprintf(m_data_str[i++], "%d", (int)m_robot_info->getRobotPos(GuageManager::YAW));
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getRobotDis());
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getGyroOffset());
-    sprintf(m_data_str[i++], "%d", m_robot_info->getPitchVel());
-    sprintf(m_data_str[i++], "%.2f", m_robot_info->getSonarDistance());
+    sprintf(m_data_str[i++], "%.2f", (float)clock.now() / 1000);
+    sprintf(m_data_str[i++], "%.2f", (float)ev3_battery_voltage_mV() / 1000);
+    sprintf(m_data_str[i++], "%d", color_sensor.getBrightness());
+    sprintf(m_data_str[i++], "%.1f", getBrightnessGap());
+    sprintf(m_data_str[i++], "%.2f", getRobotPose(0));
+    sprintf(m_data_str[i++], "%.2f", getRobotPose(1));
+    sprintf(m_data_str[i++], "%.1f", getRobotPose(2));
+    sprintf(m_data_str[i++], "%.2f", getRobotDistance());
+    sprintf(m_data_str[i++], "%.2f", (float)sonar_sensor.getDistance() / 1000);
 }
 
 void LogManager::sendToBT()

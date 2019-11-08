@@ -5,7 +5,6 @@
 #include "TailController.h"
 #include "Recorder.h"
 #include "PID.h"
-#include "GuageManager.h"
 #include "Section.h"
 #include "SectionTracer.h"
 #include <Clock.h>
@@ -32,33 +31,30 @@ using ev3api::SonarSensor;
 using ev3api::TouchSensor;
 
 // オブジェクトを静的に確保
-Clock g_clock;
-TouchSensor g_touch_sensor(PORT_1);
-SonarSensor g_sonar_sensor(PORT_2);
-ColorSensor g_color_sensor(PORT_3);
-GyroSensor g_gyro_sensor(PORT_4);
-Motor g_tail_motor(PORT_A);
-Motor g_wheel_L(PORT_C);
-Motor g_wheel_R(PORT_B);
+Clock clock;
+TouchSensor touch_sensor(PORT_1);
+SonarSensor sonar_sensor(PORT_2);
+ColorSensor color_sensor(PORT_3);
+GyroSensor gyro_sensor(PORT_4);
+Motor tail_motor(PORT_A);
+Motor wheel_L(PORT_C);
+Motor wheel_R(PORT_B);
 
 // オブジェクトの定義
-static GuageManager *g_robot_info;
 static Section *g_section;
 static SectionTracer *g_section_tracer;
 static LogManager *g_log_manager;
 static Recorder *g_recorder;
-static LineMonitor *g_line_monitor;
 static TailController *g_tail_controller;
 static Balancer *g_balancer;
 static TailWalker *g_tail_walker;
 static LineTracer *g_line_tracer;
-static Odometer *g_odometer;
 static PID *g_pid_tail;
 static PID *g_pid_trace;
 static BluetoothManager *g_bt;
 static StartManager *g_start_manager;
-static Seesaw *g_seesaw;
-static Lookup *g_lookup;
+// static Seesaw *g_seesaw;
+// static Lookup *g_lookup;
 
 /**
  * システムの初期化処理
@@ -66,69 +62,51 @@ static Lookup *g_lookup;
 static void initSystem()
 {
     g_bt = new BluetoothManager();
-    g_start_manager = new StartManager(g_bt, g_touch_sensor, g_clock);
+    g_start_manager = new StartManager(g_bt);
 
     g_section = new Section();
 
     // 走行体情報
     g_pid_trace = new PID();
-    g_odometer = new Odometer(g_wheel_L, g_wheel_R);
-    g_line_monitor = new LineMonitor(g_color_sensor);
-    g_robot_info = new GuageManager(g_clock,
-                                    g_gyro_sensor,
-                                    g_sonar_sensor,
-                                    g_line_monitor,
-                                    g_odometer);
 
     // 記録
     g_recorder = new Recorder();
     g_log_manager = new LogManager(g_recorder,
                                    g_bt,
-                                   g_robot_info,
                                    g_section);
 
     // 尻尾制御
     g_pid_tail = new PID();
-    g_tail_controller = new TailController(g_tail_motor, g_pid_tail);
+    g_tail_controller = new TailController(g_pid_tail);
 
     // 走行制御
     g_balancer = new Balancer();
     g_tail_walker = new TailWalker();
-    g_line_tracer = new LineTracer(g_robot_info,
-                                   g_section,
-                                   g_tail_walker,
-                                   g_pid_trace,
-                                   g_balancer,
-                                   g_wheel_L,
-                                   g_wheel_R);
-    g_section_tracer = new SectionTracer(g_robot_info, g_section, g_line_tracer);
+    g_line_tracer = new LineTracer(
+        g_section,
+        g_tail_walker,
+        g_pid_trace,
+        g_balancer);
 
-    g_seesaw = new Seesaw(g_clock,
-                          g_gyro_sensor,
-                          g_wheel_L,
-                          g_wheel_R,
-                          g_robot_info,
-                          g_line_tracer,
-                          g_tail_controller);
+    g_section_tracer = new SectionTracer(g_section, g_line_tracer);
 
-    g_lookup = new Lookup(g_clock,
-                          g_gyro_sensor,
-                          g_wheel_L,
-                          g_wheel_R,
-                          g_robot_info,
-                          g_line_tracer,
-                          g_tail_controller);
+    // g_seesaw = new Seesaw(
+    //     g_line_tracer,
+    //     g_tail_controller);
+
+    // g_lookup = new Lookup(
+    //     g_line_tracer,
+    //     g_tail_controller);
 
     g_log_manager->init();
     g_tail_controller->init();
 
-    // 尻尾の角位置をリセット
-    g_tail_motor.setPWM(-100);
-    tslp_tsk(700);
-    g_tail_motor.reset();
+    initOdometer();
 
-    // ジャイロのオフセット
-    g_robot_info->setGyroOffset(0);
+    // 尻尾の角位置をリセット
+    tail_motor.setPWM(-100);
+    tslp_tsk(700);
+    tail_motor.reset();
 
     // 尻尾の角度を維持
     g_tail_controller->setAngle(98);
@@ -149,15 +127,13 @@ static void initSystem()
  */
 static void destroySystem()
 {
-    g_wheel_L.reset();
-    g_wheel_R.reset();
-    g_tail_motor.reset();
+    wheel_L.reset();
+    wheel_R.reset();
+    tail_motor.reset();
 
-    delete g_line_monitor;
     delete g_tail_controller;
     delete g_balancer;
     delete g_line_tracer;
-    delete g_odometer;
     delete g_pid_tail;
     delete g_pid_trace;
 }
@@ -167,16 +143,16 @@ static void destroySystem()
  */
 void main_task(intptr_t unused)
 {
-    // 初期化処理
+    // 初期化処理1
     initSystem();
 
     // スタート待機
     g_start_manager->waitForStart();
-    g_robot_info->setCourse(0);
+    // setCourse(0);
     if (g_bt->getStartSignal() == BluetoothManager::START_R)
     {
         g_run_course = 1;
-        g_robot_info->setCourse(1);
+        // setCourse(1);
     }
 
     ev3_speaker_play_tone(NOTE_E4, 100);
@@ -184,7 +160,7 @@ void main_task(intptr_t unused)
     // 尻尾を少し前に
     g_tail_controller->setAngle(108);
     g_tail_controller->setMaxSpeed(50);
-    g_clock.sleep(200);
+    clock.sleep(200);
 
     // 周期ハンドラ開始
     ev3_sta_cyc(TRACER_TASK);
@@ -214,7 +190,7 @@ void tail_task(intptr_t exinf)
  */
 void info_task(intptr_t exinf)
 {
-    g_robot_info->update();
+    // g_robot_info->update();
     ext_tsk();
 }
 
@@ -224,30 +200,33 @@ void info_task(intptr_t exinf)
 bool is_goal = false;
 void tracer_task(intptr_t exinf)
 {
+    processOdometer();
+
     if (is_goal == false)
     {
         // 未完走
         g_tail_controller->setAngle(70);
         g_tail_controller->setMaxSpeed(40);
 
-        is_goal = g_section_tracer->run(g_bt->getStartSectionNum());
+        // is_goal = g_section_tracer->run(g_bt->getStartSectionNum());
+        g_section_tracer->run(g_bt->getStartSectionNum());
     }
     else
     {
-        // 完走
-        if (g_run_course == 0)
-        {
-            // Lコース（シーソー）
-            g_seesaw->run();
-        }
-        else
-        {
-            // Rコース（ルックアップ）
-            g_lookup->run();
-        }
+        // // 完走
+        // if (g_run_course == 0)
+        // {
+        //     // Lコース（シーソー）
+        //     g_seesaw->run();
+        // }
+        // else
+        // {
+        //     // Rコース（ルックアップ）
+        //     g_lookup->run();
+        // }
     }
 
-    if (g_bt->getStartSignal() == BluetoothManager::STOP || (g_touch_sensor.isPressed() && g_robot_info->getRunTime() > 0.5))
+    if (g_bt->getStartSignal() == BluetoothManager::STOP || (touch_sensor.isPressed() && clock.now() > 500))
     {
         // 停止信号を受信
         landing();
@@ -260,7 +239,7 @@ void tracer_task(intptr_t exinf)
                 wup_tsk(MAIN_TASK); // タスクの起床
             }
 
-            g_clock.sleep(4);
+            clock.sleep(4);
         }
     }
 
@@ -271,12 +250,12 @@ void landing()
 {
     g_tail_controller->setAngle(75);
     g_tail_controller->setMaxSpeed(40);
-    g_wheel_L.setPWM(90);
-    g_wheel_R.setPWM(90);
-    g_clock.sleep(150);
+    wheel_L.setPWM(90);
+    wheel_R.setPWM(90);
+    clock.sleep(150);
 
-    g_wheel_R.reset();
-    g_wheel_L.reset();
+    wheel_R.reset();
+    wheel_L.reset();
 
     // g_wheel_L.setPWM(0);
     // g_wheel_R.setPWM(0);

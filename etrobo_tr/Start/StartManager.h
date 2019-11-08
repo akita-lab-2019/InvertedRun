@@ -1,6 +1,9 @@
 #ifndef EV3_START_MANAGER_H_
 #define EV3_START_MANAGER_H_
 
+#include "ev3api.h"
+#include <Clock.h>
+
 #include "GuageManager.h"
 #include "GyroSensor.h"
 #include "Motor.h"
@@ -12,9 +15,7 @@
 class StartManager
 {
 public:
-    StartManager(BluetoothManager *bt,
-                 ev3api::TouchSensor &touch_sensor,
-                 ev3api::Clock &clock);
+    StartManager(BluetoothManager *bt);
 
     void init();
     void waitForStart();
@@ -22,8 +23,6 @@ public:
 
 private:
     BluetoothManager *m_bt;
-    ev3api::TouchSensor &m_touch_sensor;
-    ev3api::Clock &m_clock;
 };
 
 #endif

@@ -1,19 +1,23 @@
 #include "Odometer.h"
 
-/**
- * コンストラクタ
- * @param wheel_L 左モータ
- * @param wheel_L 右モータ
- */
-Odometer::Odometer(ev3api::Motor &wheel_L, ev3api::Motor &wheel_R)
-    : m_wheel_L(wheel_L), m_wheel_R(wheel_R)
-{
-}
+extern ev3api::Motor wheel_L;
+extern ev3api::Motor wheel_R;
+
+const float TO_RAD = 3.141592 / 180;
+const float TO_DEG = 180 / 3.141592;
+const float WHEEL_RADIUS = 0.049;
+const float WHEEL_DIST = 0.177;
+
+float m_wheel_deg[2] = {0};      // ホイール角度[deg]
+float m_robot_pose[3] = {0};     // ロボット位置[m],[deg]
+float m_pre_robot_pose[3] = {0}; // 前回のロボット位置[m],[deg]
+float m_robot_dis = 0;           // ロボット走行距離[m]
+float m_pre_robot_dis = 0;       // 前回のロボット走行距離[m]
 
 /**
  * 初期化する
  */
-void Odometer::init()
+void initOdometer()
 {
     m_robot_pose[X] = 0;
     m_robot_pose[Y] = 0;
@@ -24,20 +28,12 @@ void Odometer::init()
 /**
  * 計測する
  */
-void Odometer::measure()
+void processOdometer()
 {
     // ホイールの回転角度を算出する
-    m_wheel_deg[L] = m_wheel_L.getCount();
-    m_wheel_deg[R] = m_wheel_R.getCount();
+    m_wheel_deg[L] = wheel_L.getCount();
+    m_wheel_deg[R] = wheel_R.getCount();
 
-    calculate();
-}
-
-/**
- * オドメトリを計算する
- */
-void Odometer::calculate()
-{
     // ホイールの累計走行距離を計算
     float wheel_dis[2];
     wheel_dis[L] = m_wheel_deg[L] * TO_RAD * WHEEL_RADIUS;
@@ -63,7 +59,7 @@ void Odometer::calculate()
  * @parm 軸番号（X:0, Y:1, YAW:2）
  * @return ロボットの位置（X:[m], Y:[m], YAW[deg]）
  */
-float Odometer::getRobotPose(int axis)
+float getRobotPose(int axis)
 {
     return m_robot_pose[axis];
 }
@@ -72,7 +68,7 @@ float Odometer::getRobotPose(int axis)
  * ロボットの走行距離を取得
  * @return ロボットの走行距離[m]
  */
-float Odometer::getRobotDistance()
+float getRobotDistance()
 {
     return m_robot_dis;
 }
@@ -82,7 +78,7 @@ float Odometer::getRobotDistance()
  * @parm ホイール番号（L:0, R:1）
  * @return ホイール角度[deg]
  */
-float Odometer::getWheelPose(int wheel)
+float getWheelDeg(int wheel)
 {
     return m_wheel_deg[wheel];
 }
