@@ -57,14 +57,14 @@ void LogManager::readData()
     sprintf(m_data_str[i++], "%.2f", getRobotPose(1));
     sprintf(m_data_str[i++], "%.1f", getRobotPose(2));
     sprintf(m_data_str[i++], "%.2f", getRobotDistance());
-    sprintf(m_data_str[i++], "%.2f", (float)sonar_sensor.getDistance() / 1000);
+    sprintf(m_data_str[i++], "%.2f", (float)sonar_sensor.getDistance() / 100);
 }
 
 void LogManager::sendToBT()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 17; i++)
+    for (int i = 1; i < 10; i++)
     {
         sprintf(file_str, "%s\t%s", file_str, m_data_str[i]);
     }
@@ -75,7 +75,7 @@ void LogManager::sendToSD()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 17; i++)
+    for (int i = 1; i < 10; i++)
     {
         sprintf(file_str, "%s, %s", file_str, m_data_str[i]);
     }
