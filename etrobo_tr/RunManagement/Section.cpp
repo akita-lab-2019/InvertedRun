@@ -25,10 +25,10 @@ void Section::update(int num)
     // m_color_target = m_color_target_list[m_is_coler_target_list[num]];
 
     // 以下の区間では旋回方向が逆になるので，曲率旋回量を負にする
-    if (num == 5 || num == 6 || num == 8 || num == 10 || num == 12)
-    {
-        m_curvature *= -1;
-    }
+    // if (num == 5 || num == 6 || num == 8 || num == 10 || num == 12)
+    // {
+    //     m_curvature *= -1;
+    // }
 }
 
 /**

@@ -2,7 +2,7 @@
 
 extern ev3api::ColorSensor color_sensor;
 
-float m_brightness_target = 35;
+float m_brightness_target = 30;
 
 void initLineMonitor()
 {
