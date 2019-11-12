@@ -151,9 +151,9 @@ void main_task(intptr_t unused)
     ev3_speaker_play_tone(NOTE_E4, 100);
 
     // 尻尾を少し前に
-    g_tail_controller->setAngle(108);
+    g_tail_controller->setAngle(109);
     g_tail_controller->setMaxSpeed(50);
-    clock.sleep(200);
+    clock.sleep(210);
 
     // 周期ハンドラ開始
     ev3_sta_cyc(TRACER_TASK);

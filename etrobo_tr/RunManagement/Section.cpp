@@ -16,6 +16,7 @@ void Section::update(int num)
 {
     // それぞれの値を更新する
     m_section_num = num;
+    m_run_method = m_run_method_list[num];
     m_distance = m_distance_list[num];
     m_forward = m_forward_list[num];
     m_curvature = m_curvature_list[num];
@@ -25,12 +26,30 @@ void Section::update(int num)
 }
 
 /**
+ * 現在の区間総数を取得する
+ * @return 区間総数
+ */
+int Section::getSectionSumnum()
+{
+    return m_section_sumnum;
+}
+
+/**
  * 現在の区間番号を取得する
  * @return 区間番号
  */
 int Section::getSectionNum()
 {
     return m_section_num;
+}
+
+/**
+ * 現在の区間総数を取得する
+ * @return 区間総数
+ */
+int Section::getRunMethod()
+{
+    return m_run_method;
 }
 
 /**
@@ -71,10 +90,22 @@ float Section::getColorTarget()
 }
 
 /**
- * 区間長さ[m]を取得する
+ * 区間開始距離[m]を取得する
  * @return 区間長さ[m]
  */
-float Section::getDistance()
+float Section::getStartDistance()
 {
-    return m_distance;
+    if (m_section_num == 0)
+        return 0;
+
+    return m_distance_list[m_section_num - 1];
+}
+
+/**
+ * 区間終了距離[m]を取得する
+ * @return 区間長さ[m]
+ */
+float Section::getEndDistance()
+{
+    return m_distance_list[m_section_num];
 }

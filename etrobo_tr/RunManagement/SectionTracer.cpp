@@ -30,10 +30,10 @@ bool SectionTracer::run(int run_course, int start_section_num)
         m_is_initialized = true;
     }
 
-    if (getRobotDistance() > m_section->getDistance())
+    if (getRobotDistance() > m_section->getEndDistance())
     {
         m_section_num++;
-        if (m_section_num < 15)
+        if (m_section_num < m_section->getSectionSumnum())
         {
             m_section->update(m_section_num);
             m_line_tracer->update();
