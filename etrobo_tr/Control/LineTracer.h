@@ -19,10 +19,9 @@ class LineTracer
 public:
     LineTracer(Section *section,
                TailWalker *tail_walker,
-               PID *pid,
                Balancer *balancer);
 
-    void init();
+    void init(int run_course);
     void update();
     void run();
     void setIsInverted(bool is_inverted);
@@ -40,13 +39,13 @@ public:
 private:
     Section *m_section;
     TailWalker *m_tail_walker;
-    PID *m_pid;
     Balancer *m_balancer;
 
     void invertedRun(int forward_v, int turn_v);
     void tailRun(int forward_v, int turn_v);
 
     bool m_is_initialized;
+    int m_run_course;
     int m_forward;        // 前進指令速度[%]
     int m_turn;           // 旋回指令速度[%]
     float m_curvature;    // 曲率[m^-1]

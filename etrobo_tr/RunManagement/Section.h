@@ -9,7 +9,8 @@
 
 // 適用するパラメータを選択する
 #define ODOM_PARAM
-//#define HIGH_PARAM
+// #define LOW_PARAM
+// #define HIGH_PARAM
 // #define PID_PARAM
 
 class Section
@@ -28,12 +29,12 @@ private:
     int m_section_num = 0;     // 区間番号
     float m_distance;          // 区間長さ[m]
     float m_forward;           // 前進指令速度[%]
-    float m_curvature;         // 曲率旋回量[m^-^]
+    float m_curvature;         // 曲率旋回量
     float m_pid_parm[3];       // PIDパラメータ
     float m_color_target = 23; // カラーセンサの目標値
 
 #ifdef ODOM_PARAM
-    //////////////////////////LOWパラメータ////////////////////////////
+    //////////////////////////ODOMパラメータ////////////////////////////
     // 前進量リスト
     float m_forward_list[15] = {105, 105, 105, 103, 95, 98, 103, 105, 110, 106, 103, 100, 105, 110, 110};
 

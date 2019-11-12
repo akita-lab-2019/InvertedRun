@@ -22,7 +22,7 @@ public:
     SectionTracer(Section *section,
                   LineTracer *line_tracer);
 
-    bool run(int start_section_num);
+    bool run(int run_course, int start_section_num);
 
 private:
     Section *m_section;

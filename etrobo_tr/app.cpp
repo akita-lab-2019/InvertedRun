@@ -50,7 +50,6 @@ static Balancer *g_balancer;
 static TailWalker *g_tail_walker;
 static LineTracer *g_line_tracer;
 static PID *g_pid_tail;
-static PID *g_pid_trace;
 static BluetoothManager *g_bt;
 static StartManager *g_start_manager;
 // static Seesaw *g_seesaw;
@@ -66,9 +65,6 @@ static void initSystem()
 
     g_section = new Section();
 
-    // 走行体情報
-    g_pid_trace = new PID();
-
     // 記録
     g_recorder = new Recorder();
     g_log_manager = new LogManager(g_recorder,
@@ -82,11 +78,9 @@ static void initSystem()
     // 走行制御
     g_balancer = new Balancer();
     g_tail_walker = new TailWalker();
-    g_line_tracer = new LineTracer(
-        g_section,
-        g_tail_walker,
-        g_pid_trace,
-        g_balancer);
+    g_line_tracer = new LineTracer(g_section,
+                                   g_tail_walker,
+                                   g_balancer);
 
     g_section_tracer = new SectionTracer(g_section, g_line_tracer);
 
@@ -135,7 +129,6 @@ static void destroySystem()
     delete g_balancer;
     delete g_line_tracer;
     delete g_pid_tail;
-    delete g_pid_trace;
 }
 
 /**
@@ -208,8 +201,7 @@ void tracer_task(intptr_t exinf)
         g_tail_controller->setAngle(70);
         g_tail_controller->setMaxSpeed(40);
 
-        // is_goal = g_section_tracer->run(g_bt->getStartSectionNum());
-        g_section_tracer->run(g_bt->getStartSectionNum());
+        is_goal = g_section_tracer->run(g_run_course, g_bt->getStartSectionNum());
     }
     else
     {
