@@ -20,7 +20,7 @@ bool SectionTracer::run(int run_course, int start_section_num)
 {
     if (m_is_initialized == false)
     {
-        int m_section_num = start_section_num;
+        m_section_num = m_section->getSectionNum();
         m_section->update(m_section_num);
 
         m_line_tracer->init(run_course);

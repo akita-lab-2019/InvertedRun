@@ -21,6 +21,7 @@
 void *__dso_handle = 0;
 
 int g_run_course = 0;
+// int g_run_course = 1;
 
 // using宣言
 using ev3api::Clock;
@@ -52,7 +53,7 @@ static LineTracer *g_line_tracer;
 static PID *g_pid_tail;
 static BluetoothManager *g_bt;
 static StartManager *g_start_manager;
-// static Seesaw *g_seesaw;
+static Seesaw *g_seesaw;
 // static Lookup *g_lookup;
 
 /**
@@ -84,9 +85,9 @@ static void initSystem()
 
     g_section_tracer = new SectionTracer(g_section, g_line_tracer);
 
-    // g_seesaw = new Seesaw(
-    //     g_line_tracer,
-    //     g_tail_controller);
+    g_seesaw = new Seesaw(
+        g_line_tracer,
+        g_tail_controller);
 
     // g_lookup = new Lookup(
     //     g_line_tracer,
@@ -136,16 +137,14 @@ static void destroySystem()
  */
 void main_task(intptr_t unused)
 {
-    // 初期化処理1
+    // 初期化処理
     initSystem();
 
     // スタート待機
     g_start_manager->waitForStart();
-    // setCourse(0);
     if (g_bt->getStartSignal() == BluetoothManager::START_R)
     {
         g_run_course = 1;
-        // setCourse(1);
     }
 
     ev3_speaker_play_tone(NOTE_E4, 100);
@@ -205,17 +204,17 @@ void tracer_task(intptr_t exinf)
     }
     else
     {
-        // // 完走
-        // if (g_run_course == 0)
-        // {
-        //     // Lコース（シーソー）
-        //     g_seesaw->run();
-        // }
-        // else
-        // {
-        //     // Rコース（ルックアップ）
-        //     g_lookup->run();
-        // }
+        // 完走
+        if (g_run_course == 0)
+        {
+            // Lコース（シーソー）
+            g_seesaw->run();
+        }
+        else
+        {
+            // Rコース（ルックアップ）
+            // g_lookup->run();
+        }
     }
 
     if (g_bt->getStartSignal() == BluetoothManager::STOP || (touch_sensor.isPressed() && clock.now() > 500))

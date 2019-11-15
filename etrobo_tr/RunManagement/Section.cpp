@@ -5,7 +5,7 @@
  */
 Section::Section()
 {
-    update(0);
+    update(m_section_num);
 }
 
 /**
