@@ -31,6 +31,10 @@ private:
     void downBody();
     void upBody();
     void landing();
+    void setTailSpeed(int speed);
+    void setTailAngle(int angle);
+    void setAllWheelSpeed(int speed);
+    void resetAllWheel();
 
     // 現在のシーソーシーケンス番号
     int m_sequence_num = 0;

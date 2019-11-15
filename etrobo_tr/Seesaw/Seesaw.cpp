@@ -59,27 +59,20 @@ void Seesaw::run()
     // 着地と姿勢上げ
     case 2:
         // 着地
-        m_tail->setAngle(70);
-        m_tail->setMaxSpeed(40);
-        wheel_L.setPWM(90);
-        wheel_R.setPWM(90);
+        setTailAngle(70);
+        setAllWheelSpeed(90);
         clock.sleep(160);
-
-        wheel_L.reset();
-        wheel_R.reset();
+        resetAllWheel();
         clock.sleep(3000);
 
         // 姿勢上げ
-        m_tail->setAngle(1000);
-        m_tail->setMaxSpeed(50);
+        setTailSpeed(50);
         wheel_L.setPWM(-35);
         wheel_R.setPWM(-35);
         clock.sleep(100);
 
-        m_tail->setAngle(95);
-        m_tail->setMaxSpeed(90);
-        wheel_L.reset();
-        wheel_R.reset();
+        setTailAngle(95);
+        resetAllWheel();
         clock.sleep(1000);
 
         m_sequence_num++;
@@ -106,16 +99,12 @@ void Seesaw::run()
             //     clock.sleep(800);
             // }
 
-            m_tail->setAngle(1000);
-            m_tail->setMaxSpeed(60);
-            wheel_L.setPWM(-55);
-            wheel_R.setPWM(-55);
+            setTailSpeed(60);
+            setAllWheelSpeed(-55);
             clock.sleep(220);
 
-            m_tail->setAngle(115);
-            m_tail->setMaxSpeed(90);
-            wheel_L.reset();
-            wheel_R.reset();
+            setTailAngle(115);
+            resetAllWheel();
             clock.sleep(1000);
 
             // 左右にじたばた
@@ -128,20 +117,14 @@ void Seesaw::run()
                 wheel_R.setPWM(8);
                 clock.sleep(800);
             }
-
-            m_tail->setAngle(115);
             clock.sleep(3000);
 
             // 前進
-            m_tail->setAngle(115);
-            m_tail->setMaxSpeed(100);
-            wheel_L.setPWM(10);
-            wheel_R.setPWM(10);
+            setAllWheelSpeed(10);
             clock.sleep(1000);
 
             // 停止
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             clock.sleep(1000);
 
             ev3_speaker_play_tone(262, 100);
@@ -151,8 +134,7 @@ void Seesaw::run()
 
     // 昇段
     case 4:
-        wheel_L.setPWM(-10);
-        wheel_R.setPWM(-10);
+        setAllWheelSpeed(-10);
 
         if (wheel_L.getCount() < -10)
         {
@@ -162,10 +144,8 @@ void Seesaw::run()
 
     // 昇段
     case 5:
-        m_tail->setAngle(1000);
-        m_tail->setMaxSpeed(35);
-        wheel_L.setPWM(-11);
-        wheel_R.setPWM(-11);
+        setTailSpeed(35);
+        setAllWheelSpeed(-11);
 
         if (wheel_L.getCount() < -20)
         {
@@ -175,10 +155,8 @@ void Seesaw::run()
 
     // 昇段
     case 6:
-        m_tail->setAngle(-1000);
-        m_tail->setMaxSpeed(100);
-        wheel_L.setPWM(-11);
-        wheel_R.setPWM(-11);
+        setTailSpeed(-100);
+        setAllWheelSpeed(-11);
 
         if (getWheelDeg(0) < -32)
         {
@@ -188,143 +166,118 @@ void Seesaw::run()
 
     // 昇段
     case 7:
-        wheel_L.setPWM(95);
-        wheel_R.setPWM(95);
-        m_tail->setAngle(92);
-        m_tail->setMaxSpeed(100);
+        setAllWheelSpeed(98);
+        setTailAngle(90);
 
         if (getRobotDistance() > 0.2)
         {
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             clock.sleep(3000);
 
-            m_tail->setAngle(1000);
-            m_tail->setMaxSpeed(50);
-            wheel_L.setPWM(-35);
-            wheel_R.setPWM(-35);
+            // 姿勢を上げる
+            setTailSpeed(50);
+            setAllWheelSpeed(-35);
             clock.sleep(110);
 
-            m_tail->setAngle(108);
-            m_tail->setMaxSpeed(90);
-            wheel_L.reset();
-            wheel_R.reset();
+            setTailAngle(108);
+            resetAllWheel();
             clock.sleep(1000);
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作まで前進
+    // シーソー動作1まで前進
     case 8:
         lineRun(0, 4, 1, 25);
         if (abs(gyro_sensor.getAnglerVelocity()) > 40)
         {
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作
+    // シーソー動作1
     case 9:
-        m_tail->setAngle(-1000);
-        m_tail->setMaxSpeed(58);
-        wheel_L.setPWM(39);
-        wheel_R.setPWM(39);
+        setTailSpeed(-58);
+        setAllWheelSpeed(39);
         if (getRobotDistance() > 0.02)
         {
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作
+    // シーソー動作1
     case 10:
-        m_tail->setAngle(55);
-        m_tail->setMaxSpeed(40);
-        wheel_L.setPWM(35);
-        wheel_R.setPWM(35);
+        setTailAngle(55);
+        setAllWheelSpeed(39);
         if (getRobotDistance() > 0.10)
         {
-            wheel_L.reset();
-            wheel_R.reset();
-            clock.sleep(1500);
+            resetAllWheel();
+            clock.sleep(3000);
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作まで後進
+    // シーソー動作2まで後進
     case 11:
         lineRun(0, -4, 1, 6);
         if (abs(gyro_sensor.getAnglerVelocity()) > 40)
         {
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作
+    // シーソー動作2
     case 12:
-        m_tail->setAngle(1000);
-        m_tail->setMaxSpeed(10);
-        wheel_L.setPWM(-37);
-        wheel_R.setPWM(-37);
+        setTailSpeed(10);
+        setAllWheelSpeed(-37);
         if (getRobotDistance() < -0.02)
         {
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作
+    // シーソー動作2
     case 13:
-        m_tail->setAngle(108);
-        m_tail->setMaxSpeed(40);
-        wheel_L.setPWM(-35);
-        wheel_R.setPWM(-35);
+        setTailAngle(108);
+        setAllWheelSpeed(-37);
         if (getRobotDistance() < -0.10)
         {
-            wheel_L.reset();
-            wheel_R.reset();
-            clock.sleep(1500);
+            resetAllWheel();
+            clock.sleep(3000);
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作まで前進
+    // シーソー動作3まで前進
     case 14:
         lineRun(0, 4, 1, 25);
         if (abs(gyro_sensor.getAnglerVelocity()) > 40)
         {
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作
+    // シーソー動作3
     case 15:
-        m_tail->setAngle(-1000);
-        m_tail->setMaxSpeed(58);
-        wheel_L.setPWM(37);
-        wheel_R.setPWM(37);
+        setTailSpeed(-58);
+        setAllWheelSpeed(37);
         if (getRobotDistance() > 0.02)
         {
             m_sequence_num++;
         }
         break;
 
-    // シーソー動作
+    // シーソー動作3
     case 16:
-        m_tail->setAngle(55);
-        m_tail->setMaxSpeed(40);
-        wheel_L.setPWM(35);
-        wheel_R.setPWM(35);
+        setTailAngle(55);
+        setAllWheelSpeed(39);
         if (getRobotDistance() > 0.10)
         {
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             clock.sleep(3000);
             m_sequence_num++;
         }
@@ -332,23 +285,17 @@ void Seesaw::run()
 
     // 前進
     case 17:
-        wheel_L.setPWM(30);
-        wheel_R.setPWM(30);
+        setAllWheelSpeed(30);
         if (getRobotDistance() > 0.35)
         {
-            wheel_L.reset();
-            wheel_R.reset();
+            resetAllWheel();
             clock.sleep(3000);
-            m_tail->setAngle(1000);
-            m_tail->setMaxSpeed(100);
-            wheel_L.setPWM(-70);
-            wheel_R.setPWM(-70);
+            setTailSpeed(100);
+            setAllWheelSpeed(-70);
             clock.sleep(210);
 
-            m_tail->setAngle(95);
-            m_tail->setMaxSpeed(90);
-            wheel_L.reset();
-            wheel_R.reset();
+            setTailAngle(95);
+            resetAllWheel();
             clock.sleep(1000);
             wheel_L.setPWM(-5);
             wheel_R.setPWM(5);
@@ -370,8 +317,7 @@ void Seesaw::run()
 
     // 停止
     case 19:
-        wheel_L.reset();
-        wheel_R.reset();
+        resetAllWheel();
         break;
 
     default:
@@ -406,4 +352,36 @@ void Seesaw::lineRun(bool is_inverted, int forward, int pid_index, int target)
 
 void Seesaw::landing()
 {
+}
+
+void Seesaw::setTailSpeed(int speed)
+{
+    if (speed > 0)
+    {
+        m_tail->setAngle(1000);
+        m_tail->setMaxSpeed(abs(speed));
+    }
+    else
+    {
+        m_tail->setAngle(-1000);
+        m_tail->setMaxSpeed(abs(speed));
+    }
+}
+
+void Seesaw::setTailAngle(int angle)
+{
+    m_tail->setAngle(angle);
+    m_tail->setMaxSpeed(100);
+}
+
+void Seesaw::setAllWheelSpeed(int speed)
+{
+    wheel_L.setPWM(speed);
+    wheel_R.setPWM(speed);
+}
+
+void Seesaw::resetAllWheel()
+{
+    wheel_L.reset();
+    wheel_R.reset();
 }
