@@ -8,8 +8,8 @@
 
 // 適用するパラメータを選択する
 // #define ODOM_LEFT
-// #define LOW
-#define DIFF
+#define LOW
+// #define DIFF
 // #define HIGH_PARAM
 // #define PID_PARAM
 
@@ -29,13 +29,13 @@ public:
     float getEndDistance();
 
 private:
-    int m_section_num = 14;    // 区間番号
+    int m_section_num = 0;     // 区間番号
     int m_run_method;          // 走法
     float m_distance;          // 区間長さ[m]
     float m_forward;           // 前進指令速度[%]
     float m_curvature;         // 曲率旋回量
     float m_pid_parm[3];       // PIDパラメータ
-    float m_color_target = 28; // カラーセンサの目標値
+    float m_color_target = 23; // カラーセンサの目標値
 
 #ifdef ODOM_LEFT
     //////////////////////////ODOMパラメータ////////////////////////////
@@ -93,7 +93,7 @@ public:
     float m_forward_list[15] = {105, 105, 105, 103, 95, 95, 98, 103, 105, 110, 106, 103, 100, 105, 110};
 
     // 曲率旋回量リスト
-    float m_curvature_list[15] = {0, 11, 0, 10, 15.4, -15.3, -11.4, 0, -10.3, 0, -10.3, 0, -11.4, 12.4, 0};
+    float m_curvature_list[15] = {0, 11, 0, 10, 15.4, -15.3, -11.4, 0, -10.3, 0, -10.3, 0, -9.4, 12.4, 0};
 
     // 区間終了距離リスト（それぞれの区間がスタートから何mの地点で終わるのかをリストアップしている）
     float m_distance_list[15] = {0.60, 1.25, 1.70, 2.45, 3.32, 4.00, 4.60, 4.70, 5.53, 6.45, 7.00, 7.23, 7.58, 8.95, 0.05};

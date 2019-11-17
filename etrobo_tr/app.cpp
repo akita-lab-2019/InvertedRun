@@ -20,8 +20,8 @@
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
 void *__dso_handle = 0;
 
-int g_run_course = 0;
-// int g_run_course = 1;
+// int g_run_course = 0;
+int g_run_course = 1;
 
 // using宣言
 using ev3api::Clock;
@@ -54,7 +54,7 @@ static PID *g_pid_tail;
 static BluetoothManager *g_bt;
 static StartManager *g_start_manager;
 static Seesaw *g_seesaw;
-// static Lookup *g_lookup;
+static Lookup *g_lookup;
 
 /**
  * システムの初期化処理
@@ -89,9 +89,9 @@ static void initSystem()
         g_line_tracer,
         g_tail_controller);
 
-    // g_lookup = new Lookup(
-    //     g_line_tracer,
-    //     g_tail_controller);
+    g_lookup = new Lookup(
+        g_line_tracer,
+        g_tail_controller);
 
     g_log_manager->init();
     g_tail_controller->init();
@@ -213,7 +213,7 @@ void tracer_task(intptr_t exinf)
         else
         {
             // Rコース（ルックアップ）
-            // g_lookup->run();
+            g_lookup->run();
         }
     }
 
