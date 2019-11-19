@@ -20,8 +20,8 @@
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
 void *__dso_handle = 0;
 
-// int g_run_course = 0;
-int g_run_course = 1;
+int g_run_course = 0;
+// int g_run_course = 1;
 
 // using宣言
 using ev3api::Clock;

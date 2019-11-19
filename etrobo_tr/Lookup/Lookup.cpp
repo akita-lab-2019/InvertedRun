@@ -56,7 +56,7 @@ void Lookup::run()
         lineRun(1, fwd, 0, 35);
 
         // ゲートを検知
-        if (sonar_sensor.getDistance() < 12)
+        if (sonar_sensor.getDistance() < 16)
         {
             m_sequence_num++;
         }
@@ -83,7 +83,7 @@ void Lookup::run()
         wheel_L.setPWM(8);
         wheel_R.setPWM(8);
 
-        if (getRobotDistance() > 0.25)
+        if (getRobotDistance() > 0.30)
         {
             ev3_speaker_play_tone(262, 100);
             m_sequence_num++;
@@ -98,7 +98,7 @@ void Lookup::run()
         wheel_L.setPWM(-9);
         wheel_R.setPWM(-9);
 
-        if (getRobotDistance() < -0.10)
+        if (getRobotDistance() < -0.05)
         {
             ev3_speaker_play_tone(262, 100);
             m_sequence_num++;
@@ -113,7 +113,7 @@ void Lookup::run()
         wheel_L.setPWM(8);
         wheel_R.setPWM(8);
 
-        if (getRobotDistance() > 0.25)
+        if (getRobotDistance() > 0.30)
         {
             ev3_speaker_play_tone(262, 100);
             m_sequence_num++;
@@ -128,7 +128,7 @@ void Lookup::run()
         wheel_L.setPWM(-9);
         wheel_R.setPWM(-9);
 
-        if (getRobotDistance() < -0.10)
+        if (getRobotDistance() < -0.05)
         {
             ev3_speaker_play_tone(262, 100);
             m_sequence_num++;
@@ -143,7 +143,7 @@ void Lookup::run()
         wheel_L.setPWM(8);
         wheel_R.setPWM(8);
 
-        if (getRobotDistance() > 0.25)
+        if (getRobotDistance() > 0.30)
         {
             ev3_speaker_play_tone(262, 300);
             m_sequence_num++;
@@ -155,6 +155,9 @@ void Lookup::run()
     case 8:
         wheel_L.setPWM(5);
         wheel_R.setPWM(-5);
+        clock.sleep(500);
+        wheel_L.setPWM(8);
+        wheel_R.setPWM(8);
         clock.sleep(300);
         m_sequence_num++;
         break;
@@ -164,11 +167,10 @@ void Lookup::run()
         wheel_L.setPWM(-50);
         wheel_R.setPWM(-50);
         m_tail->setAngle(1000);
-        m_tail->setMaxSpeed(60);
-        clock.sleep(155);
+        m_tail->setMaxSpeed(50);
+        clock.sleep(145);
         m_tail->setAngle(85);
         m_tail->setMaxSpeed(90);
-        clock.sleep(3000);
         m_sequence_num++;
         break;
 
@@ -176,15 +178,17 @@ void Lookup::run()
     case 10:
         lineRun(0, 9, 1, 15);
 
-        if (getRobotDistance() > 0.90)
+        if (getRobotDistance() > 0.97)
         {
+            wheel_L.reset();
+            wheel_R.reset();
             ev3_speaker_play_tone(262, 1000);
             m_sequence_num++;
         }
         break;
 
     // 停止
-    case 11:
+    case 13:
         wheel_L.reset();
         wheel_R.reset();
         break;
