@@ -48,6 +48,7 @@ void LogManager::readData()
 {
     // データを抽出して文字配列に格納
     int i = 0;
+    sprintf(m_data_str[i++], "%s", m_section->parm_name);
     sprintf(m_data_str[i++], "%d", m_section->getSectionNum());
     sprintf(m_data_str[i++], "%.2f", (float)clock.now() / 1000);
     sprintf(m_data_str[i++], "%.2f", (float)ev3_battery_voltage_mV() / 1000);
@@ -64,7 +65,7 @@ void LogManager::sendToBT()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 10; i++)
+    for (int i = 1; i < 11; i++)
     {
         sprintf(file_str, "%s\t%s", file_str, m_data_str[i]);
     }
@@ -75,7 +76,7 @@ void LogManager::sendToSD()
 {
     char file_str[1024];
     sprintf(file_str, "%s", m_data_str[0]);
-    for (int i = 1; i < 10; i++)
+    for (int i = 1; i < 11; i++)
     {
         sprintf(file_str, "%s, %s", file_str, m_data_str[i]);
     }
@@ -86,16 +87,19 @@ void LogManager::sendToDisplay()
 {
     char lcd_str[32][32];
     char lcd_caption_str[32][32] = {
-        "time:    ",
-        "battery: ",
-        "color_s: ",
-        "pose_x:  ",
-        "pose_y:  ",
+        "param    ",
+        "section  ",
+        "time     ",
+        "battery  ",
+        "color    ",
+        "colorGap ",
+        "poseX    ",
+        "poseY:   ",
         "angle:   ",
-        "dis:     ",
-        "sonar:   ",
+        "distance ",
+        "sonar    ",
     };
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 11; i++)
     {
         sprintf(lcd_str[i], "%s%s", lcd_caption_str[i], m_data_str[i]);
         ev3_lcd_draw_string(lcd_str[i], 5, 5 + 10 * i);
